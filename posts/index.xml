@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on ThuriLabs</title>
-    <link>http://thuri10.github.io/posts/</link>
+    <link>https://thuri10.github.io/posts/</link>
     <description>Recent content in Posts on ThuriLabs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 18 Apr 2021 18:48:16 +0300</lastBuildDate>
     
-	<atom:link href="http://thuri10.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://thuri10.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Shellcode</title>
-      <link>http://thuri10.github.io/posts/shellcode/</link>
+      <link>https://thuri10.github.io/posts/shellcode/</link>
       <pubDate>Sun, 18 Apr 2021 18:48:16 +0300</pubDate>
       
-      <guid>http://thuri10.github.io/posts/shellcode/</guid>
+      <guid>https://thuri10.github.io/posts/shellcode/</guid>
       <description>#include &amp;lt;stdio.h&amp;gt;int main(int argc, int argv[]){ printf(&amp;#34;hello world\n&amp;#34;); system(&amp;#34;/bin/bash&amp;#34;); if(pass == 0xdeadbeef){ printf(&amp;#34;goodbye elf\n&amp;#34;); } else{ system(&amp;#34;exit&amp;#34;); } return 0; } this is a simple c code to test working of the blog synstac</description>
     </item>
     
