@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://thuri10.github.io/posts/</loc>
+    <lastmod>2021-04-18T18:48:16+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://thuri10.github.io/posts/shellcode/</loc>
+    <lastmod>2021-04-18T18:48:16+03:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://thuri10.github.io/about/</loc>
     <lastmod>2021-04-18T18:47:24+03:00</lastmod>
   </url>

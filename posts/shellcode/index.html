@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Shellcode | ThuriLabs</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.68.3" />
+<meta name="description" content="Research Labs">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="http://thuri10.github.io/css/index.css">
+<link rel="canonical" href="http://thuri10.github.io/posts/shellcode/">
+<link rel="alternate" type="application/rss+xml" href="" title="ThuriLabs">
+
+<header>
+  
+    <a href="http://thuri10.github.io/" class="title">ThuriLabs</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Shellcode</h1>
+    <time datetime="2021-04-18T18:48:16&#43;03:00">April 18, 2021</time>
+  </header>
+  <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span><span style="color:#ff79c6"></span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>(<span style="color:#8be9fd">int</span> argc, <span style="color:#8be9fd">int</span> argv[]){
+  printf(<span style="color:#f1fa8c">&#34;hello world</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+  system(<span style="color:#f1fa8c">&#34;/bin/bash&#34;</span>);
+  <span style="color:#ff79c6">if</span>(pass <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0xdeadbeef</span>){
+    printf(<span style="color:#f1fa8c">&#34;goodbye elf</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>);
+    }
+  <span style="color:#ff79c6">else</span>{
+    system(<span style="color:#f1fa8c">&#34;exit&#34;</span>);
+    }
+<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+}
+</code></pre></div><p>this is a simple c code to test working of the blog synstac</p>
+
+</article>
+
+
+
+</html>

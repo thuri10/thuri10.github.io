@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ThuriLabs</title>
-    <link>http://thuri10.github.io/</link>
-    <description>Recent content on ThuriLabs</description>
+    <title>Posts on ThuriLabs</title>
+    <link>http://thuri10.github.io/posts/</link>
+    <description>Recent content in Posts on ThuriLabs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 18 Apr 2021 18:47:24 +0300</lastBuildDate>
+    <lastBuildDate>Sun, 18 Apr 2021 18:48:16 +0300</lastBuildDate>
     
-	<atom:link href="http://thuri10.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://thuri10.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,17 +18,6 @@
       
       <guid>http://thuri10.github.io/posts/shellcode/</guid>
       <description>#include &amp;lt;stdio.h&amp;gt;int main(int argc, int argv[]){ printf(&amp;#34;hello world\n&amp;#34;); system(&amp;#34;/bin/bash&amp;#34;); if(pass == 0xdeadbeef){ printf(&amp;#34;goodbye elf\n&amp;#34;); } else{ system(&amp;#34;exit&amp;#34;); } return 0; } this is a simple c code to test working of the blog synstac</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>http://thuri10.github.io/about/</link>
-      <pubDate>Sun, 18 Apr 2021 18:47:24 +0300</pubDate>
-      
-      <guid>http://thuri10.github.io/about/</guid>
-      <description>I`m an independent security researcher located in kenya interested in low-level stuff such as reverse engineering, malware analysis, exploit development and embedded security.This is a blog about my research and learning documentation. You can reach me through
-Twitter
-Github</description>
     </item>
     
   </channel>
