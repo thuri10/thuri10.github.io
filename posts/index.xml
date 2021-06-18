@@ -6,10 +6,28 @@
     <description>Recent content in Posts on ThuriLabs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 18 Apr 2021 18:48:16 +0300</lastBuildDate>
+    <lastBuildDate>Fri, 18 Jun 2021 20:57:07 +0300</lastBuildDate>
     
 	<atom:link href="https://thuri10.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Unpacking UPX manuall</title>
+      <link>https://thuri10.github.io/posts/unpackingupx/</link>
+      <pubDate>Fri, 18 Jun 2021 20:57:07 +0300</pubDate>
+      
+      <guid>https://thuri10.github.io/posts/unpackingupx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Assembly</title>
+      <link>https://thuri10.github.io/posts/assembly/</link>
+      <pubDate>Sun, 18 Apr 2021 18:48:27 +0300</pubDate>
+      
+      <guid>https://thuri10.github.io/posts/assembly/</guid>
+      <description>assembly is a real struggle</description>
+    </item>
     
     <item>
       <title>Shellcode</title>
@@ -17,7 +35,7 @@
       <pubDate>Sun, 18 Apr 2021 18:48:16 +0300</pubDate>
       
       <guid>https://thuri10.github.io/posts/shellcode/</guid>
-      <description>#include &amp;lt;stdio.h&amp;gt;int main(int argc, int argv[]){ printf(&amp;#34;hello world\n&amp;#34;); system(&amp;#34;/bin/bash&amp;#34;); if(pass == 0xdeadbeef){ printf(&amp;#34;goodbye elf\n&amp;#34;); } else{ system(&amp;#34;exit&amp;#34;); } return 0; } this is a simple c code to test working of the blog synstac</description>
+      <description>#include &amp;lt;stdio.h&amp;gt;int main(int argc, int argv[]){ printf(&amp;#34;hello world\n&amp;#34;); system(&amp;#34;/bin/bash&amp;#34;); if(pass == 0xdeadbeef){ printf(&amp;#34;goodbye elf\n&amp;#34;); } else{ system(&amp;#34;exit&amp;#34;); } return 0; } shellcode works all the legacy machines, this is a simple c code to test working of the blog synstac</description>
     </item>
     
   </channel>
