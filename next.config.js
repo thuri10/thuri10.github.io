@@ -2,6 +2,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
+const isProd = (process.env.NODE_ENV || 'production') === 'production'
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
@@ -55,6 +56,10 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
+  exportPathMap: () => ({
+    '/': { page: '/' },
+  }),  
+  assetPrefix: isProd ? '/your-repository-name' : '',
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
   eslint: {
     dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
