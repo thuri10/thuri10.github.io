@@ -4,7 +4,7 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { getAllFilesFrontMatter } from '@/lib/mdx'
 import formatDate from '@/lib/utils/formatDate'
-
+import IMage from '@/components/Image'
 import NewsletterForm from '@/components/NewsletterForm'
 
 const MAX_DISPLAY = 5
