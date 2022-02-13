@@ -59,7 +59,7 @@ module.exports = withBundleAnalyzer({
   exportPathMap: () => ({
     '/': { page: '/' },
   }),  
-  assetPrefix: isProd ? '/your-repository-name' : '',
+  assetPrefix: isProd ? '/nestjs-blog' : '',
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
   eslint: {
     dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
