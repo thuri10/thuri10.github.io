@@ -1,5 +1,10 @@
 const webpack = require('webpack')
 
+
+const withMDX = require('@next/mdx')({
+  extension: /\.mdx?$/,
+})
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -78,6 +83,7 @@ module.exports = withBundleAnalyzer({
     return config
   },
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
+  target: 'serverless',
   eslint: {
     dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
   },
