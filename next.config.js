@@ -1,7 +1,5 @@
 const webpack = require('webpack')
 
-
-
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -80,7 +78,6 @@ module.exports = withBundleAnalyzer({
     return config
   },
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
-  target: 'serverless',
   eslint: {
     dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
   },
