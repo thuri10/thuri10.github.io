@@ -1,5 +1,5 @@
 const siteMetadata = {
-  title: 'Solar Bits',
+  title: 'Solar',
   author: 'Thuri10',
   headerTitle: 'Solarbits',
   description: 'Bits Flipping Adventures',
