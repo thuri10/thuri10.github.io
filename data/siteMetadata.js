@@ -1,11 +1,11 @@
 const siteMetadata = {
-  title: 'Next.js Starter Blog',
+  title: 'Solar Bits',
   author: 'Thuri10',
   headerTitle: 'Solarbits',
   description: 'Bits Flipping Adventures',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://thuri10.github.io/nestjs-blog',
+  siteUrl: 'https://thuri10.github.io',
   siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
