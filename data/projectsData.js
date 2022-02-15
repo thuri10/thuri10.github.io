@@ -1,4 +1,4 @@
-const prefix = "/thuri10.github.io"
+const prefix = "/nestjs-blog"
 
 const projectsData = [
   {
