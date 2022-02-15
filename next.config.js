@@ -59,7 +59,7 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
-  basePath: '/',
+  basePath: ' ',
   images: {
     loader: "custom",
   },
