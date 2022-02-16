@@ -7,8 +7,10 @@ twitter: https://twitter.com/0xhexski
 github: https://github.com/thuri10
 ---
 
-Tails Azimuth is a professor of atmospheric sciences at the Stanford AI Lab. His research interests includes complexity modelling of tailwinds, headwinds and crosswinds.
+Hello, I`m Martin
 
-He leads the clean energy group which develops 3D air pollution-climate models, writes differential equation solvers, and manufactures titanium plated air ballons. In his free time he bakes raspberry pi.
+Martin is a kenyan-born software developer and Reverser currently doing application security. An economist by professional turned into bit flipper, Inspired by great programmers and security researchers through Hardwork and Passion.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.
+This is my personal blog to share my adventures and learning experiences with the community. The blog focuses on different topics but not limited to application security. I play CTF`s during my free time to challenge my skills and meet new amazing people.
+
+**Got any Question, idea, critic?** Feel free to reach me out through [Mail](mailto:thuri783@gmail.com)

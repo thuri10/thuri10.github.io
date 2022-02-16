@@ -21,35 +21,43 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/deriving-ols-estimator</loc>
+    <loc>https://thuri10.github.io/blog/android-security-part1</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/github-markdown-guide</loc>
+    <loc>https://thuri10.github.io/blog/android-security-part2</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/guide-to-using-images-in-nextjs</loc>
+    <loc>https://thuri10.github.io/blog/redlinerstealer</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/introducing-tailwind-nextjs-starter-blog</loc>
+    <loc>https://thuri10.github.io/blog/remcosrat</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/pictures-of-canada</loc>
+    <loc>https://thuri10.github.io/blog/ropemporium-callme</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/the-time-machine</loc>
+    <loc>https://thuri10.github.io/blog/ropemporium-ret2win</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/unpacking-malware-with-frida</loc>
+    <loc>https://thuri10.github.io/blog/ropemporium-split</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/code-sample</loc>
+    <loc>https://thuri10.github.io/blog/ropemporium-write4</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/strings-malware</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/virtual-machine</loc>
   </url>
 
   <url>
@@ -60,6 +68,10 @@
 
   <url>
     <loc>https://thuri10.github.io/tags/android</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
   <url>
@@ -75,11 +87,19 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/ctf</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/feature</loc>
   </url>
 
   <url>
     <loc>https://thuri10.github.io/tags/features</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/fluff</loc>
   </url>
 
   <url>
@@ -124,6 +144,22 @@
 
   <url>
     <loc>https://thuri10.github.io/tags/reflection</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/reverse</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/rop</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/ropemporium</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/strings</loc>
   </url>
 
   <url>

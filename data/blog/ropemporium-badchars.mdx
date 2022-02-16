@@ -1,0 +1,167 @@
+---
+title: "Return-Oriented Programming - Badchars"
+date: '2021-12-20'
+tags: ['ropemporium', 'rop', 'pwn']
+draft: true
+summary:  
+images: []
+layout: PostLayout
+canonicalUrl:
+---
+## Introduction
+Challenge description
+
+>An arbitrary write challenge with a twist; certain input characters get mangled as they make their way onto the stack.
+>Find a way to deal with this and craft your exploit.
+
+check the binary protection and mitigations.
+
+```bash
+vx@archie:badchars$ checksec --file badchars
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+```
+
+
+running the binary to check the output as explained in the outline
+
+![](post/ropemporium/badchars_run.png)
+
+from the above the binary list for us the badchars in the binary.
+
+the bad chars are  x g a .
+
+the hex values of the above chars are shown below
+
+![](post/ropemporium/badcharshex.png)
+
+our payload  need not have the  0x78, 0x67, 0x61, 0x2e
+
+The trick according to the author is to xor values and construct  the flag.txt to read from.
+
+```bash
+vx@archie:badchars$ ln  flag.txt  bcd
+```
+Now because we dont have a  bad character, we can solve the challenge the same way as write4.
+
+```nasm
+(gdb) disas main
+Dump of assembler code for function main:
+   0x0000000000400607 <+0>:	push   rbp
+   0x0000000000400608 <+1>:	mov    rbp,rsp
+   0x000000000040060b <+4>:	call   0x400500 <pwnme@plt>
+   0x0000000000400610 <+9>:	mov    eax,0x0
+   0x0000000000400615 <+14>:	pop    rbp
+   0x0000000000400616 <+15>:	ret    
+End of assembler dump.
+```
+
+
+```nasm
+(gdb) disas pwnme
+Dump of assembler code for function pwnme@plt:
+   0x0000000000400500 <+0>:	jmp    QWORD PTR [rip+0x200b12]        # 0x601018 <pwnme@got.plt>
+   0x0000000000400506 <+6>:	push   0x0
+   0x000000000040050b <+11>:	jmp    0x4004f0
+End of assembler dump.
+(gdb) 
+```
+
+```nasm
+(gdb) disas pwnme
+Dump of assembler code for function pwnme:
+   0x00000000000008fa <+0>:	push   rbp
+   0x00000000000008fb <+1>:	mov    rbp,rsp
+   0x00000000000008fe <+4>:	sub    rsp,0x40
+   0x0000000000000902 <+8>:	mov    rax,QWORD PTR [rip+0x2006cf]        # 0x200fd8
+   0x0000000000000909 <+15>:	mov    rax,QWORD PTR [rax]
+   0x000000000000090c <+18>:	mov    ecx,0x0
+   0x0000000000000911 <+23>:	mov    edx,0x2
+   0x0000000000000916 <+28>:	mov    esi,0x0
+   0x000000000000091b <+33>:	mov    rdi,rax
+   0x000000000000091e <+36>:	call   0x7e0 <setvbuf@plt>
+   0x0000000000000923 <+41>:	lea    rdi,[rip+0x17a]        # 0xaa4
+   0x000000000000092a <+48>:	call   0x780 <puts@plt>
+   0x000000000000092f <+53>:	lea    rdi,[rip+0x187]        # 0xabd
+   0x0000000000000936 <+60>:	call   0x780 <puts@plt>
+   0x000000000000093b <+65>:	lea    rax,[rbp-0x40]
+   0x000000000000093f <+69>:	add    rax,0x20
+   0x0000000000000943 <+73>:	mov    edx,0x20
+   0x0000000000000948 <+78>:	mov    esi,0x0
+   0x000000000000094d <+83>:	mov    rdi,rax
+   0x0000000000000950 <+86>:	call   0x7b0 <memset@plt>
+   0x0000000000000955 <+91>:	lea    rdi,[rip+0x16c]        # 0xac8
+   0x000000000000095c <+98>:	call   0x780 <puts@plt>
+   0x0000000000000961 <+103>:	lea    rdi,[rip+0x181]        # 0xae9
+   0x0000000000000968 <+110>:	mov    eax,0x0
+   0x000000000000096d <+115>:	call   0x7a0 <printf@plt>
+   0x0000000000000972 <+120>:	lea    rax,[rbp-0x40]
+   0x0000000000000976 <+124>:	add    rax,0x20
+   0x000000000000097a <+128>:	mov    edx,0x200
+   0x000000000000097f <+133>:	mov    rsi,rax
+   0x0000000000000982 <+136>:	mov    edi,0x0
+   0x0000000000000987 <+141>:	call   0x7c0 <read@plt>
+   0x000000000000098c <+146>:	mov    QWORD PTR [rbp-0x40],rax
+(gdb) 
+```
+
+```nasm
+(gdb) disas print_file
+Dump of assembler code for function print_file@plt:
+   0x0000000000400510 <+0>:	jmp    QWORD PTR [rip+0x200b0a]        # 0x601020 <print_file@got.plt>
+   0x0000000000400516 <+6>:	push   0x1
+   0x000000000040051b <+11>:	jmp    0x4004f0
+End of assembler dump.
+(gdb)
+
+```
+
+we now disassemblke the libbadchars.so shared library . 
+
+```nasm
+(gdb) disas print_file 
+Dump of assembler code for function print_file:
+   0x0000000000000a07 <+0>:	push   rbp
+   0x0000000000000a08 <+1>:	mov    rbp,rsp
+   0x0000000000000a0b <+4>:	sub    rsp,0x40
+   0x0000000000000a0f <+8>:	mov    QWORD PTR [rbp-0x38],rdi
+   0x0000000000000a13 <+12>:	mov    QWORD PTR [rbp-0x8],0x0
+   0x0000000000000a1b <+20>:	mov    rax,QWORD PTR [rbp-0x38]
+   0x0000000000000a1f <+24>:	lea    rsi,[rip+0xd1]        # 0xaf7
+   0x0000000000000a26 <+31>:	mov    rdi,rax
+   0x0000000000000a29 <+34>:	call   0x7f0 <fopen@plt>
+```
+
+
+let check what the useFulFunction is doing
+
+```nasm
+(gdb) disas usefulFunction 
+Dump of assembler code for function usefulFunction:
+   0x0000000000400617 <+0>:	push   rbp
+   0x0000000000400618 <+1>:	mov    rbp,rsp
+   0x000000000040061b <+4>:	mov    edi,0x4006c4
+   0x0000000000400620 <+9>:	call     <print_file@plt>
+   0x0000000000400625 <+14>:	nop
+   0x0000000000400626 <+15>:	pop    rbp
+   0x0000000000400627 <+16>:	ret    
+End of assembler dump.
+(gdb) x/s 0x4006c4
+0x4006c4:	"nonexistent"
+(gdb) 
+```
+
+
+
+
+another useful gadget for calling our function
+
+```nasm
+  0x004006a3                 5f  pop rdi
+  0x004006a4                 c3  ret
+```
+
+argument to pass bcd
