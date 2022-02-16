@@ -1,0 +1,114 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Solar</title>
+      <link>https://thuri10.github.io/blog</link>
+      <description>Bits Flipping Adventures</description>
+      <language>en-us</language>
+      <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
+      <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
+      <lastBuildDate>Mon, 07 Feb 2022 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://thuri10.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://thuri10.github.io/blog/redlinerstealer</guid>
+    <title>RedLineStealer Information Stealer Analysis</title>
+    <link>https://thuri10.github.io/blog/redlinerstealer</link>
+    null
+    <pubDate>Mon, 07 Feb 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>malware</category><category>RedlineStealer</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/remcosrat</guid>
+    <title>RemcosRat infection chain from excel with Macros</title>
+    <link>https://thuri10.github.io/blog/remcosrat</link>
+    null
+    <pubDate>Tue, 25 Jan 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>Remcos</category><category>rat</category><category>malware</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-callme</guid>
+    <title>Return-Oriented Programming - Callme</title>
+    <link>https://thuri10.github.io/blog/ropemporium-callme</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-ret2win</guid>
+    <title>Return-Oriented Programming - ret2win</title>
+    <link>https://thuri10.github.io/blog/ropemporium-ret2win</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-split</guid>
+    <title>Return-Oriented Programming - Split</title>
+    <link>https://thuri10.github.io/blog/ropemporium-split</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-write4</guid>
+    <title>Return-Oriented Programming - Write4</title>
+    <link>https://thuri10.github.io/blog/ropemporium-write4</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/strings-malware</guid>
+    <title>Static Analysis of Malware Strings</title>
+    <link>https://thuri10.github.io/blog/strings-malware</link>
+    <description>Strings challenges contains an un-encrypted flag stored within the executable. When run, the program will output an MD5 hash of the flag but not the original. Can you extract the flag?</description>
+    <pubDate>Tue, 07 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>malware</category><category>reverse</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/virtual-machine</guid>
+    <title>Reversing MalwareTech 8-bit Bytecode Virtual Machine</title>
+    <link>https://thuri10.github.io/blog/virtual-machine</link>
+    <description>Can you figure out how the VM works and write your own to decrypt the flag?</description>
+    <pubDate>Tue, 07 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>reverse</category><category>malware</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/android-security-part2</guid>
+    <title>Android Application Security Series - Part2</title>
+    <link>https://thuri10.github.io/blog/android-security-part2</link>
+    undefined
+    <pubDate>Mon, 25 Oct 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>Android</category><category>Appsec</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/android-security-part1</guid>
+    <title>Android Application Security Series- Part 1</title>
+    <link>https://thuri10.github.io/blog/android-security-part1</link>
+    null
+    <pubDate>Wed, 20 Oct 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>ctf</category><category>Appsec</category>
+  </item>
+
+    </channel>
+  </rss>

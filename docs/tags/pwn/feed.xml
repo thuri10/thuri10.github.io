@@ -1,0 +1,54 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Solar</title>
+      <link>https://thuri10.github.io/blog</link>
+      <description>Bits Flipping Adventures</description>
+      <language>en-us</language>
+      <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
+      <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
+      <lastBuildDate>Mon, 20 Dec 2021 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://thuri10.github.io/tags/pwn/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-callme</guid>
+    <title>Return-Oriented Programming - Callme</title>
+    <link>https://thuri10.github.io/blog/ropemporium-callme</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-ret2win</guid>
+    <title>Return-Oriented Programming - ret2win</title>
+    <link>https://thuri10.github.io/blog/ropemporium-ret2win</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-split</guid>
+    <title>Return-Oriented Programming - Split</title>
+    <link>https://thuri10.github.io/blog/ropemporium-split</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/ropemporium-write4</guid>
+    <title>Return-Oriented Programming - Write4</title>
+    <link>https://thuri10.github.io/blog/ropemporium-write4</link>
+    null
+    <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>ropemporium</category><category>rop</category><category>pwn</category>
+  </item>
+
+    </channel>
+  </rss>
