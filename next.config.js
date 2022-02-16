@@ -1,10 +1,12 @@
+const webpack = require('webpack')
+
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const isProd = process.env.NODE_ENV ==='production'
+const isProd = (process.env.NODE_ENV || 'production') === 'production'
 
-
+const assetPrefix = isProd ? '/https://thuri10.github.io/nestjs-blog' : ''
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
   default-src 'self';
@@ -57,12 +59,27 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
+  basePath: '/thuri10.github.io',
   images: {
-    loader: 'custom',
+    loader: "custom",
+  },
+  exportPathMap: () => ({
+    '/': { page: '/' },
+    '/page1': { page: '/page1' },
+  }),
+  assetPrefix: assetPrefix,
+  webpack: config => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+      }),
+    )
+
+    return config
   },
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
   eslint: {
-    dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],  
+    dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
   },
   async headers() {
     return [
