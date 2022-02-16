@@ -4,9 +4,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const isProd = process.env.NODE_ENV ==='production'
 
-module.exports ={
-  assetPrefix: isProd? '/nestjs-blog' : ''
-}
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
@@ -60,7 +57,6 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
-  outDir: "./docs",
   images: {
     loader: 'custom',
   },
