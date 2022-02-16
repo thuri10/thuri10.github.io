@@ -1,12 +1,13 @@
-const webpack = require('webpack')
-
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const isProd = (process.env.NODE_ENV || 'production') === 'production'
+const isProd = process.env.NODE_ENV ==='production'
 
-const assetPrefix = isProd ? '/nestjs-blog' : ''
+module.exports ={
+  assetPrefix: isProd? '/nestjs-blog' : ''
+}
+
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
   default-src 'self';
@@ -59,28 +60,13 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
-  basePath: '/nestjs-blog',
-  distDir: 'docs',
+  outDir: "./docs",
   images: {
-    loader: "custom",
-  },
-  exportPathMap: () => ({
-    '/': { page: '/' },
-    '/page1': { page: '/page1' },
-  }),
-  assetPrefix: assetPrefix,
-  webpack: config => {
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-      }),
-    )
-
-    return config
+    loader: 'custom',
   },
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
   eslint: {
-    dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],
+    dirs: ['pages', 'components', 'lib', 'layouts', 'scripts'],  
   },
   async headers() {
     return [
