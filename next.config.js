@@ -58,7 +58,7 @@ const securityHeaders = [
 
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
-  assetPrefix: '/thuri10.github.io/nestjs-blog/',
+  assetPrefix: '/nestjs-blog/',
   basePath: '/nestjs-blog',
   images: {
     loader: "custom",
