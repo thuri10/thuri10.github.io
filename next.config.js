@@ -54,9 +54,8 @@ const securityHeaders = [
 ]
 
 module.exports = withBundleAnalyzer({
-
   reactStrictMode: true,
-  basePath: '/nestjs-blog',
+  basePath: '',
   images: {
     loader: 'custom',
   },
