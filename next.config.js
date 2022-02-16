@@ -4,7 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-//const isProd = (process.env.NODE_ENV || 'production') === 'production'
+const isProd = (process.env.NODE_ENV || 'production') === 'production'
 
 const assetPrefix = isProd ? '/nestjs-blog' : ''
 // You might need to insert additional domains in script-src if you are using external services
