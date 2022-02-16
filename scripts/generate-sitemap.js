@@ -42,7 +42,7 @@ const siteMetadata = require('../data/siteMetadata')
                   .replace('.mdx', '')
                   .replace('.md', '')
                   .replace('/feed.xml', '')
-                const route = path === '/nestjs-blog/index' ? '' : path
+                const route = path === '/index' ? '' : path
 
                 if (page.search('pages/404.') > -1 || page.search(`pages/blog/[...slug].`) > -1) {
                   return
