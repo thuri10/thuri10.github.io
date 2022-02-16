@@ -67,7 +67,7 @@ module.exports = withBundleAnalyzer({
     '/': { page: '/' },
     '/page1': { page: '/page1' },
   }),
-  assetPrefix: !debug ? '/nestjs-blog/' : ''
+  assetPrefix: !debug ? '/nestjs-blog/' : '',
   webpack: config => {
     config.plugins.push(
       new webpack.DefinePlugin({
