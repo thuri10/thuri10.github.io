@@ -2,18 +2,18 @@
   <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
       <title>Solar</title>
-      <link>https://thuri10.github.io/blog</link>
+      <link>https://thuri10.github.io/nestjs-blog/blog</link>
       <description>Bits Flipping Adventures</description>
       <language>en-us</language>
       <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
       <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
       <lastBuildDate>Wed, 20 Oct 2021 00:00:00 GMT</lastBuildDate>
-      <atom:link href="https://thuri10.github.io/tags/code/feed.xml" rel="self" type="application/rss+xml"/>
+      <atom:link href="https://thuri10.github.io/nestjs-blog/tags/code/feed.xml" rel="self" type="application/rss+xml"/>
       
   <item>
-    <guid>https://thuri10.github.io/blog/code-sample</guid>
+    <guid>https://thuri10.github.io/nestjs-blog/blog/code-sample</guid>
     <title>Android Application Security Series- Part 1</title>
-    <link>https://thuri10.github.io/blog/code-sample</link>
+    <link>https://thuri10.github.io/nestjs-blog/blog/code-sample</link>
     <description>Example of a markdown file with code blocks and syntax highlighting</description>
     <pubDate>Wed, 20 Oct 2021 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>

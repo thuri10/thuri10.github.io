@@ -1,124 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://thuri10.github.io/about</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/about</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io</loc>
+    <loc>https://thuri10.github.io/nestjs-blog</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/projects</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/projects</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/deriving-ols-estimator</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/deriving-ols-estimator</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/github-markdown-guide</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/github-markdown-guide</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/guide-to-using-images-in-nextjs</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/guide-to-using-images-in-nextjs</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/introducing-tailwind-nextjs-starter-blog</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/introducing-tailwind-nextjs-starter-blog</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/pictures-of-canada</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/pictures-of-canada</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/the-time-machine</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/the-time-machine</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/code-sample</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/unpacking-malware-with-frida</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/nestjs-blog/blog/code-sample</loc>
   </url>
 
   <url>
     <loc
-      >https://thuri10.github.io/blog/nested-route/introducing-multi-part-posts-with-nested-routing</loc
+      >https://thuri10.github.io/nestjs-blog/blog/nested-route/introducing-multi-part-posts-with-nested-routing</loc
     >
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/android</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/android</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/book</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/book</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/canada</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/canada</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/code</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/code</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/feature</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/feature</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/features</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/features</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/github</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/frida</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/guide</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/github</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/holiday</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/guide</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/images</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/holiday</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/math</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/images</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/multi-author</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/malware</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/next-js</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/math</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/ols</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/multi-author</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/reflection</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/next-js</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/tailwind</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/ols</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/writings</loc>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/reflection</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/tailwind</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/unpacking</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/nestjs-blog/tags/writings</loc>
   </url>
 </urlset>

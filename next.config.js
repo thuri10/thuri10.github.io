@@ -60,6 +60,7 @@ const securityHeaders = [
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   basePath: '/nestjs-blog',
+  distDir: 'docs',
   images: {
     loader: "custom",
   },
