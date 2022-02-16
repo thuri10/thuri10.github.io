@@ -59,7 +59,7 @@ const securityHeaders = [
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   assetPrefix: '/thuri10.github.io/',
-  basePath: '/out/',
+  basePath: '/thuri10.github.io/',
   images: {
     loader: "custom",
   },
