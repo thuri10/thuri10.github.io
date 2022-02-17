@@ -1,7 +1,7 @@
 
   <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-      <title>Solar</title>
+      <title>Solar Bites</title>
       <link>https://thuri10.github.io/blog</link>
       <description>Bits Flipping Adventures</description>
       <language>en-us</language>
@@ -14,7 +14,7 @@
     <guid>https://thuri10.github.io/blog/ropemporium-callme</guid>
     <title>Return-Oriented Programming - Callme</title>
     <link>https://thuri10.github.io/blog/ropemporium-callme</link>
-    null
+    <description>Reliably make consecutive calls to imported functions. Use some new techniques and learn about the Procedure Linkage Table.</description>
     <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>ropemporium</category><category>rop</category><category>pwn</category>
@@ -24,7 +24,7 @@
     <guid>https://thuri10.github.io/blog/ropemporium-ret2win</guid>
     <title>Return-Oriented Programming - ret2win</title>
     <link>https://thuri10.github.io/blog/ropemporium-ret2win</link>
-    null
+    <description>ret2win means return here to win and it&#39;s recommended you start with this challenge. Visit the challenge page by clicking this card to learn more.</description>
     <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>ropemporium</category><category>rop</category><category>pwn</category>
@@ -34,7 +34,7 @@
     <guid>https://thuri10.github.io/blog/ropemporium-split</guid>
     <title>Return-Oriented Programming - Split</title>
     <link>https://thuri10.github.io/blog/ropemporium-split</link>
-    null
+    <description>Combine elements from the ret2win challenge that have been split apart to beat this challenge. Learn how to use another tool whilst crafting a short ROP chain.</description>
     <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>ropemporium</category><category>rop</category><category>pwn</category>
@@ -44,7 +44,7 @@
     <guid>https://thuri10.github.io/blog/ropemporium-write4</guid>
     <title>Return-Oriented Programming - Write4</title>
     <link>https://thuri10.github.io/blog/ropemporium-write4</link>
-    null
+    <description>Find and manipulate gadgets to construct an arbitrary write primitive, then use it to learn where and how to get your data into process memory.</description>
     <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>ropemporium</category><category>rop</category><category>pwn</category>
