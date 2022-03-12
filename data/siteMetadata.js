@@ -6,10 +6,10 @@ const siteMetadata = {
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://thuri10.github.io',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteRepo: '',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
-  //socialBanner: '/static/images/twitter-card.png',
+  socialBanner: '',
   email: 'thuri783@gmail.com',
   github: 'https://github.com/thuri10',
   twitter: 'https://twitter.com/0xhexski',

@@ -1,14 +1,15 @@
 ---
-title: "Return-Oriented Programming - Retcsu"
+title: "Return-Oriented Programming - Ret2csu"
 date: '2021-12-20'
 tags: ['ropemporium','rop', 'pwn']
 draft: false
 summary: "Learn a ROP technique that lets you populate useful calling convention registers like rdi, rsi and rdx even in an environment where gadgets are sparse."
+image: []
 layout: PostLayout
 canonicalUrl:
 ---
 
-## Introduction
+# Introduction
 Challenge description
 
 >We're back in ret2win territory, but this time with no useful gadgets.How will we populate critical registers without them?
@@ -37,7 +38,8 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 The function reference the got table in order to load the actual address of pwnme function from **libret2csu.so** library after the first call. 
-## pwnme Disassembly
+
+## pwnme Function Disassembly
 
  ```nasm
  (gdb) disas pwnme
@@ -260,6 +262,7 @@ For register **r12**, we set the value to a memory region that is executable. In
 Lastly we need to control the **rdi** register with the value **0xdeadbeefdeadbeef**. Because we have full control of rdx and rsi register, we need to look for **pop rdi, ret** gadget.
 
 The pop rdi, ret gadget
+ 
 ```nasm
   0x004006a3                 5f  pop rdi
   0x004006a4                 c3  ret
@@ -288,7 +291,7 @@ dereference_pointer = pwn.p64(0x00600e48)  #bss area which is executable
 stage2_addr = pwn.p64(0x00400680)  #addr of second stage rop chain
 pop_rdi = pwn.p64(0x004006a3)
 
-#ropchains
+# ropchains
 #stage1 ropchain
 '''
             0x0040069a      pop   rbx

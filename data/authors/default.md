@@ -1,13 +1,13 @@
 ---
-name: Martin Muthuri
+name: Thuri
 avatar: /static/images/avatar.png
 occupation: Software Developer
 email: thuri783@gmail.com
-twitter: https://twitter.com/0xhexski
+#twitter: https://twitter.com/0xhexski
 github: https://github.com/thuri10
 ---
 
-Hello, I`m Martin
+## Hello, I`m Martin
 
 Martin is a kenyan-born software developer and Reverser currently doing application security. An economist by professional turned into bit flipper.
 

@@ -65,15 +65,15 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/android</loc>
-  </url>
-
-  <url>
     <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
   <url>
     <loc>https://thuri10.github.io/tags/book</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/android</loc>
   </url>
 
   <url>
@@ -85,11 +85,11 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/feature</loc>
+    <loc>https://thuri10.github.io/tags/ctf</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/ctf</loc>
+    <loc>https://thuri10.github.io/tags/feature</loc>
   </url>
 
   <url>
@@ -165,11 +165,11 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/ropemporium</loc>
+    <loc>https://thuri10.github.io/tags/rop</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/rop</loc>
+    <loc>https://thuri10.github.io/tags/ropemporium</loc>
   </url>
 
   <url>
