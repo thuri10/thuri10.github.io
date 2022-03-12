@@ -22,7 +22,7 @@
 
   <item>
     <guid>https://thuri10.github.io/blog/ropemporium-ret2csu</guid>
-    <title>Return-Oriented Programming - Retcsu</title>
+    <title>Return-Oriented Programming - Ret2csu</title>
     <link>https://thuri10.github.io/blog/ropemporium-ret2csu</link>
     <description>Learn a ROP technique that lets you populate useful calling convention registers like rdi, rsi and rdx even in an environment where gadgets are sparse.</description>
     <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
