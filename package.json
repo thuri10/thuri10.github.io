@@ -8,7 +8,7 @@
     "dev": "next dev",
     "build": "next build && node ./scripts/generate-sitemap  && next export -o docs",
     "serve": "next start",
-    "export":"next export -o docs",
+    "export": "next export -o docs",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky install"
@@ -24,7 +24,7 @@
     "gray-matter": "^4.0.3",
     "image-size": "1.0.1",
     "mdx-bundler": "^8.0.1",
-    "next": "12.0.10",
+    "next": "^12.1.5",
     "next-themes": "^0.0.15",
     "postcss": "^8.4.6",
     "preact": "^10.6.5",
