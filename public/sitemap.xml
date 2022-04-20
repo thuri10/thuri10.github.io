@@ -65,11 +65,15 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/appsec</loc>
+    <loc>https://thuri10.github.io/blog/golangpackets</loc>
   </url>
 
   <url>
     <loc>https://thuri10.github.io/tags/android</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
   <url>
@@ -109,6 +113,10 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/golang</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/guide</loc>
   </url>
 
@@ -133,11 +141,19 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/networking</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/next-js</loc>
   </url>
 
   <url>
     <loc>https://thuri10.github.io/tags/ols</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/packets</loc>
   </url>
 
   <url>
