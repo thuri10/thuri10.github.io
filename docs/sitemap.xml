@@ -37,6 +37,10 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/blog/reversing-c-basic-templates</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/blog/ropemporium-callme</loc>
   </url>
 
@@ -69,6 +73,10 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/android</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
@@ -77,7 +85,7 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/android</loc>
+    <loc>https://thuri10.github.io/tags/c</loc>
   </url>
 
   <url>
@@ -150,6 +158,10 @@
 
   <url>
     <loc>https://thuri10.github.io/tags/ols</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/open-security</loc>
   </url>
 
   <url>
