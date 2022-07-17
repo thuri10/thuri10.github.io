@@ -1,12 +1,11 @@
 ---
-title: 'Reversing MalwareTech 8-bit Bytecode Virtual Machine'
-date: "2021-12-07"
-tags: [
-    "reverse",
-    "malware"
-]
+title: 'Reversing 8-bit Bytecode Virtual Machine'
+date: '2021-12-07'
+tags: ['reverse', 'malware']
 draft: false
-summary: "Can you figure out how the VM works and write your own to decrypt the flag?"
+summary: 'Can you figure out how the VM works and write your own to decrypt the flag?'
+images: '/static/images/mal/vm.jpg'
+
 layout: PostLayout
 ---
 
@@ -15,18 +14,20 @@ layout: PostLayout
 vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM’s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag? A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).
 
 # Introduction
+
 Main function analysis
 
 ![Main Function](/static/images/mal/vmq.png)
 
-From the above image the **HeapAlloc** function allocates a block of memory from a heap. Heapalloc function above,allocates a memory block of size **0x1FB** bytes. The pointer of the allocated memory block is called  allocated_memblock as shown in the image.
+From the above image the **HeapAlloc** function allocates a block of memory from a heap. Heapalloc function above,allocates a memory block of size **0x1FB** bytes. The pointer of the allocated memory block is called allocated_memblock as shown in the image.
 
 The program does a **memcpy** of the content stored in the rambin offset to the new allocated memory block.
 
 ```c
 void *memcpy(void *dest,const void *src, size_t count);
 ```
-Memcpy functions copies data from the source address to destination address of size 0x1fb. The destination address of this program is the allocate_memblock. Examining the bytes in the rambin file provided as part of the challenge and the  content at rambin offset are the same as shown in the image below.
+
+Memcpy functions copies data from the source address to destination address of size 0x1fb. The destination address of this program is the allocate_memblock. Examining the bytes in the rambin file provided as part of the challenge and the content at rambin offset are the same as shown in the image below.
 
 ![Rambin](/static/images/mal/rambin.png)
 ![IDA HEX](/static/images/mal/ida_hex.png)
@@ -48,7 +49,7 @@ int FUN_004022e0(void)
   uint uVar2;
   byte bVar3;
   byte counter;
-  
+
   counter = 0;
   do {
                     /* 0 */
@@ -111,8 +112,8 @@ int FUN_00402270(int value1,int value2,int param_3)
 
 The decompilation output of ghidra is not optimal, therefore decompiled code contains some cast which can be fixed by setting the correct data types in the functional signatures of the function.Because this is an easy VM, we can implement the above code in a python3 script in order to decrypt the contents of **ram.bin** file.
 
-
 ## Solution
+
 Fully implemented solution code is below.
 
 ```python
@@ -121,7 +122,7 @@ Fully implemented solution code is below.
 def fun_00402270(value1, value2, value3):
     global dat_420
     if value1 == 1:
-        membytes[value2] = value3 
+        membytes[value2] = value3
     elif value1 == 2:
         dat_420 = membytes[value2]
     else:
@@ -136,7 +137,7 @@ def fun_00402270(value1, value2, value3):
 if __name__ =="__main__":
     global membytes
     membytes = []
-    
+
     #open the encypted file and read bytes
     with open('ram.bin','rb') as rambin:
         membytes= list(rambin.read())
@@ -157,7 +158,7 @@ if __name__ =="__main__":
 Running the above script in the terminal gets us our flag
 
 ```bash
-vx@archie:vm$ python3 x.py 
+vx@archie:vm$ python3 x.py
 ['F', 'L', 'A', 'G', '{', 'V', 'M', 'S', '-', 'A', 'R', 'E', '-', 'F', 'O', 'R', '-', 'M', 'A', 'L', 'W', 'A', 'R', 'E', '}', '\x00']
 ```
 
@@ -168,5 +169,3 @@ After a successful decryption of the rambin contents, the `sub_4022E0` function 
 Therefore the main function calculates the MD5 hash of the flag and outputs to the message dialogbox using **MessageBoxA** function.
 
 The correct flag for the vm challenge is `FLAG{VMS-ARE-FOR-MALWARE}`
-
-

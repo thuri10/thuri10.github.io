@@ -12,9 +12,9 @@
       
   <item>
     <guid>https://thuri10.github.io/blog/golangpackets</guid>
-    <title>Analyzing Malware packets using gopackets Library</title>
+    <title>Analyzing Malware packets using gopackets</title>
     <link>https://thuri10.github.io/blog/golangpackets</link>
-    <description>Gopacket is a library developed by google that provides capabilities for decoding packets in Go language. It enables one to manually decode malware traffic packets easily.</description>
+    <description>Gopacket is a library developed by google that provides capabilities for decoding packets in Go language. Enables decoding of malware traffic packets easily.</description>
     <pubDate>Wed, 20 Apr 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>golang</category><category>packets</category><category>networking</category>
@@ -24,7 +24,7 @@
     <guid>https://thuri10.github.io/blog/redlinerstealer</guid>
     <title>RedLineStealer Information Stealer Analysis</title>
     <link>https://thuri10.github.io/blog/redlinerstealer</link>
-    <description>Redline malware is an Information Stealer written in c# , targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens...</description>
+    <description>Redline malware is an Information Stealer written in c# , targeting windows victims. It is used for gathering victims information ranging from cookies, credentials, Discord tokens</description>
     <pubDate>Mon, 07 Feb 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>malware</category><category>RedlineStealer</category>
@@ -34,7 +34,7 @@
     <guid>https://thuri10.github.io/blog/remcosrat</guid>
     <title>RemcosRat infection chain from excel with Macros</title>
     <link>https://thuri10.github.io/blog/remcosrat</link>
-    <description>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions.</description>
+    <description>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files.</description>
     <pubDate>Tue, 25 Jan 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>Remcos</category><category>rat</category><category>malware</category>
@@ -102,7 +102,7 @@
 
   <item>
     <guid>https://thuri10.github.io/blog/virtual-machine</guid>
-    <title>Reversing MalwareTech 8-bit Bytecode Virtual Machine</title>
+    <title>Reversing 8-bit Bytecode Virtual Machine</title>
     <link>https://thuri10.github.io/blog/virtual-machine</link>
     <description>Can you figure out how the VM works and write your own to decrypt the flag?</description>
     <pubDate>Tue, 07 Dec 2021 00:00:00 GMT</pubDate>

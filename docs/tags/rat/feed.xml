@@ -14,7 +14,7 @@
     <guid>https://thuri10.github.io/blog/remcosrat</guid>
     <title>RemcosRat infection chain from excel with Macros</title>
     <link>https://thuri10.github.io/blog/remcosrat</link>
-    <description>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions.</description>
+    <description>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files.</description>
     <pubDate>Tue, 25 Jan 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>Remcos</category><category>rat</category><category>malware</category>

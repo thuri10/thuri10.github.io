@@ -1,13 +1,14 @@
 ---
-title: "RedLineStealer Information Stealer Analysis"
+title: 'RedLineStealer Information Stealer Analysis'
 date: '2022-02-07'
 tags: ['malware', 'RedlineStealer']
 draft: false
-summary: Redline malware is an Information Stealer written in c# , targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens...
-images: []
+summary: Redline malware is an Information Stealer written in c# , targeting windows victims. It is used for gathering victims information ranging from cookies, credentials, Discord tokens
+images: '/static/images/redline/coverpage.png'
 layout: PostLayout
 canonicalUrl:
 ---
+
 # What is RedLine Malware?
 
 Redline malware is an Information Stealer written in c# , targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens, OS information, Languages, VPN profiles, Installed Programs and Network configurations.
@@ -36,7 +37,7 @@ This method is we extract payload from the encrypted string arrays `s` as shown 
 
 ![](/static/images/redline/stringarray.png)
 
-From the above image we first de-obfuscate the malware by replacing the strings with the target strings as shown in the program. After replacing all the  strings,we write a small python program to convert the base64 encoded string to PE binary.
+From the above image we first de-obfuscate the malware by replacing the strings with the target strings as shown in the program. After replacing all the strings,we write a small python program to convert the base64 encoded string to PE binary.
 
 The python script to decode the base64 encoded string to binary.
 
@@ -57,11 +58,11 @@ The second method `Dynamic` is more powerful compared to the manual method.This 
 
 ![](/static/images/redline/breakpoint.png)
 
-On the dnspy debugger put a breakpoint on line 22, Run the program  until the execution hits the breakpoint. we are passing our arguments stored in object array to the member we are invoking.
+On the dnspy debugger put a breakpoint on line 22, Run the program until the execution hits the breakpoint. we are passing our arguments stored in object array to the member we are invoking.
 
 ![](/static/images/redline/righclick_array.png)
 
-By examining the values in image above,we can examine the array we passing to the object method. Looking at the bytes data of the above array, the first two bytes are magic number of PE file `4D5A` or ascii `MZ`. From the  first two bytes we can make an assumption the array buffer is our second stage binary. Right click the buffer memory to save the file.
+By examining the values in image above,we can examine the array we passing to the object method. Looking at the bytes data of the above array, the first two bytes are magic number of PE file `4D5A` or ascii `MZ`. From the first two bytes we can make an assumption the array buffer is our second stage binary. Right click the buffer memory to save the file.
 
 ## Stage2 - Payload Analysis
 
@@ -102,7 +103,7 @@ The python code used for decrypting the code is,
 ```python
 # -*- coding: utf-8 -*-
 import base64
-import pwn 
+import pwn
 ip_addr =b"AiE1CyQDBVA/JR4OPwIKGSoZGkU6NyVa"
 key =b"Outshines"
 
@@ -115,11 +116,11 @@ print(result)
 Running above code we get C2 server address
 
 ```bash
- $ python3 base.py 
+ $ python3 base.py
 b'101.99.93.70:54437'
 ```
 
-### Strings  Conciliation methods
+### Strings Conciliation methods
 
 The malware employs strings concilation methods to slow down an analyst. It adds some junk strings to the target strings which is replaced during the runtime of the malware with an empty string.
 
@@ -135,22 +136,24 @@ The above tactic is implemented allover the malware functions.
 The Malware harvest a lot of Victims data and sends back to the configured c2 server. The malware is simple but effective in collecting a lot of user information. The information collected by malware includes cookies, user tokens, system configurations, graphic cards, processor count, Network information, application installed, credit wallet information and many more.
 
 Below is explanation of the capabilities of the malware.
+
 ### Browser
 
 The malware is capable of stealing the user`s credentials and cookies of from browser session.
 
 ![](/static/images/redline/browsers.png)
 
-The malware is also capable of enumerating chrome and  Opera Mini if installed on the Victim`s machine. It also gets the version of the installed browser as shown in the image below.
+The malware is also capable of enumerating chrome and Opera Mini if installed on the Victim`s machine. It also gets the version of the installed browser as shown in the image below.
 ![](/static/images/redline/chrome_scan.png)
 
 ### FileZilla
 
 Filezilla is a professional software that makes transfer of files from one computer to another easier via FTP, SFTP, FTPs protocols and other cloud services such as Amazon S3.
 ![](/static/images/redline/filezillacredentials.png)
-The malware scans for the saved credentials used by Victim in transferring files to other machines. The malware collects ` host, Port, User, Pass ` of the machines
+The malware scans for the saved credentials used by Victim in transferring files to other machines. The malware collects `host, Port, User, Pass` of the machines
 
 ### Programs Enumeration
+
 Malware is also capable of collecting all installed applications on the machine using `ListofPrograms` function as shown in the below. After enumerating all the installed applications, the malware sends data back to the C2 server.
 
 ![](/static/images/redline/program_exfil.png)
@@ -160,6 +163,7 @@ The malware enumerates installed application through use of registry. Querying o
 ![](/static/images/redline/programenumeration_registry.png)
 
 ### VPN information Gathering
+
 The malware scans for Victim`s configuration files and profiles of various VPNs installed on the device. The malware scans File configs NordVPN, OpenVpn configs and ProtonVPN profiles.
 
 ![](/static/images/redline/vpns.png)
@@ -169,7 +173,6 @@ The malware scans for Victim`s configuration files and profiles of various VPNs 
 For the exfiltration of the data, the malware creates a folder in `APPdata` folder called `Yandex\YAddon`. The data collected is uploaded in parts the c2 server.
 
 ![](/static/images/redline/exfil_folder.png)
-
 
 ## References
 

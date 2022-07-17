@@ -1,7 +1,7 @@
 // components/Image.js
 import NextImage from "next/image";
 
-const customLoader = ({ src }) => {
+const customLoader = ({ ...src }) => {
   return src
 }
 
