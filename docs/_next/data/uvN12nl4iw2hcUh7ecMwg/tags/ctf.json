@@ -1,1 +1,0 @@
-{"pageProps":{"posts":[{"title":"Android Application Security Series- Part 1","date":"2021-10-20T00:00:00.000Z","tags":["android","ctf","Appsec"],"images":"/static/images/time-machine.jpg","draft":false,"layout":"PostLayout","summary":"Intents, Exported Activity, Resources and Weak Cryptographic Algorithms","slug":"android-security-part1"}],"tag":"ctf"},"__N_SSG":true}
