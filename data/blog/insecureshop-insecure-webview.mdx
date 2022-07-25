@@ -1,0 +1,55 @@
+---
+title: Insecureshop - Insecure Webview
+date: '2022-07-23'
+tags: ['android', 'appsec', 'insecureshop']
+draft: false
+summary: Insecure Webview Properties Enabled
+images: '/static/images/insecureshop/webview1.jpg'
+layout: PostLayout
+canonicalUrl:
+---
+
+# Insecure Webview Properties Enabled
+
+> The activity `com.insecureshop.WebViewActivity`, `com.insecureshop.WebView2Activity` and `com.insecureshop.PrivateActivity` have the following insecure WebView properties enabled
+
+## What is webview?
+
+Webview is a view that displays web pages inside you application. This enables extension of the application functionality by loading the HTML content.
+
+### Views analysis
+
+The code snippet below applies to all the WebSettings of all the webviews.
+
+```java
+    WebView webview = (WebView) findViewById(R.id.webview);
+    Intrinsics.checkExpressionValueIsNotNull(webview, "webview");
+    WebSettings settings = webview.getSettings();
+    Intrinsics.checkExpressionValueIsNotNull(settings, "webview.settings");
+    settings.setJavaScriptEnabled(true);
+    WebSettings settings2 = webview.getSettings();
+    Intrinsics.checkExpressionValueIsNotNull(settings2, "webview.settings");
+    settings2.setLoadWithOverviewMode(true);
+    WebSettings settings3 = webview.getSettings();
+    Intrinsics.checkExpressionValueIsNotNull(settings3, "webview.settings");
+    settings3.setUseWideViewPort(true);
+    WebSettings settings4 = webview.getSettings();
+    Intrinsics.checkExpressionValueIsNotNull(settings4, "webview.settings");
+    settings4.setAllowUniversalAccessFromFileURLs(true);
+    WebSettings settings5 = webview.getSettings();
+    Intrinsics.checkExpressionValueIsNotNull(settings5, "webview.settings");
+    settings5.setUserAgentString(this.USER_AGENT);
+    webview.setWebViewClient(new CustomWebViewClient());
+```
+
+Looking at the above code, various dangerous web settings are enabled.
+
+1. `setJavaScriptEnabled` - This enables an attacker to execute arbitrary code within this webview to perform malicious actions.
+
+2. `setAllowUniversalAccessFromFileURLs` - This enables an attacker to load arbitrary URL into a webview.Therefore an attacker can load the URL into a webview to steal the user cookies or access the application files.
+
+To prevent these vulnerabilities, or reduce the impact do validation of the URL loaded and javascript that is to be executed.
+
+## References
+
+1. https://pentestlab.blog/2017/02/12/android-webview-vulnerabilities/

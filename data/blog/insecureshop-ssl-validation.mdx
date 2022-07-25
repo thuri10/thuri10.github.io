@@ -1,0 +1,42 @@
+---
+title: Insecureshop - SSL validation
+date: '2022-07-23'
+tags: ['android', 'appsec', 'insecureshop']
+draft: true
+summary: Lack of SSL Certificate Validation
+images: '/static/images/insecureshop/errors.jpg'
+layout: PostLayout
+canonicalUrl:
+---
+
+# Ssl Certificate Validation not sufficient
+
+> The unsafe implementation of OnReceived SSL Error can be used to eavesdrop all the traffic loaded in webview.
+
+```java
+public final class CustomWebViewClient extends WebViewClient {
+    @Override // android.webkit.WebViewClient
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+        if (handler != null) {
+            handler.proceed();
+        }
+    }
+}
+```
+
+On web view activity 1 we are using a custom web view in the seettings on the oncreate method
+
+```java
+Intrinsics.checkExpressionValueIsNotNull(settings3, "webview.settings");
+settings3.setUseWideViewPort(true);
+WebSettings settings4 = webview.getSettings();
+Intrinsics.checkExpressionValueIsNotNull(settings4, "webview.settings");
+settings4.setAllowUniversalAccessFromFileURLs(true);
+WebSettings settings5 = webview.getSettings();
+Intrinsics.checkExpressionValueIsNotNull(settings5, "webview.settings");
+settings5.setUserAgentString(this.USER_AGENT);
+webview.setWebViewClient(new CustomWebViewClient());  //custom webview
+Intent intent = getIntent();
+Intrinsics.checkExpressionValueIsNotNull(intent, "intent");
+Uri uri = intent.getData();
+```

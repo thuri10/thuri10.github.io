@@ -1,0 +1,26 @@
+---
+title: Insecureshop - Insecure Logging
+date: '2022-07-23'
+tags: ['android', 'appsec', 'insecureshop']
+draft: true
+summary: Insecure Logging for Credentials
+images: '/static/images/insecureshop/logging.jpg'
+layout: PostLayout
+canonicalUrl:
+---
+
+# Insecure Logging for Sensitive data
+
+The application implementation of debug logging in the `login` activity leads to leakage of the user password in the log files.
+
+Example below is implementation of the insecureshop `login` activity .
+
+```java
+    String password = String.valueOf(textInputEditText2.getText());
+    Log.d("userName", username);
+    Log.d("password", password);
+```
+
+NB: "Remove all the debugging features before shipping application to production or release version".
+
+Opening the `adb` logs anf grepping for `password`. you will be able to get password used to authenticate user.

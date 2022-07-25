@@ -7,9 +7,29 @@
       <language>en-us</language>
       <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
       <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
-      <lastBuildDate>Mon, 25 Oct 2021 00:00:00 GMT</lastBuildDate>
+      <lastBuildDate>Sat, 23 Jul 2022 00:00:00 GMT</lastBuildDate>
       <atom:link href="https://thuri10.github.io/tags/android/feed.xml" rel="self" type="application/rss+xml"/>
       
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</guid>
+    <title>Insecureshop - Hardcoded Credentials</title>
+    <link>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</link>
+    <description>Identify username and password that is hardcoded in the app</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>Android</category><category>Insecureshop</category><category>mobile</category><category>appsec</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-insecure-webview</guid>
+    <title>Insecureshop - Insecure Webview</title>
+    <link>https://thuri10.github.io/blog/insecureshop-insecure-webview</link>
+    <description>Insecure Webview Properties Enabled</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>appsec</category><category>insecureshop</category>
+  </item>
+
   <item>
     <guid>https://thuri10.github.io/blog/android-security-part2</guid>
     <title>Android Application Security Series - Part2</title>
