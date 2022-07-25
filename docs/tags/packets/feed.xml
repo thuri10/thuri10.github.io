@@ -14,7 +14,7 @@
     <guid>https://thuri10.github.io/blog/golangpackets</guid>
     <title>Analyzing Malware packets using gopackets</title>
     <link>https://thuri10.github.io/blog/golangpackets</link>
-    <description>Gopacket is a library developed by google that provides capabilities for decoding packets in Go language. Enables decoding of malware traffic packets easily.</description>
+    <description>Gopacket is a library developed by google that provides capabilities for decoding packets in Go.</description>
     <pubDate>Wed, 20 Apr 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>golang</category><category>packets</category><category>networking</category>
