@@ -29,10 +29,6 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/blog/insecureshop-19-insecure-logging</loc>
-  </url>
-
-  <url>
     <loc>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</loc>
   </url>
 
@@ -93,11 +89,11 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/android</loc>
+    <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/appsec</loc>
+    <loc>https://thuri10.github.io/tags/android</loc>
   </url>
 
   <url>

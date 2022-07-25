@@ -11,16 +11,6 @@
       <atom:link href="https://thuri10.github.io/tags/appsec/feed.xml" rel="self" type="application/rss+xml"/>
       
   <item>
-    <guid>https://thuri10.github.io/blog/insecureshop-19-insecure-logging</guid>
-    <title>Insecureshop - Insecure Logging</title>
-    <link>https://thuri10.github.io/blog/insecureshop-19-insecure-logging</link>
-    <description>Insecure Logging for Credentials</description>
-    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
-    <author>thuri783@gmail.com (Thuri10)</author>
-    <category>android</category><category>appsec</category><category>insecureshop</category>
-  </item>
-
-  <item>
     <guid>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</guid>
     <title>Insecureshop - Hardcoded Credentials</title>
     <link>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</link>
