@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Solar Bits</title>
+      <link>https://thuri10.github.io/blog</link>
+      <description>Bits Flipping Adventures</description>
+      <language>en-us</language>
+      <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
+      <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
+      <lastBuildDate>Tue, 25 Jan 2022 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://thuri10.github.io/tags/remcos/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://thuri10.github.io/blog/remcosrat</guid>
+    <title>RemcosRat infection chain from excel with Macros</title>
+    <link>https://thuri10.github.io/blog/remcosrat</link>
+    <description>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files.</description>
+    <pubDate>Tue, 25 Jan 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>Remcos</category><category>rat</category><category>malware</category>
+  </item>
+
+    </channel>
+  </rss>
