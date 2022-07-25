@@ -31,6 +31,26 @@
   </item>
 
   <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-insufficient-url-validation</guid>
+    <title>InsecureShop - Insufficient URL Validation</title>
+    <link>https://thuri10.github.io/blog/insecureshop-insufficient-url-validation</link>
+    <description>Possible to load any arbitrary URL in webview via Deeplink</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>appsec</category><category>insecureshop</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-weak-host-validation-check</guid>
+    <title>Insecureshop - Weak Host Validation Check</title>
+    <link>https://thuri10.github.io/blog/insecureshop-weak-host-validation-check</link>
+    <description>Weak Host Validation Check</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>appsec</category><category>insecureshop</category>
+  </item>
+
+  <item>
     <guid>https://thuri10.github.io/blog/reversing-c-basic-templates</guid>
     <title>Reversing c++ - Basic Templates</title>
     <link>https://thuri10.github.io/blog/reversing-c-basic-templates</link>
@@ -44,7 +64,7 @@
     <guid>https://thuri10.github.io/blog/golangpackets</guid>
     <title>Analyzing Malware packets using gopackets</title>
     <link>https://thuri10.github.io/blog/golangpackets</link>
-    <description>Gopacket is a library developed by google that provides capabilities for decoding packets in Go.</description>
+    <description>Analyzing malware packets using gopackets</description>
     <pubDate>Wed, 20 Apr 2022 00:00:00 GMT</pubDate>
     <author>thuri783@gmail.com (Thuri10)</author>
     <category>golang</category><category>packets</category><category>networking</category>

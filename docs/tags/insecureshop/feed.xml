@@ -30,5 +30,25 @@
     <category>android</category><category>appsec</category><category>insecureshop</category>
   </item>
 
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-insufficient-url-validation</guid>
+    <title>InsecureShop - Insufficient URL Validation</title>
+    <link>https://thuri10.github.io/blog/insecureshop-insufficient-url-validation</link>
+    <description>Possible to load any arbitrary URL in webview via Deeplink</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>appsec</category><category>insecureshop</category>
+  </item>
+
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-weak-host-validation-check</guid>
+    <title>Insecureshop - Weak Host Validation Check</title>
+    <link>https://thuri10.github.io/blog/insecureshop-weak-host-validation-check</link>
+    <description>Weak Host Validation Check</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>android</category><category>appsec</category><category>insecureshop</category>
+  </item>
+
     </channel>
   </rss>

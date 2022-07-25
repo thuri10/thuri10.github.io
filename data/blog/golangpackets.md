@@ -3,8 +3,8 @@ title: Analyzing Malware packets using gopackets
 date: '2022-04-20'
 tags: ['golang', 'packets', 'networking']
 draft: false
-summary: Gopacket is a library developed by google that provides capabilities for decoding packets in Go.
-images: '/static/images/packets/packet.png'
+summary: Analyzing malware packets using gopackets
+images: '/static/images/packets/packet.jpg'
 layout: PostLayout
 canonicalUrl:
 ---

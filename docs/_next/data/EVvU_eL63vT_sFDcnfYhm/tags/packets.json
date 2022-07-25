@@ -1,0 +1,1 @@
+{"pageProps":{"posts":[{"title":"Analyzing Malware packets using gopackets","date":"2022-04-20T00:00:00.000Z","tags":["golang","packets","networking"],"draft":false,"summary":"Analyzing malware packets using gopackets","images":"/static/images/packets/packet.jpg","layout":"PostLayout","canonicalUrl":null,"slug":"golangpackets"}],"tag":"packets"},"__N_SSG":true}
