@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>Solar Bits</title>
+      <link>https://thuri10.github.io/blog</link>
+      <description>Bits Flipping Adventures</description>
+      <language>en-us</language>
+      <managingEditor>thuri783@gmail.com (Thuri10)</managingEditor>
+      <webMaster>thuri783@gmail.com (Thuri10)</webMaster>
+      <lastBuildDate>Sat, 23 Jul 2022 00:00:00 GMT</lastBuildDate>
+      <atom:link href="https://thuri10.github.io/tags/mobile/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</guid>
+    <title>Insecureshop - Hardcoded Credentials</title>
+    <link>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</link>
+    <description>Identify username and password that is hardcoded in the app</description>
+    <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+    <author>thuri783@gmail.com (Thuri10)</author>
+    <category>Android</category><category>Insecureshop</category><category>mobile</category><category>appsec</category>
+  </item>
+
+    </channel>
+  </rss>

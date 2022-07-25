@@ -48,53 +48,39 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
             </svg>
           </div>
         </div>
-        <motion.ul>
-          <div className="grid grid-cols-1 gap-8 pt-10 md:grid-cols-2 xl:grid-cols-3">
-            {!filteredBlogPosts.length && 'No posts found.'}
-            {displayPosts.map((frontMatter) => {
-              const { slug, date, title, summary, tags, images } = frontMatter
-              const firstTwoTags = tags.slice(0, 1)
-
-              return (
-                <div
-                  key={slug}
-                  className="bg-day group relative h-full transform rounded-lg transition duration-500 hover:scale-105"
-                >
-                  <div className="animate-tilt absolute -inset-0.5 rounded-lg bg-gradient-to-r  opacity-0 blur transition duration-1000 group-hover:opacity-20 group-hover:duration-200"></div>
-                  <a className="c-card bg-cardBg relative block h-full overflow-hidden rounded-lg shadow-none">
-                    <div className="group relative max-h-4 overflow-hidden rounded-lg pb-60">
-                      <Link href={`/blog/${slug}`}>
-                        <span>
-                          <img
-                            alt={title}
-                            src={images}
-                            className="absolute inset-0 h-full w-full  object-cover shadow-none "
-                          />
-                        </span>
-                      </Link>
-                    </div>
-                    <div className="h-full py-4 px-2">
-                      <span className="inline-flex w-full items-center justify-between">
-                        <span className="inline-block rounded-full border border-green-700 py-1 px-2 text-xs font-medium">
-                          {firstTwoTags.map((tag) => (
-                            <Tag key={tag} text={tag} />
-                          ))}
-                        </span>
-                        <time dateTime={date}>{formatDate(date)}</time>
-                      </span>
-                      <h2 className="mt-2 mb-2 font-bold md:text-xl">
-                        <Link href={`/blog/${slug}`} className="text-white-100">
+        <ul>
+          {!filteredBlogPosts.length && 'No posts found.'}
+          {displayPosts.map((frontMatter) => {
+            const { slug, date, title, summary, tags } = frontMatter
+            return (
+              <motion.li key={slug} className="py-3 " whileHover={{ scale: 1.02 }}>
+                <article className="space-y-2  p-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
+                  <dl>
+                    <dt className="sr-only">Published on</dt>
+                    <dd className="text-base font-medium leading-6 text-gray-400">
+                      <time dateTime={date}>{formatDate(date)}</time>
+                    </dd>
+                  </dl>
+                  <div className="space-y-3 xl:col-span-3">
+                    <div>
+                      <h3 className="text-2xl font-bold leading-8 tracking-tight">
+                        <Link href={`/blog/${slug}`} className="text-gray-100">
                           {title}
                         </Link>
-                      </h2>
-                      <p className="h-auto text-sm tracking-wider">{summary}</p>
+                      </h3>
+                      <div className="flex flex-wrap">
+                        {tags.map((tag) => (
+                          <Tag key={tag} text={tag} />
+                        ))}
+                      </div>
                     </div>
-                  </a>
-                </div>
-              )
-            })}
-          </div>
-        </motion.ul>
+                    <div className="prose max-w-none text-gray-400">{summary}</div>
+                  </div>
+                </article>
+              </motion.li>
+            )
+          })}
+        </ul>
       </div>
       {pagination && pagination.totalPages > 1 && !searchValue && (
         <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />

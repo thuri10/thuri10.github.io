@@ -29,6 +29,26 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/blog/insecureshop-19-insecure-logging</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/insecureshop-hardcoded-credentials</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/insecureshop-insecure-webview</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/insecureshop-insufficient-url-validation</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/blog/insecureshop-weak-host-validation-check</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/blog/redlinerstealer</loc>
   </url>
 
@@ -73,11 +93,11 @@
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/appsec</loc>
+    <loc>https://thuri10.github.io/tags/android</loc>
   </url>
 
   <url>
-    <loc>https://thuri10.github.io/tags/android</loc>
+    <loc>https://thuri10.github.io/tags/appsec</loc>
   </url>
 
   <url>
@@ -93,7 +113,15 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/client-side</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/code</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/cors</loc>
   </url>
 
   <url>
@@ -137,11 +165,19 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/insecureshop</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/malware</loc>
   </url>
 
   <url>
     <loc>https://thuri10.github.io/tags/math</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/mobile</loc>
   </url>
 
   <url>
@@ -205,6 +241,10 @@
   </url>
 
   <url>
+    <loc>https://thuri10.github.io/tags/static</loc>
+  </url>
+
+  <url>
     <loc>https://thuri10.github.io/tags/strings</loc>
   </url>
 
@@ -214,6 +254,14 @@
 
   <url>
     <loc>https://thuri10.github.io/tags/unpacking</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/vulns</loc>
+  </url>
+
+  <url>
+    <loc>https://thuri10.github.io/tags/websec</loc>
   </url>
 
   <url>
