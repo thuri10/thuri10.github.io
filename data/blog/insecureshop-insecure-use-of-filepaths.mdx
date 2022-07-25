@@ -1,0 +1,30 @@
+---
+title: Insecureshop - 11. Insecure use of FilePaths
+date: '2022-07-23'
+tags: ['android', 'appsec', 'insecureshop']
+draft: true
+summary: Insecure use of FilePaths in FileProvider
+images: '/static/images/insecureshop/filepath.jpg'
+layout: PostLayout
+canonicalUrl:
+---
+
+# Insecure use of FilePaths in FileProvider
+
+> The use of wide file sharing declaration can be used to access root directory via content Provider.
+
+```xml
+<provider android:name="androidx.core.content.FileProvider" android:exported="false" android:authorities="com.insecureshop.file_provider" android:grantUriPermissions="true">
+    <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/provider_paths"/>
+</provider>
+```
+
+the path application grants
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <root-path name="root" path="/"/>
+</paths>
+
+```

@@ -1,0 +1,65 @@
+---
+title: Insecureshop - Weak Host Validation Check
+date: '2022-07-23'
+tags: ['android', 'appsec', 'insecureshop']
+draft: false
+summary: Weak Host Validation Check
+images: '/static/images/insecureshop/validate.png'
+layout: PostLayout
+canonicalUrl:
+---
+
+# Weak Host Validation
+
+> The class `com.insecureshop.WebViewActivity` contains the following code. As per the code, the application registers a path webview and a query parameter url. The application implements a URL validation and only allows URLs that ends with insecureshopapp.com to be loaded in Webview
+
+This vulnerability allows an attacker to load an arbitrary URL to the webview because the validation is not sufficient. Looking at the below code, the application cheks if the `URL` ends with `insecureshop.com`
+
+```java
+else if (StringsKt.equals$default(uri.getPath(), "/webview", false, 2, null)) {
+    Intent intent3 = getIntent();
+    Intrinsics.checkExpressionValueIsNotNull(intent3, "intent");
+    Uri data3 = intent3.getData();
+    if (data3 == null) {
+        Intrinsics.throwNpe();
+    }
+    String queryParameter = data3.getQueryParameter("url");
+    if (queryParameter == null) {
+        Intrinsics.throwNpe();
+    }
+    Intrinsics.checkExpressionValueIsNotNull(queryParameter, "intent.data!!.getQueryParameter(\"url\")!!");
+    if (StringsKt.endsWith$default(queryParameter, "insecureshopapp.com", false, 2, (Object) null)) {
+        Intent intent4 = getIntent();
+        Intrinsics.checkExpressionValueIsNotNull(intent4, "intent");
+        Uri data4 = intent4.getData();
+        if (data4 != null) {
+            data = data4.getQueryParameter("url");
+        }
+    }
+    }
+    if (data == null) {
+        finish();
+    }
+    webview.loadUrl(data);
+    Prefs.INSTANCE.getInstance(this).setData(data);
+    }
+```
+
+Therefore an attacker can register a domain that satisfies given characteristic.
+
+Proof of concept Attack.
+
+```html
+<!DOCTYPE html>
+<html>
+  <body style="text-align: center;">
+    <h1>
+      <a href="insecureshop://com.insecureshop/webview?url=https://androidinsecureshop.com">POC</a>
+    </h1>
+  </body>
+</html>
+```
+
+The above code can be used fo bypassing host validation because does not check complete URL, it only check some part of the URL.
+
+Always validate all the urls loaded to the webviews.
