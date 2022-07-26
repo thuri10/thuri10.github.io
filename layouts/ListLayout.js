@@ -1,14 +1,14 @@
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
-import siteMetadata from '@/data/siteMetadata'
 import { useState } from 'react'
 import Pagination from '@/components/Pagination'
 import formatDate from '@/lib/utils/formatDate'
+import { motion } from 'framer-motion'
 
 export default function ListLayout({ posts, title, initialDisplayPosts = [], pagination }) {
   const [searchValue, setSearchValue] = useState('')
   const filteredBlogPosts = posts.filter((frontMatter) => {
-    const searchContent = frontMatter.title + frontMatter.summary + frontMatter.tags.join(' ') || []
+    const searchContent = frontMatter.title + frontMatter.summary + frontMatter.tags.join(' ')
     return searchContent.toLowerCase().includes(searchValue.toLowerCase())
   })
 
@@ -18,9 +18,9 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
 
   return (
     <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+      <div className="divide-y divide-gray-700">
+        <div className="space-y-2 pb-8 md:space-y-5">
+          <h1 className="tracking-tighttext-gray-100 text-3xl font-extrabold leading-9 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             {title}
           </h1>
           <div className="relative max-w-lg">
@@ -29,10 +29,10 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
               type="text"
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search articles"
-              className="block w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-900 dark:bg-gray-800 dark:text-gray-100"
+              className="block w-full rounded-md border border-gray-900 bg-gray-800 px-4 py-2 text-gray-100 focus:border-primary-500 focus:ring-primary-500"
             />
             <svg
-              className="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-300"
+              className="absolute right-3 top-3 h-5 w-5 text-gray-300"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -47,41 +47,53 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
             </svg>
           </div>
         </div>
-        <ul>
-          {!filteredBlogPosts.length && 'No posts found.'}
-          {displayPosts.map((frontMatter) => {
-            const { slug, date, title, summary, tags } = frontMatter
-            return (
-              <li key={slug} className="py-4">
-                <article className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
-                  <dl>
-                    <dt className="sr-only">Published on</dt>
-                    <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                      <time dateTime={date}>{formatDate(date)}</time>
-                    </dd>
-                  </dl>
-                  <div className="space-y-3 xl:col-span-3">
-                    <div>
-                      <h3 className="text-2xl font-bold leading-8 tracking-tight">
-                        <Link href={`/blog/${slug}`} className="text-gray-900 dark:text-gray-100">
+        <motion.ul>
+          <div className="grid grid-cols-1 gap-8 pt-10 md:grid-cols-2 xl:grid-cols-3">
+            {!filteredBlogPosts.length && 'No posts found.'}
+            {displayPosts.map((frontMatter) => {
+              const { slug, date, title, summary, tags, images } = frontMatter
+              const firstTwoTags = tags.slice(0, 1)
+
+              return (
+                <div
+                  key={slug}
+                  className="bg-day group relative h-full transform rounded-lg transition duration-500 hover:scale-105"
+                >
+                  <div className="animate-tilt absolute -inset-0.5 rounded-lg bg-gradient-to-r  opacity-0 blur transition duration-1000 group-hover:opacity-20 group-hover:duration-200"></div>
+                  <a className="c-card bg-cardBg relative block h-full overflow-hidden rounded-lg shadow-none">
+                    <div className="group relative max-h-4 overflow-hidden rounded-lg pb-60">
+                      <Link href={`/blog/${slug}`}>
+                        <span>
+                          <img
+                            alt={title}
+                            src={images}
+                            className="absolute inset-0 h-full w-full  object-cover shadow-none "
+                          />
+                        </span>
+                      </Link>
+                    </div>
+                    <div className="h-full py-4 px-2">
+                      <span className="inline-flex w-full items-center justify-between">
+                        <span className="inline-block rounded-full border border-green-700 py-1 px-2 text-xs font-medium">
+                          {firstTwoTags.map((tag) => (
+                            <Tag key={tag} text={tag} />
+                          ))}
+                        </span>
+                        <time dateTime={date}>{formatDate(date)}</time>
+                      </span>
+                      <h2 className="mt-2 mb-2 font-bold md:text-xl">
+                        <Link href={`/blog/${slug}`} className="text-white-100">
                           {title}
                         </Link>
-                      </h3>
-                      <div className="flex flex-wrap">
-                        {tags.map((tag) => (
-                          <Tag key={tag} text={tag} />
-                        ))}
-                      </div>
+                      </h2>
+                      <p className="h-auto text-sm tracking-wider">{summary}</p>
                     </div>
-                    <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                      {summary}
-                    </div>
-                  </div>
-                </article>
-              </li>
-            )
-          })}
-        </ul>
+                  </a>
+                </div>
+              )
+            })}
+          </div>
+        </motion.ul>
       </div>
       {pagination && pagination.totalPages > 1 && !searchValue && (
         <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
