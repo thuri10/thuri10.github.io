@@ -1,6 +1,6 @@
 ---
 title: Reversing C++ - Basic Templates
-date: 2022-08-17 23:21:04
+date: 2022-07-16 23:21:04
 tags: [reverse, opensecurity, c++]
 ---
 

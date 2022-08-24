@@ -1,6 +1,6 @@
 ---
 title: RemcosRAT - Excel macro analysis
-date: 2022-08-17 23:20:40
+date: 2022-01-25 23:20:40
 tags:
   - Malware
   - reverse

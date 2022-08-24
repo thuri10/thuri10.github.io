@@ -1,6 +1,6 @@
 ---
 title: Reversing simple 8-Bit VM
-date: 2022-08-17 23:19:12
+date: 2021-12-7 23:19:12
 tags: [reverse, vm]
 ---
 

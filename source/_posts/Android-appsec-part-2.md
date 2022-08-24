@@ -1,6 +1,6 @@
 ---
 title: Android appsec series -Part 2
-date: 2022-08-17 23:19:00
+date: 2021-11-25 23:19:00
 tags:
   - android
   - appsec

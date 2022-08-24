@@ -1,6 +1,6 @@
 ---
 title: RopEmporium - Split
-date: 2022-08-17 23:20:12
+date: 2021-12-17 23:20:12
 tags: [ropemporium, rop]
 ---
 

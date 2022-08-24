@@ -1,6 +1,6 @@
 ---
 title: RopEmporium - Write4
-date: 2022-08-17 23:20:05
+date: 2021-12-17 23:20:05
 tags: [ropemporium, rop]
 ---
 
