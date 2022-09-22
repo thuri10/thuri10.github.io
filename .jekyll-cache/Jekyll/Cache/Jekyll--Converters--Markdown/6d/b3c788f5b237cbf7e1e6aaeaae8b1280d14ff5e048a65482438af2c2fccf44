@@ -1,0 +1,92 @@
+I"U<blockquote>
+  <p>In this exercise you will need to reverse engineer a binary, research different functions, and understand if the functions are part of a template or not.</p>
+</blockquote>
+
+<p><strong>NB: Decompilers are not permitted, please use only static reverse engineering during this lab.</strong></p>
+
+<p>The lab can be downloaded at the following link <a href="https://gitlab.com/opensecuritytraining/re3011_cpp_re_binaries/-/blob/main/CalcNum%C2%A0">CalcNum lab</a></p>
+
+<h2 id="what-is-a-c-template">What is a C++ template?</h2>
+
+<p>A Template is a c++ entity that accepts different data types but performs the same functionality. The data types are passed as template parameters to template function so that we don’t need to write same code functionality for different data types.</p>
+
+<h2 id="lab-analysis">Lab Analysis</h2>
+
+<p>For solving the questions, I used an approach of first reading questions and then reverse engineering those functions only. This ensured I only reversed functions important to our analysis.</p>
+
+<h2 id="question-1">Question 1</h2>
+
+<blockquote>
+  <p>Which of the the following functions are part of the same template?</p>
+</blockquote>
+
+<p>For reverse engineering we will focus on the following functions, <code class="language-plaintext highlighter-rouge">0x1229</code>, <code class="language-plaintext highlighter-rouge">0x1620</code>, <code class="language-plaintext highlighter-rouge">0x1342</code>, <code class="language-plaintext highlighter-rouge">0x15fa</code>, and <code class="language-plaintext highlighter-rouge">0x1245</code> in order to answer the first and subsequent questions.</p>
+
+<p>The first step to manually reverse functions and understand what each function is doing.
+For analysis I will be using IDA Pro freeware.</p>
+
+<h3 id="0x1229-function-analysis"><code class="language-plaintext highlighter-rouge">0x1229</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/sub_func1.png" alt="Subtraction" /></p>
+
+<p>Looking at the function as shown in image above, it accepts two parameters of type <code class="language-plaintext highlighter-rouge">int</code> and does Subtraction (assembly instruction<code class="language-plaintext highlighter-rouge">sub</code>) of local variables <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> ant then returns the result. The return value is of type <code class="language-plaintext highlighter-rouge">int</code>, therefore we can set type of our function as shown in the image above.</p>
+
+<h3 id="0x1620-function-analysis"><code class="language-plaintext highlighter-rouge">0x1620</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/max_func.png" alt="Max value" /></p>
+
+<p>From the analysis of this function, it accepts two parameters of type <code class="language-plaintext highlighter-rouge">long</code> and finds the maximum value between the two. The two parameters are compared through use of <code class="language-plaintext highlighter-rouge">jge</code> assembly instruction as shown above.</p>
+
+<h3 id="0x1342-function-analysis"><code class="language-plaintext highlighter-rouge">0x1342</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/func3.png" alt="Max value" /></p>
+
+<p>The function accepts two parameters of type <code class="language-plaintext highlighter-rouge">long</code> and checks if one parameter is equal to <code class="language-plaintext highlighter-rouge">zero</code>. If the value is not equal to <code class="language-plaintext highlighter-rouge">zero</code>, it does math and bit operations.</p>
+
+<h3 id="0x15fa-function-analysis"><code class="language-plaintext highlighter-rouge">0x15fa</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/max_value2.png" alt="Max value" /></p>
+
+<p>From the analysis of this function, function accepts two parameters of type <code class="language-plaintext highlighter-rouge">int</code> and finds the maximum value between the two. The two parameters are compared through use of <code class="language-plaintext highlighter-rouge">jge</code> assembly instruction. Therefore the maximum value is returned by the function.</p>
+
+<h3 id="0x1245-function-analysis"><code class="language-plaintext highlighter-rouge">0x1245</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/func4.png" alt="0x1245 analysis" /></p>
+
+<p>This function takes four parameters of type <code class="language-plaintext highlighter-rouge">int</code> and does further bits operations as shown in the disassembly code.</p>
+
+<p>From the above functions analysis, only two functions qualify as templates. <code class="language-plaintext highlighter-rouge">0x1620</code> and <code class="language-plaintext highlighter-rouge">0x15fa</code> are templates functions because they perform the same functionality( <code class="language-plaintext highlighter-rouge">Finding the Maximum value</code>) and number of parameters passed to each function are the same.</p>
+
+<h2 id="question-2">Question 2</h2>
+
+<blockquote>
+  <p>Review the function at address <code class="language-plaintext highlighter-rouge">0x12C5</code> and other functions in the binary. Is this function a template function?</p>
+</blockquote>
+
+<h3 id="0x12c5-function-analysis"><code class="language-plaintext highlighter-rouge">0x12C5</code> Function Analysis</h3>
+
+<p><img src="/assets/images/ost2/func5.png" alt="0x12c5 analysis" /></p>
+
+<p>This function does the same functionality as the function <code class="language-plaintext highlighter-rouge">0x1245</code>, but the difference is the unequal number of parameters passed to each function.
+Therefore, it does <code class="language-plaintext highlighter-rouge">not</code> qualify as a template function.</p>
+
+<h2 id="question-3">Question 3</h2>
+
+<blockquote>
+  <p>Review the function at address <code class="language-plaintext highlighter-rouge">0x15cc</code> and the function at address <code class="language-plaintext highlighter-rouge">0x15fa</code>. Are these functions part of the same template function?</p>
+</blockquote>
+
+<h3 id="0x15cc-function-analysis"><code class="language-plaintext highlighter-rouge">0x15cc</code> Function Analysis</h3>
+
+<p>This function is used for calculating minimum value of the two parameters passed to function.</p>
+
+<p><img src="/assets/images/ost2/min_value.png" alt="0x15cc analysis" /></p>
+
+<p>The two functions are <code class="language-plaintext highlighter-rouge">not</code> of the same template function. This is because one is used for calculating the maximum value and other one for minimum value. The difference between the two is <code class="language-plaintext highlighter-rouge">jge</code> and <code class="language-plaintext highlighter-rouge">jle</code> conditional assembly instructions as shown in IDA disassembly above.</p>
+
+<h2 id="references">References</h2>
+
+<ol>
+  <li>C++ Templates Basics - https://m.cplusplus.com/doc/oldtutorial/templates/</li>
+</ol>
+:ET

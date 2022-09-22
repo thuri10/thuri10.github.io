@@ -1,0 +1,3 @@
+I"‚<p>Weâ€™re back in ret2win territory, but this time with no useful gadgets.How will we populate critical registers without them?
+The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge. The binary can be downloaded from authors website <a href="https://ropemporium.com">Ropemporium</a></p>
+:ET

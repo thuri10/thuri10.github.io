@@ -1,0 +1,2 @@
+I"<p><code class="language-plaintext highlighter-rouge">vm1.exe</code> implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM`s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag?. A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).</p>
+:ET
