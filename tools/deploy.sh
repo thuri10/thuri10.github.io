@@ -10,7 +10,7 @@ set -eu
 
 PAGES_BRANCH="gh-pages"
 
-SITE_DIR="_site"
+SITE_DIR="/"
 
 _opt_dry_run=false
 
