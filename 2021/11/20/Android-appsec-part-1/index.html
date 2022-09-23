@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"thuri10.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="This is a four part beginner series of Android application security using Vulnerable android application. The application used in the first three part series is a InjuredAndroid by @B3nac.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android application security part1">
+<meta property="og:url" content="http://thuri10.github.io/2021/11/20/Android-appsec-part-1/index.html">
+<meta property="og:site_name" content="LaByte">
+<meta property="og:description" content="This is a four part beginner series of Android application security using Vulnerable android application. The application used in the first three part series is a InjuredAndroid by @B3nac.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://thuri10.github.io/images/android_injured.png">
+<meta property="og:image" content="http://thuri10.github.io/images/android/solved.png">
+<meta property="og:image" content="http://thuri10.github.io/images/android/flag2.png">
+<meta property="og:image" content="http://thuri10.github.io/images/android/flag5.png">
+<meta property="article:published_time" content="2021-11-20T20:18:56.000Z">
+<meta property="article:modified_time" content="2022-09-23T10:13:33.243Z">
+<meta property="article:author" content="Thuri">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="appsec">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://thuri10.github.io/images/android_injured.png">
+
+
+<link rel="canonical" href="http://thuri10.github.io/2021/11/20/Android-appsec-part-1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://thuri10.github.io/2021/11/20/Android-appsec-part-1/","path":"2021/11/20/Android-appsec-part-1/","title":"Android application security part1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Android application security part1 | LaByte</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LaByte</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Messing Bits</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Environment-setup"><span class="nav-text">Environment setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG-ONE-LOGIN"><span class="nav-text">FLAG ONE - LOGIN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG-TWO-EXPORTED-ACTIVITY"><span class="nav-text">FLAG TWO - EXPORTED ACTIVITY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG-THREE-RESOURCES"><span class="nav-text">FLAG THREE - RESOURCES</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG-FOUR-LOGIN2"><span class="nav-text">FLAG FOUR - LOGIN2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAG-FIVE-EXPORTED-BROADCAST-RECEIVERS"><span class="nav-text">FLAG FIVE - EXPORTED BROADCAST RECEIVERS</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Thuri</p>
+  <div class="site-description" itemprop="description">Messy Bits</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/thuri10" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;thuri10" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:thuri783@gmail.com" title="E-Mail → mailto:thuri783@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/0xhexski" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;0xhexski" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://thuri10.github.io/2021/11/20/Android-appsec-part-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Thuri">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LaByte">
+      <meta itemprop="description" content="Messy Bits">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Android application security part1 | LaByte">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android application security part1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: November 20 2021 23:18:56" itemprop="dateCreated datePublished" datetime="2021-11-20T23:18:56+03:00">November 20 2021</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>This is a four part beginner series of Android application security using Vulnerable android application. The application used in the first three part series is a <code>InjuredAndroid</code> by <a target="_blank" rel="noopener" href="https://twitter.com/B3nac">@B3nac</a>.</p>
+ <span id="more"></span>
+
+<p>The application covers different security concepts such as hardcoded secrets, weak cryptographic algorithms implementations, misconfiguration, webview vulnerabilities etc. The application can be downloaded from either provided links <a target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=b3nac.injuredandroid">playstore</a> or <a target="_blank" rel="noopener" href="https://github.com/B3nac/InjuredAndroid">github</a>.</p>
+<p>For solving the challenges you need to have an android phone or an emulator.</p>
+<h2 id="Environment-setup"><a href="#Environment-setup" class="headerlink" title="Environment setup"></a>Environment setup</h2><p>For application installation to the emulator, use Android debug bridge(adb). <code>adb</code> is a set of command line tools which are installed as part of android studio that enables communication between emulator&#x2F;real android phone with the connected computer.</p>
+<p>For Installation, run the command below in a terminal.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">adb <span class="token function">install</span> InjuredAndroid-1.0.12-release.apk<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>After a successful installation of the application, the main Activity&#x2F;page looks like the image below.</p>
+<p><img data-src="/images/android_injured.png" alt="Injured Android"></p>
+<p>For static analysis of the application, List of the following tools is used throughout the series.</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/skylot/jadx">JADX</a></li>
+<li>Text Editor (visual studio)</li>
+<li>Android Studio</li>
+</ol>
+<p><code>JADX</code> is a bundle of command line and GUI tools that enables one to produce java source code from android Dex and APK files. It aids in decompiling the android application to java code which is more human readable &#x2F;friendly.</p>
+<blockquote>
+<p>NB: For reverse engineering&#x2F; code auditing of every application, you need to have a clear set of goal or objective of what you want to achieve. This helps narrow down the analysis and avoid many rabbit holes.</p>
+</blockquote>
+<h2 id="FLAG-ONE-LOGIN"><a href="#FLAG-ONE-LOGIN" class="headerlink" title="FLAG ONE - LOGIN"></a>FLAG ONE - LOGIN</h2><p><strong>Goal : Input the right flag.</strong></p>
+<p>Objective of the first level is to get the correct flag. <strong>flag</strong> is a piece of reward if you do correct task you are asked to do. Looking at decompiled code in the editor as shown below, there is an interesting function called <strong>submitFlag</strong>. submit flag function is responsible for validation of user input.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">submitFlag</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">EditText</span> editText <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">EditText</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>editText2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m882d</span><span class="token punctuation">(</span>editText<span class="token punctuation">,</span> <span class="token string">"editText2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m885a</span><span class="token punctuation">(</span>editText<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"F1ag_0n3"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Intent</span> intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">FlagOneSuccess</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">new</span> <span class="token class-name">FlagsOverview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4085J</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">new</span> <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4065b</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">"flagOneButtonColor"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">startActivity</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From code above, the <strong>FlagoneActivity</strong> class implements functionality where the user input is compared with hardcoded flag.</p>
+<p>The user flag string is compared with hardcoded flag which is “<strong>F1ag_0n3</strong>“. The method <strong>m10785a</strong> compares the two objects (user input flag and hardcoded flag) and return a boolean depending on the result of the comparison of two objects. Result can either be true or false.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">m10785a</span><span class="token punctuation">(</span><span class="token class-name">Object</span> obj<span class="token punctuation">,</span> <span class="token class-name">Object</span> obj2<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> obj <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> obj2 <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">:</span> obj<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>obj2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>If the condition is True, new Intent is started which is <strong>FlagOneSuccess</strong>. Entering hardcoded flag as our input, we get a success message and color of <strong>Flag1</strong> in flagsOverview Activity changes to green, meaning challenge has been successfully been solved.</p>
+<p><img data-src="/images/android/solved.png" alt="Flag one solved"></p>
+<p>Level1 flag is “<strong>F1ag_0n3</strong>“.<br>For other levels if solved successfully, the color of the flag corresponding level will change to green.</p>
+<h2 id="FLAG-TWO-EXPORTED-ACTIVITY"><a href="#FLAG-TWO-EXPORTED-ACTIVITY" class="headerlink" title="FLAG TWO - EXPORTED ACTIVITY"></a>FLAG TWO - EXPORTED ACTIVITY</h2><p>Goal : <strong>There is a way to bypass the main activity and invoke other activities that are exported.</strong></p>
+<p><strong>What is an activity?</strong></p>
+<p>An activity is a single focused thing that the user can do. It is an application component that provide a user interface for users to interact with.</p>
+<p>Looking at the <strong>flagtwoactivity</strong>, the source code below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FlagTwoActivity</span> <span class="token keyword">extends</span> <span class="token class-name">ActivityC0453c</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/* renamed from: w */</span>
+    <span class="token keyword">int</span> f4461w <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token comment">/* renamed from: F */</span>
+    <span class="token keyword">public</span> <span class="token comment">/* synthetic */</span> <span class="token keyword">void</span> <span class="token function">m4090F</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>f4461w<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Snackbar</span> <span class="token class-name">X</span> <span class="token operator">=</span> <span class="token class-name">Snackbar</span><span class="token punctuation">.</span><span class="token function">m2647X</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> <span class="token string">"Key words Activity and exported."</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X</span><span class="token punctuation">.</span><span class="token function">m2646Y</span><span class="token punctuation">(</span><span class="token string">"Action"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X</span><span class="token punctuation">.</span><span class="token function">mo2650N</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>f4461w<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Snackbar</span> X2 <span class="token operator">=</span> <span class="token class-name">Snackbar</span><span class="token punctuation">.</span><span class="token function">m2647X</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> <span class="token string">"Exported Activities can be accessed with adb or Drozer."</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            X2<span class="token punctuation">.</span><span class="token function">m2646Y</span><span class="token punctuation">(</span><span class="token string">"Action"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            X2<span class="token punctuation">.</span><span class="token function">mo2650N</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>f4461w <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">/* access modifiers changed from: protected */</span>
+    <span class="token annotation punctuation">@Override</span> <span class="token comment">// androidx.appcompat.app.ActivityC0453c, androidx.fragment.app.ActivityC0797d, androidx.activity.ComponentActivity, androidx.core.app.ActivityC0714e, android.app.Activity</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token class-name">Bundle</span> bundle<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>bundle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_flag_two<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">m8078C</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Toolbar</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>toolbar<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">FloatingActionButton</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>fab<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// from class: b3nac.injuredandroid.d</span>
+            <span class="token annotation punctuation">@Override</span> <span class="token comment">// android.view.View.OnClickListener</span>
+            <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">FlagTwoActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">m4090F</span><span class="token punctuation">(</span>view<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The <strong>oncreate</strong> method is used for initializing the activity. The goal of the challenge is to invoke the <code>flagtwoactivity</code> from an external application. This activity is an <strong>exported activity</strong>, meaning it can be started outside the context of the application.</p>
+<p>Activities in android are defined in <em>AndroidManifest.xml</em> .</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>activity</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>b3nac.injuredandroid.b25lActivity<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">android:</span>exported</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>As you see above, activity <strong>b3nac.injuredandroid.b25lActivity</strong> can be invoked by an external application because <strong>android:exported</strong> attribute is set to true.</p>
+<p>For exploitation of the above issue we will use adb. First, we use adb to list installed packages and grep the application of our interest using grep utility.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:~$ adb shell pm list packages <span class="token operator">|</span> <span class="token function">grep</span> injuredandroid
+package:b3nac.injuredandroid<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><strong>What happens when invoke b25lActivity class activity?</strong></p>
+<p>When b25lActivity activity is invoked by an external application, it sets flag2 color to green in the FlagsOverview activity as illustrated in the code below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/* loaded from: classes.dex */</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> b25lActivity <span class="token keyword">extends</span> <span class="token class-name">ActivityC0453c</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/* access modifiers changed from: protected */</span>
+    <span class="token annotation punctuation">@Override</span> <span class="token comment">// androidx.appcompat.app.ActivityC0453c, androidx.fragment.app.ActivityC0797d, androidx.activity.ComponentActivity, androidx.core.app.ActivityC0714e, android.app.Activity</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token class-name">Bundle</span> bundle<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>bundle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_b25l<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">.</span>f4506j<span class="token punctuation">.</span><span class="token function">m4062a</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">FlagsOverview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4082M</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4065b</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">"flagTwoButtonColor"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Invoke the activity b25lActivity using adb. Alternative method of invoking exported activities is by creating an android application thats starts the target&#96;s activity.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:~$ adb shell am start  -n b3nac.injuredandroid/.b25lActivity
+Starting: Intent <span class="token punctuation">&#123;</span> <span class="token assign-left variable">cmp</span><span class="token operator">=</span>b3nac.injuredandroid/.b25lActivity <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>When activity two is started successfully through an external application, we are rewarded with a flag.</p>
+<p><img data-src="/images/android/flag2.png" alt="Flag two"></p>
+<h2 id="FLAG-THREE-RESOURCES"><a href="#FLAG-THREE-RESOURCES" class="headerlink" title="FLAG THREE - RESOURCES"></a>FLAG THREE - RESOURCES</h2><p><strong>Goal: Understanding how an application references Resources.</strong></p>
+<p><strong>what are resources?</strong></p>
+<p>Resources are used for defining colors, images, layouts, menus and string values. Everything defined in resources are referenced in application&#96;s code.</p>
+<p>The decompiled code for FlagThreeActivity is shown below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">submitFlag</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">EditText</span> editText <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">EditText</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>editText2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m882d</span><span class="token punctuation">(</span>editText<span class="token punctuation">,</span> <span class="token string">"editText2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m885a</span><span class="token punctuation">(</span>editText<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">getString</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>string<span class="token punctuation">.</span>cmVzb3VyY2VzX3lv<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Intent</span> intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">FlagOneSuccess</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">FlagsOverview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4083L</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4065b</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">"flagThreeButtonColor"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">startActivity</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Looking at <strong>submitFlag</strong> function defined in <strong><em>FlagThreeActivity.java</em></strong>, the function is comparing user input with value referenced at Resource <strong><em>cmVzb3VyY2VzX3lv</em></strong> . R stands for resource.</p>
+<p>Looking at strings we get flag as referenced by the string above.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>string <span class="token assign-left variable">name</span><span class="token operator">=</span><span class="token string">"cmVzb3VyY2VzX3lv"</span><span class="token operator">></span>F1ag_thr3<span class="token operator"><span class="token file-descriptor important">3</span>&lt;</span>/string<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>The flag is <strong>F1ag_thr33</strong></p>
+<h2 id="FLAG-FOUR-LOGIN2"><a href="#FLAG-FOUR-LOGIN2" class="headerlink" title="FLAG FOUR - LOGIN2"></a>FLAG FOUR - LOGIN2</h2><p><strong>Goal: Get the right flag</strong></p>
+<p>For flag four we analyze <strong>FlagFourActivity.java.</strong> activity. First is to figure out the logic implemented in the <code>submitflag</code> class.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">submitFlag</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">EditText</span> editText <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">EditText</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>editText2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m882d</span><span class="token punctuation">(</span>editText<span class="token punctuation">,</span> <span class="token string">"editText2"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> obj <span class="token operator">=</span> editText<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">C1489g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4070a</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m882d</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token string">"decoder.getData()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m885a</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> <span class="token class-name">C2759c</span><span class="token punctuation">.</span>f6854a<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Intent</span> intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">FlagOneSuccess</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">FlagsOverview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4086I</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4065b</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">"flagFourButtonColor"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">startActivity</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The above decompiled code,we get user input and compare with bytes in variable <code>a</code>. To understand the logic we analyze the method <strong><em>c1489g</em></strong> and member class <strong><em>m4070a</em></strong>.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">C1489g</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/* renamed from: a */</span>
+    <span class="token keyword">private</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> f4499a <span class="token operator">=</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"NF9vdmVyZG9uZV9vbWVsZXRz"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* renamed from: a */</span>
+    <span class="token keyword">public</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">m4070a</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>f4499a<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Public class <strong>c1489g</strong>, implements base64 decoding of the byte string and returns decoded string to <strong>submitFlag</strong> class.</p>
+<p>For decoded string, use base64 linux utility.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token builtin class-name">echo</span> <span class="token string">"NF9vdmVyZG9uZV9vbWVsZXRz"</span> <span class="token operator">|</span> base64 -d
+4_overdone_omelets<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>Level 4 flag is <strong>4_overdone_omelets</strong></p>
+<h2 id="FLAG-FIVE-EXPORTED-BROADCAST-RECEIVERS"><a href="#FLAG-FIVE-EXPORTED-BROADCAST-RECEIVERS" class="headerlink" title="FLAG FIVE - EXPORTED BROADCAST RECEIVERS"></a>FLAG FIVE - EXPORTED BROADCAST RECEIVERS</h2><p><strong>Goal:</strong> <strong>Understand how Broadcast receivers work</strong></p>
+<p>An application receives broadcasts in two ways:</p>
+<ol>
+<li>Through manifest-declared receivers.</li>
+<li>Context-registered receivers.</li>
+</ol>
+<p>Manifest-declared receivers - This causes the system to launch an application when broadcast is received. Searching in <code>AndroidManifest.xml</code> file we get where our broadcast is declared.</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>receiver</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>b3nac.injuredandroid.FlagFiveReceiver<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">android:</span>exported</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>activity</span> <span class="token attr-name"><span class="token namespace">android:</span>theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>@style/AppTheme.NoActionBar<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">android:</span>label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>@string/title_activity_flag_five<span class="token punctuation">"</span></span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>b3nac.injuredandroid.FlagFiveActivity<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>In order to understand the Broadcast receivers, analyze <strong>oncreate()</strong> method in <strong>FlagFiveActivity.java</strong> file.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token class-name">Bundle</span> bundle<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>bundle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_flag_five<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">m8078C</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Toolbar</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>toolbar<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">FloatingActionButton</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>fab<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// from class: b3nac.injuredandroid.c</span>
+            <span class="token annotation punctuation">@Override</span> <span class="token comment">// android.view.View.OnClickListener</span>
+            <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">FlagFiveActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">m4118G</span><span class="token punctuation">(</span>view<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">ComponentName</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">FlagFiveReceiver</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">getPackageManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">C0310a</span><span class="token punctuation">.</span><span class="token function">m8404b</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m8403c</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>f4409x<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">IntentFilter</span><span class="token punctuation">(</span><span class="token string">"com.b3nac.injuredandroid.intent.action.CUSTOM_INTENT"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Button</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>button9<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">View<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// from class: b3nac.injuredandroid.b</span>
+            <span class="token annotation punctuation">@Override</span> <span class="token comment">// android.view.View.OnClickListener</span>
+            <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">FlagFiveActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">m4117H</span><span class="token punctuation">(</span>view<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// invokes the intent</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From the above code, clicking flag2 button, we invoke intent which is defined in <strong><em>m4117H</em></strong> class.</p>
+<p>An intent is used to perform an action on the screen. Therefore clicking the button element in our application we are invoking an new intent. Intents are used for sending a broadcast receiver.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token comment">/* renamed from: H */</span>
+    <span class="token keyword">public</span> <span class="token comment">/* synthetic */</span> <span class="token keyword">void</span> <span class="token function">m4117H</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">m4119F</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">m4119F</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">sendBroadcast</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token string">"com.b3nac.injuredandroid.intent.action.CUSTOM_INTENT"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Analyzing component name <strong>FlagFiveReceiver</strong> class, when an intent is invoked twice, we get flag. The class implements a conditional if else loop condition for checking the number of intents. When the correct flag is displayed, the intents counter is set to zero( <strong>i2 &#x3D; 0</strong>), where <strong>i2</strong> variable is intent counter as shown in java code below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">FlagFiveReceiver</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token comment">/* renamed from: a */</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> f4410a<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span> <span class="token comment">// android.content.BroadcastReceiver</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onReceive</span><span class="token punctuation">(</span><span class="token class-name">Context</span> context<span class="token punctuation">,</span> <span class="token class-name">Intent</span> intent<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">String</span> str<span class="token punctuation">;</span>
+        <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+        <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m881e</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token string">"context"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m881e</span><span class="token punctuation">(</span>intent<span class="token punctuation">,</span> <span class="token string">"intent"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">.</span>f4506j<span class="token punctuation">.</span><span class="token function">m4062a</span><span class="token punctuation">(</span>context<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> i2 <span class="token operator">=</span> f4410a<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i2 <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">StringBuilder</span> sb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token class-name">C2765h</span><span class="token punctuation">.</span><span class="token function">m809e</span><span class="token punctuation">(</span><span class="token string">"\n    Action: "</span> <span class="token operator">+</span> intent<span class="token punctuation">.</span><span class="token function">getAction</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"\n\n    "</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token class-name">C2765h</span><span class="token punctuation">.</span><span class="token function">m809e</span><span class="token punctuation">(</span><span class="token string">"\n    URI: "</span> <span class="token operator">+</span> intent<span class="token punctuation">.</span><span class="token function">toUri</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"\n\n    "</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            str <span class="token operator">=</span> sb<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">C2724g</span><span class="token punctuation">.</span><span class="token function">m882d</span><span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">"sb.toString()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">Log</span><span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token string">"DUDE!:"</span><span class="token punctuation">,</span> str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            str <span class="token operator">=</span> <span class="token string">"Keep trying!"</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>i2 <span class="token operator">!=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>i2 <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">//Number of times to invoke out intents</span>
+                    <span class="token keyword">new</span> <span class="token class-name">FlagsOverview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4087H</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">new</span> <span class="token class-name">ApplicationC1492j</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">m4065b</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token string">"flagFiveButtonColor"</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">Toast</span><span class="token punctuation">.</span><span class="token function">makeText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token string">"You are a winner "</span> <span class="token operator">+</span> <span class="token class-name">C1494k</span><span class="token punctuation">.</span><span class="token function">m4061a</span><span class="token punctuation">(</span><span class="token string">"Zkdlt0WwtLQ="</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    f4410a <span class="token operator">=</span> i<span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+                <span class="token class-name">Toast</span><span class="token punctuation">.</span><span class="token function">makeText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> str<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token class-name">Toast</span><span class="token punctuation">.</span><span class="token function">makeText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> str<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        i <span class="token operator">=</span> f4410a <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        f4410a <span class="token operator">=</span> i<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>onReceive</strong> method is responsible for receiving intents sent. Invoking our Activity two times we get a flag.</p>
+<p><img data-src="/images/android/flag5.png" alt="Flag Five"></p>
+<p>The flag for challenge five is <strong>F1v3!</strong></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/appsec/" rel="tag"># appsec</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/25/Android-appsec-part-2/" rel="next" title="Android application security part2">
+                  Android application security part2 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Thuri</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

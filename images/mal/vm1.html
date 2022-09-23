@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"thuri10.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Can you figure out how the VM works and write your own to decrypt the flag?">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Reversing MalwareTech 8-bit Bytecode Virtual Machine">
+<meta property="og:url" content="http://thuri10.github.io/images/mal/vm1.html">
+<meta property="og:site_name" content="LaByte">
+<meta property="og:description" content="Can you figure out how the VM works and write your own to decrypt the flag?">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/vmq.png">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/rambin.png">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/ida_hex.png">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/vmflow.png">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/vmflow2.png">
+<meta property="og:image" content="http://thuri10.github.io/post/mal/retflag.png">
+<meta property="article:published_time" content="2021-12-07T13:02:24.000Z">
+<meta property="article:modified_time" content="2022-09-23T09:58:55.014Z">
+<meta property="article:author" content="Thuri">
+<meta property="article:tag" content="reverse">
+<meta property="article:tag" content="malware">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://thuri10.github.io/post/mal/vmq.png">
+
+
+<link rel="canonical" href="http://thuri10.github.io/images/mal/vm1">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":true,"permalink":"http://thuri10.github.io/images/mal/vm1.html","path":"images/mal/vm1.html","title":"Reversing MalwareTech 8-bit Bytecode Virtual Machine"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Reversing MalwareTech 8-bit Bytecode Virtual Machine | LaByte
+</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LaByte</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Messing Bits</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution"><span class="nav-text">Solution</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Thuri</p>
+  <div class="site-description" itemprop="description">Messy Bits</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/thuri10" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;thuri10" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:thuri783@gmail.com" title="E-Mail → mailto:thuri783@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/0xhexski" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;0xhexski" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Reversing MalwareTech 8-bit Bytecode Virtual Machine
+</h1>
+
+<div class="post-meta-container">
+    <div class="post-description">Can you figure out how the VM works and write your own to decrypt the flag?</div>
+  <ul class="breadcrumb">
+            <li><a href="/images/">IMAGES</a></li>
+            <li><a href="/images/mal/">MAL</a></li>
+            <li>VM1</li>
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <p>Challenge description.</p>
+<blockquote>
+<p>vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM’s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag? A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).</p>
+</blockquote>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Main function analysis</p>
+<p><img data-src="/post/mal/vmq.png" alt="Main Function"></p>
+<p>From the above image the <strong>HeapAlloc</strong> function allocates a block of memory from a heap. Heapalloc function above,allocates a memory block of size <strong>0x1FB</strong> bytes. The pointer of the allocated memory block is called  allocated_memblock as shown in the image.</p>
+<p>The program does a <strong>memcpy</strong> of the content stored in the rambin offset to the new allocated memory block.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>dest<span class="token punctuation">,</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>src<span class="token punctuation">,</span> <span class="token class-name">size_t</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Memcpy functions copies data from the source address to destination address of size 0x1fb. The destination address of this program is the allocate_memblock. Examining the bytes in the rambin file provided as part of the challenge and the  content at rambin offset are the same as shown in the image below.</p>
+<p><img data-src="/post/mal/rambin.png" alt="Rambin"> <img data-src="/post/mal/ida_hex.png" alt="IDA HEX"></p>
+<p>Next step is to analyze the <strong>sub_4022E0</strong> function. The disassembled function graph looks like the one below.</p>
+<p><img data-src="/post/mal/vmflow.png" alt="sub_4022E0 control flow loop"></p>
+<p>From the disassembly above, the binary is doing some byte operations. The first graph block is doing a bitwise AND operation, which is responsible for setting both SF and ZF to zero.First it sets the value of eax register to 1, and then do a test operation. Because the conditional <strong>“jump if zero”</strong> is not true, we continue our execution to the next control block.</p>
+<p>We do decompilation of the function using NSA ghidra tool.The decompiled of the function is shown below.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">
+<span class="token keyword">int</span> <span class="token function">FUN_004022e0</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+
+<span class="token punctuation">&#123;</span>
+  byte bVar1<span class="token punctuation">;</span>
+  uint uVar2<span class="token punctuation">;</span>
+  byte bVar3<span class="token punctuation">;</span>
+  byte counter<span class="token punctuation">;</span>
+  
+  counter <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
+                    <span class="token comment">/* 0 */</span>
+    uVar2 <span class="token operator">=</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>counter<span class="token punctuation">;</span>
+                    <span class="token comment">/* 2 */</span>
+    bVar1 <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    bVar3 <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    counter <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">3</span><span class="token punctuation">;</span>
+    uVar2 <span class="token operator">=</span> <span class="token function">FUN_00402270</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> uVar2<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                         <span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>bVar1<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                         <span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>bVar3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>uVar2 <span class="token operator">&amp;</span> <span class="token number">0xff</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> uVar2<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The above c-code like is more easier to understand than the assembly code. From the analysis of the code, we are doing a while loop.The assembly equivalent of this operation is as the one shown in the first memory block of the function.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm"><span class="token label function">loc_4022EA:</span>
+mov     <span class="token register variable">eax</span>, <span class="token number">1</span>
+test    <span class="token register variable">eax</span>, <span class="token register variable">eax</span>
+jz      short loc_402367<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Therefore, we call the function <strong>FUN_00402270</strong> while passing three arguments.The control graph below shows various operation executed by the binary depending on the argument passed to the function.</p>
+<p><img data-src="/post/mal/vmflow2.png" alt="control flow loop"></p>
+<p>From the above graph, the function does a compare on the arguments passed with either 1, 2 or 3. If the condition is fulfilled, that operation branch is executed as shown in the image above.</p>
+<p>Example: <strong>if the argument value passed is 1, control flow branch to loc_4022E address as shown in the graph</strong></p>
+<p>For better understanding of the control flow, we decompile the function using ghidra, because <strong>idafree</strong> does not support x86 decompilation.The “C-like style” of the code looks like the one below.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">
+<span class="token keyword">int</span> <span class="token function">FUN_00402270</span><span class="token punctuation">(</span><span class="token keyword">int</span> value1<span class="token punctuation">,</span><span class="token keyword">int</span> value2<span class="token punctuation">,</span><span class="token keyword">int</span> param_3<span class="token punctuation">)</span>
+
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token operator">*</span><span class="token punctuation">(</span>undefined <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span>undefined<span class="token punctuation">)</span>param_3<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      value1 <span class="token operator">=</span> allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">;</span>
+      DAT_00404240 <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span>value1<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">!=</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> value1 <span class="token operator">&amp;</span> <span class="token number">0xffffff00</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      value1 <span class="token operator">=</span> allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">;</span>
+      <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span>value1 <span class="token operator">^</span> DAT_00404240<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">CONCAT31</span><span class="token punctuation">(</span><span class="token punctuation">(</span>int3<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uint<span class="token punctuation">)</span>value1 <span class="token operator">>></span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The decompilation output of ghidra is not optimal, therefore decompiled code contains some cast which can be fixed by setting the correct data types in the functional signatures of the function.Because this is an easy VM, we can implement the above code in a python3 script in order to decrypt the contents of <strong>ram.bin</strong> file.</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>Fully implemented solution code is below.</p>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">#implement decryption routine function in python
+#solution.py
+def fun_00402270(value1, value2, value3):
+    global dat_420
+    if value1 &#x3D;&#x3D; 1:
+        membytes[value2] &#x3D; value3 
+    elif value1 &#x3D;&#x3D; 2:
+        dat_420 &#x3D; membytes[value2]
+    else:
+        if value1 &#x3D;&#x3D; 3:
+            membytes[value2] &#x3D; membytes[value2] ^ dat_420
+        else:
+            return False
+
+    return True
+
+
+if __name__ &#x3D;&#x3D;&quot;__main__&quot;:
+    global membytes
+    membytes &#x3D; []
+    
+    #open the encypted file and read bytes
+    with open(&#39;ram.bin&#39;,&#39;rb&#39;) as rambin:
+        membytes&#x3D; list(rambin.read())
+
+    counter  &#x3D;0
+    uvar2 &#x3D; 0
+    bvar1 &#x3D; 1
+    bvar3 &#x3D; 2
+    uvar2_response &#x3D; True
+
+    while uvar2_response:
+        counter +&#x3D;3
+        uvar2_response &#x3D; fun_00402270(membytes[counter+ 0xff + uvar2], membytes[counter+0xff + bvar1], membytes[counter+ 0xff + bvar3])
+    print([chr(x) for x in membytes[:26]])
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>Running the above script in the terminal gets us our flag</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:vm$ python3 x.py 
+<span class="token punctuation">[</span><span class="token string">'F'</span>, <span class="token string">'L'</span>, <span class="token string">'A'</span>, <span class="token string">'G'</span>, <span class="token string">'&#123;'</span>, <span class="token string">'V'</span>, <span class="token string">'M'</span>, <span class="token string">'S'</span>, <span class="token string">'-'</span>, <span class="token string">'A'</span>, <span class="token string">'R'</span>, <span class="token string">'E'</span>, <span class="token string">'-'</span>, <span class="token string">'F'</span>, <span class="token string">'O'</span>, <span class="token string">'R'</span>, <span class="token string">'-'</span>, <span class="token string">'M'</span>, <span class="token string">'A'</span>, <span class="token string">'L'</span>, <span class="token string">'W'</span>, <span class="token string">'A'</span>, <span class="token string">'R'</span>, <span class="token string">'E'</span>, <span class="token string">'&#125;'</span>, <span class="token string">'\x00'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>After a successful decryption of the rambin contents, the <strong>sub_4022E0</strong> function return the pointer to the flag to main function as shown in the image below.</p>
+<p><img data-src="/post/mal/retflag.png" alt="Return value of sub_4022E0"></p>
+<p>Therefore the main function calculates the MD5 hash of the flag and outputs to the message dialogbox using <strong>MessageBoxA</strong> function.</p>
+<p>The correct flag for the vm challenge is <strong>FLAG{VMS-ARE-FOR-MALWARE}</strong></p>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/images/">IMAGES</a></li>
+            <li><a href="/images/mal/">MAL</a></li>
+            <li>VM1</li>
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Thuri</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

