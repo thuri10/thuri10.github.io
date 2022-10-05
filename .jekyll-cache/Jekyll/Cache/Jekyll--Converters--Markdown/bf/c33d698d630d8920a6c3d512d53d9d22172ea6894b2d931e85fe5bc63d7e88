@@ -1,4 +1,0 @@
-I"<blockquote>
-  <p>Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to.</p>
-</blockquote>
-:ET

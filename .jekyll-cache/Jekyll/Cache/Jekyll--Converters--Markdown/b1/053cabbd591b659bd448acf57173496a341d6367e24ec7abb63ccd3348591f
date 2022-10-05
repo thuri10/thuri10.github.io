@@ -1,2 +1,0 @@
-I"<p>This is an article of my adventures with golang <strong>gopacket</strong> library. As I was working on a personal project, I came across <a href="https://github.com/google/gopacket">gopacket</a> library which provides capabilities for decoding packets in Go. The capabilities provided by the library motivated me to try malware traffic analysis with the library instead of using Wireshark. This article focuses on analyzing the <code class="language-plaintext highlighter-rouge">QKBOT</code> malware traffic .</p>
-:ET
