@@ -7,10 +7,10 @@ menu:
   #   url: /tags
   #   External: false
   #   name: Tags
-#  Categories:
-#    url: /categories
-#    External: false
-#    name: Categories
+  #  Categories:
+  #    url: /categories
+  #    External: false
+  #    name: Categories
   Archives:
     url: /archives
     External: false
@@ -27,7 +27,7 @@ dark_theme:
 # 联系方式
 contact:
   github: "https://github.com/thuri10"
-  twitter:
+  twitter: "https://twitter.com/thuri0"
   weibo:
   zhihu:
   facebook:
