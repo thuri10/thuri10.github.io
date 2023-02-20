@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Directory Traversal Vulnerabilities</title>
+<meta name="keywords" content="Directory Traversal Vulnerabilities, LaByte">
+<meta name="description" content="Directory traversal is a web vulnerability that allows an attacker to access unauthorized resources outside the root server directory due to the way server handles files.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Directory Traversal Vulnerabilities</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-10-24</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/appsec/">
+              appsec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/traversal/">
+              traversal
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Directory traversal is a web vulnerability that allows an attacker to access unauthorized resources outside the root server directory due to the way server handles files.</p>
+<p>The files which an attacker can read includes Intellectual property, customer data, code and sensitive file system files such as configuration keys, tokens.</p>
+<p>To understand the vulnerability class, we solve <code>portswigger.net</code> academy directory traversal labs. PortSwigger Academy helps in providing a playground for testing and learning new web security research techniques.</p>
+<h2 id="Lab1-Simple-case-file-path-traversal"><a href="#Lab1-Simple-case-file-path-traversal" class="headerlink" title="Lab1 - Simple case file path traversal"></a>Lab1 - Simple case file path traversal</h2><blockquote>
+<p>This lab contains a file path traversal in the display of product images.<br>To solve the lab retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>For solving the challenge, right click one of the images and open it in a new tab.This will enable us to capture image url path in BurpSuite through proxy. Image below shows an example image path rendered in BurpSuite application.</p>
+<p><img src="/images/websec/dirtraversal/lab1_imagepath.png" alt="Lab 1 Image path"></p>
+<p>To solve the challenge, we need to change the filename location from <strong>29.jpg</strong> to <strong>&#x2F;etc&#x2F;passwd</strong>. Assumption is our full path of the image is <code>/var/www/images/29.jpg</code>. In order to read target file, we need to traverse back directory structure in unix using <strong>dot-dot-slash</strong> attack as shown in image below.<br><img src="/images/websec/dirtraversal/lab1_passwd.png" alt="Read Password"></p>
+<h2 id="Lab2-Absolute-path-traversal-bypass"><a href="#Lab2-Absolute-path-traversal-bypass" class="headerlink" title="Lab2 - Absolute path traversal bypass"></a>Lab2 - Absolute path traversal bypass</h2><blockquote>
+<p>This lab contains a file path traversal vulnerability in the display of product images.<br>The application blocks traversal sequences but treats the supplied filename as being relative to a default working directory.<br>To solve the lab, retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>This challenge allows absolute path resolution on the server. Filepath of an image <strong>65.jpg</strong> is as shown in image below.</p>
+<p><img src="/images/websec/dirtraversal/lab2_image.png" alt="Lab image"></p>
+<p>For solving the lab, we change the filename parameter path to <strong>&#x2F;etc&#x2F;passwd</strong> and sent back our request to the server through repeater. <strong>Repeater</strong> is an handy tool that enables one to replay and manipulate http requests.</p>
+<p><img src="/images/websec/dirtraversal/lab2_passwd.png" alt="Read file path"></p>
+<h2 id="Lab3-Stripped-non-recursive-path-traversal"><a href="#Lab3-Stripped-non-recursive-path-traversal" class="headerlink" title="Lab3 - Stripped non-recursive path traversal"></a>Lab3 - Stripped non-recursive path traversal</h2><blockquote>
+<p>This lab contains a file path traversal vulnerability in the display of product images.<br>The application strips path traversal sequences from the user-supplied filename before using it.<br>To solve the lab, retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>This lab implements a simple defense mechanism of filtrating <strong>dot-dot-slash</strong> paths. This prevents us solving the lab as the first lab.</p>
+<p>To bypass the restriction, we use nested traversal sequences such as <code>....//</code> , which will revert to <code>../</code> when the inner dot-dot-dot-slash is stripped. Image below shows how the attack is still possible by replacing image name with the following payload <strong>….&#x2F;&#x2F;….&#x2F;&#x2F;….&#x2F;&#x2F;etc&#x2F;passwd</strong>.</p>
+<p><img src="/images/websec/dirtraversal/lab3_solution.png" alt="Lab 3 solution"></p>
+<h2 id="Lab4-Superfluous-URL-decode-traversal-stripped-sequences-path-traversal"><a href="#Lab4-Superfluous-URL-decode-traversal-stripped-sequences-path-traversal" class="headerlink" title="Lab4 - Superfluous URL-decode traversal stripped sequences path traversal"></a>Lab4 - Superfluous URL-decode traversal stripped sequences path traversal</h2><blockquote>
+<p>This lab contains a file path traversal vulnerability in the display of product images.<br>The application blocks input containing path traversal sequences. It then performs a URL-decode of the input before using it.<br>To solve the lab, retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>For solving the challenge, we need to encode URL to bypass for bypassing the kind of sanitization. The dot-dot-slash <strong>..&#x2F;</strong> can be encoded to <strong>%2e%2e%2f</strong>.<br>For encoding, single encoding results to file not found. Therefore, we double encode our payload.</p>
+<p><img src="/images/websec/dirtraversal/lab4-decoder.png" alt="Payload Encoding"></p>
+<p>Now with our payload as shown in decoder tab above, we replace the parameter of filename with our payload.</p>
+<p><img src="/images/websec/dirtraversal/lab4-encoder.png" alt="Payload Encoding"></p>
+<p>Boom!!, we are able to read the <strong>&#x2F;etc&#x2F;passwd</strong> file using double encoding to bypass filters.</p>
+<h2 id="Lab5-Start-of-path-file-validation-path-traversal"><a href="#Lab5-Start-of-path-file-validation-path-traversal" class="headerlink" title="Lab5 - Start of path file validation path traversal"></a>Lab5 - Start of path file validation path traversal</h2><blockquote>
+<p>This lab contains a file path traversal vulnerability in the display of product images.<br>The application transmits the full file path via a request parameter, and validates that the supplied path starts with the expected folder.<br>To solve the lab, retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>Lab five does validation of initial file path if lies in the server directory <strong>&#x2F;var&#x2F;www&#x2F;images</strong>. If filename contains the base directory folder we get a successful response as shown by the request below.</p>
+<p><img src="/images/websec/dirtraversal/lab5_image.png" alt="Lab5 image"></p>
+<p>For solving the lab, retrieve <strong>passwd</strong> file, we reuse the Lab1 attack payload but we preserve original file path as we traverse base directory structure. Successful attack will look like one below. The payload path is <strong><code>/var/www/images/../../../etc/passwd</code></strong><br><img src="/images/websec/dirtraversal/lab5_passwd.png" alt="lab5 solution"></p>
+<h2 id="Lab6-Bypass-validation-of-path-file-extension"><a href="#Lab6-Bypass-validation-of-path-file-extension" class="headerlink" title="Lab6 - Bypass validation of path file extension"></a>Lab6 - Bypass validation of path file extension</h2><blockquote>
+<p>This lab contains a file path traversal vulnerability in the display of product images.<br>The application validates that the supplied filename ends with the expected file extension.<br>To solve the lab, retrieve the contents of the &#x2F;etc&#x2F;passwd file.</p>
+</blockquote>
+<p>Lab6 implements a defense mechanism of file extension validation. The application checks if file supplied at <strong>filename</strong> parameter ends with .png extension. We can bypass defense mechanism by appending a null byte in our path as shown below.</p>
+<p>When the program is reading the file at <strong>filename</strong> and encounters a null byte, it terminates the file path before extension.</p>
+<p><img src="/images/websec/dirtraversal/lab6_passwd.png" alt="lab 6 passwd"></p>
+<p>File extension validation is never an enough defense mechanism.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab1-Simple-case-file-path-traversal"><span class="top-box-text">Lab1 - Simple case file path traversal</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab2-Absolute-path-traversal-bypass"><span class="top-box-text">Lab2 - Absolute path traversal bypass</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab3-Stripped-non-recursive-path-traversal"><span class="top-box-text">Lab3 - Stripped non-recursive path traversal</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab4-Superfluous-URL-decode-traversal-stripped-sequences-path-traversal"><span class="top-box-text">Lab4 - Superfluous URL-decode traversal stripped sequences path traversal</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab5-Start-of-path-file-validation-path-traversal"><span class="top-box-text">Lab5 - Start of path file validation path traversal</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab6-Bypass-validation-of-path-file-extension"><span class="top-box-text">Lab6 - Bypass validation of path file extension</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/Reverse-C-Templates/">
+          <h3 class="post-title">
+            Next: Reversing C++ - Basic Templates
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

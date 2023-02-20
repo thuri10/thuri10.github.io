@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>API Security - Broken User Authentication</title>
+<meta name="keywords" content="API Security - Broken User Authentication, LaByte">
+<meta name="description" content="Broken user Authentication vulnerabilities allows an attacker to assume other user`s identities. This may be through stolen session cookies or credentials.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">API Security - Broken User Authentication</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-12-16</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/apisec/">
+              apisec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/crAPI/">
+              crAPI
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Broken user Authentication vulnerabilities allows an attacker to assume other user&#96;s identities. This may be through stolen session cookies or credentials. API does not implement tight security controls for resetting password logic making it possible to reset other user’s password. This may lead to full ownership or takeover of user accounts or system compromise if admin account has been compromised.</p>
+<h2 id="Challenge-3-Reset-the-password-of-a-different-user"><a href="#Challenge-3-Reset-the-password-of-a-different-user" class="headerlink" title="Challenge 3 - Reset the password of a different user"></a>Challenge 3 - Reset the password of a different user</h2><blockquote>
+<p>Find an email address of another user on crAPI<br>Brute forcing might be the answer. If you face any protection mechanisms, remember to leverage the predictable nature of REST APIs to find more similar API endpoints.</p>
+</blockquote>
+<p>For information disclosure about another user email, refer to BOLA vulnerabilities section which users emails are disclosed in the community post. The API is vulnerable to bruteforce because the API does not enforce rate limiting on OTP in resetting password logic. This enables an attacker to reset passwords of other users and lock them out of their accounts.</p>
+<p><img src="/../images/crApi/challenge3-intruder.png" alt="Intruder API"></p>
+<p>To bruteforce the API, we can use Intruder to bruteforce the OTP value using payload of a length 4 and type <strong>integer</strong> as shown in figure above. A successful attack will enable an attacker to Login as the target user.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge-3-Reset-the-password-of-a-different-user"><span class="top-box-text">Challenge 3 - Reset the password of a different user</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/crapi-part1/">
+          <h3 class="post-title">
+            Next: API Security - BOLA Vulnerabilities
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

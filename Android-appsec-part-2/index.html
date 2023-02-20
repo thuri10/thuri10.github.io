@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Android Appsec Series -Part 2</title>
+<meta name="keywords" content="Android Appsec Series -Part 2, LaByte">
+<meta name="description" content="Second part series of the android application security. This part focuses on the security of sqlite databases, firebase ">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Android Appsec Series -Part 2</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2021-11-25</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/android/">
+              android
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/appsec/">
+              appsec
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Second part series of the android application security. This part focuses on the security of sqlite databases, firebase and AWS security. <span id="more"></span></p>
+<h2 id="Flag7-Sqlite"><a href="#Flag7-Sqlite" class="headerlink" title="Flag7 - Sqlite"></a>Flag7 - Sqlite</h2><p><strong>What is sqlite?</strong></p>
+<p>Sqlite is a structure query base database that enables applications to do local storage in the application directory. The goal of the challenge is to understand how local storage of databases may lead to leakage of information.</p>
+<p>First step is decompilation of <code>FlagSevenSqliteActivity</code> using <code>Jadx</code>.</p>
+<p>Analysis of an new activity of android application, it is best to start at the onCreate method defined in the Activity.<strong>oncreate</strong> is the first method to be called by an application when an activity is started.</p>
+<p>The decompiled <code>oncreate</code> method code is as shown below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token class-name">Bundle</span> bundle<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>bundle<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setContentView</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_flag_seven_sqlite<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">C</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Toolbar</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>toolbar<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    j<span class="token punctuation">.</span>g<span class="token punctuation">.</span><span class="token function">a</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">H</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">FloatingActionButton</span><span class="token punctuation">)</span> <span class="token function">findViewById</span><span class="token punctuation">(</span><span class="token class-name">R</span><span class="token punctuation">.</span>id<span class="token punctuation">.</span>fab<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">a</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">SQLiteDatabase</span> writableDatabase <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>u<span class="token punctuation">.</span><span class="token function">getWritableDatabase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ContentValues</span> contentValues <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ContentValues</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    contentValues<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"title"</span><span class="token punctuation">,</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"VGhlIGZsYWcgaGFzaCE="</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    contentValues<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"subtitle"</span><span class="token punctuation">,</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"MmFiOTYzOTBjN2RiZTM0MzlkZTc0ZDBjOWIwYjE3Njc="</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    writableDatabase<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"Thisisatest"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> contentValues<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    contentValues<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"title"</span><span class="token punctuation">,</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"VGhlIGZsYWcgaXMgYWxzbyBhIHBhc3N3b3JkIQ=="</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    contentValues<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"subtitle"</span><span class="token punctuation">,</span> h<span class="token punctuation">.</span><span class="token function">c</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    writableDatabase<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token string">"Thisisatest"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> contentValues<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The method passes base64 encoded strings and stores them into string variables.From the “hint” of application name, we are creating a writable database through <code>SQLiteDatabase</code> functions. The activity writes some strings to the database. The database being referenced is called <strong>Thisisatest</strong>.</p>
+<p>Next logical step is decoding the Base64 encoded strings to get the corresponding human readable form of data.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">VGhlIGZsYWcgaGFzaCE    - The flag hash<span class="token operator">!</span>
+MmFiOTYzOTBjN2RiZTM0MzlkZTc0ZDBjOWIwYjE3Njc - 2ab96390c7dbe3439de74d0c9b0b1767
+VGhlIGZsYWcgaXMgYWxzbyBhIHBhc3N3b3JkIQ  - The flag is also a password<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>The decoded strings as shown above give sus hints on solving the challenge.The author provides us with the hash of the flag.</p>
+<p>For further analysis we decode even strings defined in the Activity as shown below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> w <span class="token operator">=</span> <span class="token string">"ZjFhZy1wYTU1"</span><span class="token punctuation">;</span>   #f1ag<span class="token operator">-</span>pa55
+<span class="token keyword">private</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> x <span class="token operator">=</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"c3FsaXRl"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  #sqlite
+<span class="token keyword">private</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> y <span class="token operator">=</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>w<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> z<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Analyze <code>FlagSevensqliteActivity</code> in order to understand strings usage in our activity. Important strings are <strong>f1ag-pa55</strong> and <strong>sqlite</strong> guiding us in solving the problem.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FlagSevenSqliteActivity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bArr <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>x<span class="token punctuation">;</span>      <span class="token comment">//sqlite</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>bArr<span class="token punctuation">,</span> <span class="token string">"decodedDirectoryOne"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Charset</span> charset <span class="token operator">=</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>charset<span class="token punctuation">,</span> <span class="token string">"StandardCharsets.UTF_8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>z <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>bArr<span class="token punctuation">,</span> charset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bArr2 <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>y<span class="token punctuation">;</span>        <span class="token comment">//f1ag-pa55</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>bArr2<span class="token punctuation">,</span> <span class="token string">"decodedDirectoryTwo"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Charset</span> charset2 <span class="token operator">=</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>charset2<span class="token punctuation">,</span> <span class="token string">"StandardCharsets.UTF_8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>A</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>bArr2<span class="token punctuation">,</span> charset2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    f b2 <span class="token operator">=</span> f<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>b2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d d2 <span class="token operator">=</span> b2<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>d2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance().reference"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>B</span> <span class="token operator">=</span> d2<span class="token punctuation">;</span>
+    d h <span class="token operator">=</span> d2<span class="token punctuation">.</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>z<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>h<span class="token punctuation">,</span> <span class="token string">"database.child(refDirectory)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>C</span> <span class="token operator">=</span> h<span class="token punctuation">;</span>
+    d h2 <span class="token operator">=</span> <span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>B</span><span class="token punctuation">.</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>A</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>h2<span class="token punctuation">,</span> <span class="token string">"database.child(refDirectoryTwo)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token namespace">this<span class="token punctuation">.</span></span>D</span> <span class="token operator">=</span> h2<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>flagSevensqliteActivity</strong> shows how application is parsing data from the Firebase instance. In order to understand the data being fetched, we need to know nodes we are fetching data from. From decompiled code, we are accessing the string x as shown in the constructor method in line 1 through <code>bArr</code> byte array. Our string is then passed to variable <code>z</code> constructor method as referenced <strong>this.z</strong> constructor.</p>
+<p>This means <strong>f1ag-pa55</strong> and <strong>sqlite</strong> are our firebase nodes.</p>
+<p>To get the firebase link, look for link in <strong>strings.xml</strong> in the resources directory of the application.The link of firebase url is shown in the image below. Manually test firebase endpoints manually to see if they are vulnerable as shown in the code below. Adding <code>.json</code> at the end of the firebase endpoint enables one to read data.</p>
+<p>First, test endpoint using <strong>sqlite</strong> node.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:output$ <span class="token function">curl</span> https://injuredandroid.firebaseio.com/sqlite.json
+<span class="token string">"S3V3N_11"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>From the above results, we get our flag. Accessing endpoint using <strong>f1ag-pa55</strong> using <code>.json</code> firebase trick, password.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:output$ <span class="token function">curl</span> https://injuredandroid.firebaseio.com/f1ag-pa55.json
+<span class="token string">"hunter2"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><strong>hunter2</strong> is our correct password for the challenge.</p>
+<h2 id="FLag8-AWS-Storage-and-Security"><a href="#FLag8-AWS-Storage-and-Security" class="headerlink" title="FLag8 - AWS Storage and Security."></a>FLag8 - AWS Storage and Security.</h2><p>Goal: Understanding misconfiguration of AWS storage and security implementation in the android applications.</p>
+<p>Decompiled <code>flagEightclass</code> activity code looks like the one shown below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FlagEightLoginActivity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    f b2 <span class="token operator">=</span> f<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>b2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d d2 <span class="token operator">=</span> b2<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>d2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance().reference"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>u <span class="token operator">=</span> d2<span class="token punctuation">;</span>
+    d h <span class="token operator">=</span> d2<span class="token punctuation">.</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token string">"/aws"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>h<span class="token punctuation">,</span> <span class="token string">"database.child(\"/aws\")"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>v <span class="token operator">=</span> h<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The activity initializes firebase instance and fetches some information from the AWS child node in the firebase storage model. First check if the model is vulnerable to <code>.json</code> trick of firebase read write vulnerability.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:ret2csu$ <span class="token function">curl</span> https://injuredandroid.firebaseio.com/aws.json
+<span class="token string">"C10ud_S3cur1ty_lol"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>Next is analyzing <code>onClick</code> method of the activity. This method responds to events of an application clicked and are defined in the Activity.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">FlagEightLoginActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">H</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Snackbar</span> <span class="token class-name">X</span> <span class="token operator">=</span> <span class="token class-name">Snackbar<span class="token punctuation">.</span>X</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> <span class="token string">"AWS CLI."</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X<span class="token punctuation">.</span>Y</span><span class="token punctuation">(</span><span class="token string">"Action"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X<span class="token punctuation">.</span>N</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">FlagEightLoginActivity</span> flagEightLoginActivity <span class="token operator">=</span> <span class="token class-name">FlagEightLoginActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">;</span>
+            <span class="token class-name"><span class="token namespace">flagEightLoginActivity<span class="token punctuation">.</span></span>I</span><span class="token punctuation">(</span><span class="token class-name"><span class="token namespace">flagEightLoginActivity<span class="token punctuation">.</span></span>H</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">k</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">FlagEightLoginActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">H</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Snackbar</span> <span class="token constant">X2</span> <span class="token operator">=</span> <span class="token class-name">Snackbar<span class="token punctuation">.</span>X</span><span class="token punctuation">(</span>view<span class="token punctuation">,</span> <span class="token string">"AWS profiles and credentials."</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X2<span class="token punctuation">.</span>Y</span><span class="token punctuation">(</span><span class="token string">"Action"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">X2<span class="token punctuation">.</span>N</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">FlagEightLoginActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">I</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">k</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From <strong>HINTS</strong> provided in the Activity, we need to understand the “AWS profiles and credentials” usage in order to subvert the intended behavior.</p>
+<p><strong>what are the AWS profile stored?</strong></p>
+<p>Most of the strings are stored in <strong>strings.xml</strong> in the resources directory which are referenced throughout the application. In <code>strings.xml</code> file we have two interesting strings.</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AWS_ID<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>AKIAZ36DGKTUIOLDOBN6<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>string</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>AWS_SECRET<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>KKT4xQAQ5cKzJOsoSImlNFFTRxjYkoc71vuRP48S<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>string</span><span class="token punctuation">></span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p><strong>AWS CLI</strong> is a unified tool to manage your AWS services, it enables one to configure AWS services through command line and automate them through scripts.<br>To install <strong>aws-cli</strong> on your linux machine type the following in your terminal.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python <span class="token parameter variable">-m</span> pip <span class="token function">install</span> <span class="token parameter variable">--user</span> awscli<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>For adding the aws profile, use the following command in terminal as shown below.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:~$ aws configure
+AWS Access Key ID <span class="token punctuation">[</span>None<span class="token punctuation">]</span>: AKIAZ36DGKTUIOLDOBN6
+AWS Secret Access Key <span class="token punctuation">[</span>None<span class="token punctuation">]</span>: KKT4xQAQ5cKzJOsoSImlNFFTRxjYkoc71vuRP48S<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="Flag9-FireBase"><a href="#Flag9-FireBase" class="headerlink" title="Flag9- FireBase"></a>Flag9- FireBase</h2><h3 id="What-is-firebase"><a href="#What-is-firebase" class="headerlink" title="What is firebase?"></a>What is firebase?</h3><p>Google firebase is a mobile and web application development platform that provides a real-time database that continuously syncs data between cloud and user’s mobile devices. Firebase databases are accessible via an API and that if developers have not correctly secured their firebase database, a simple request can retrieve it&#96;s entire content.</p>
+<p>We need to analyze the <code>FlagNineFirebaseActivity</code> in order to understand how read and write rules are implemented in the application.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">goToFlagNineFirebaseActivity</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+       <span class="token function">startActivity</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token class-name">FlagNineFirebaseActivity</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">FlagNineFirebaseActivity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> decode <span class="token operator">=</span> <span class="token class-name">Base64</span><span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span><span class="token string">"ZmxhZ3Mv"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">//  flags/</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>v <span class="token operator">=</span> decode<span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>decode<span class="token punctuation">,</span> <span class="token string">"decodedDirectory"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Charset</span> charset <span class="token operator">=</span> <span class="token class-name">StandardCharsets</span><span class="token punctuation">.</span><span class="token constant">UTF_8</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>charset<span class="token punctuation">,</span> <span class="token string">"StandardCharsets.UTF_8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>w <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>decode<span class="token punctuation">,</span> charset<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    f b2 <span class="token operator">=</span> f<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>b2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d d2 <span class="token operator">=</span> b2<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>d2<span class="token punctuation">,</span> <span class="token string">"FirebaseDatabase.getInstance().reference"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>x <span class="token operator">=</span> d2<span class="token punctuation">;</span>
+    d h <span class="token operator">=</span> d2<span class="token punctuation">.</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>w<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">b</span><span class="token punctuation">(</span>h<span class="token punctuation">,</span> <span class="token string">"database.child(refDirectory)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>y <span class="token operator">=</span> h<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Decode BASE64 encoded strings in order to understand strings stored in the <code>decode</code> variable.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:~$ <span class="token builtin class-name">echo</span> <span class="token string">"ZmxhZ3Mv"</span> <span class="token operator">|</span> base64 <span class="token parameter variable">-d</span>
+            flags/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>From the above decoded string,we are getting data from firebase storage, in the <strong>flags</strong> node.</p>
+<p>Looking at the decompiled below, it gives us an hint of solving the problem <strong>“Use the .json trick database url”</strong> .</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span><span class="token class-name">View</span> view<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">String</span> str<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">FlagNineFirebaseActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">H</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                str <span class="token operator">=</span> <span class="token string">"Use the .json trick with database url"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">k</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">FlagNineFirebaseActivity</span><span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">H</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>view <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                str <span class="token operator">=</span> <span class="token string">"Filenames."</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                d<span class="token punctuation">.</span>m<span class="token punctuation">.</span>b<span class="token punctuation">.</span>d<span class="token punctuation">.</span><span class="token function">k</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">throw</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Firebase-Realtime-Rules"><a href="#Firebase-Realtime-Rules" class="headerlink" title="Firebase Realtime Rules"></a>Firebase Realtime Rules</h3><p><code>Realtime database</code> stores data as one large JSON tree and synchronized every time a new device is connected.The data received or stored in the database is determined by the security rules of <code>read</code> and <code>write</code>.</p>
+<p>Firebase allows read and write rules to the database to be set to true or false. When <strong>.read</strong> is set to true means describes if and data is allowed to be read by users and <strong>.write</strong> describes if and when data is allowed to be written.<br>Example of a firebase rule where read and write are allowed.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"rules"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">".read"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">".write"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>When read and write rules are enabled means that everyone with access to the application can read and write unauthorized data to the database.</p>
+<p>The firebase database url is defined in <strong>strings.xml</strong> file in the resource section.</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>firebase_database_url<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>https://injuredandroid.firebaseio.com<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>string</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>The firebase node defined in our instance is <strong>flags</strong> node, to check if the endpoint node is vulnerable we append a <strong>.json</strong> at the end of the url node as shown in the image below.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:injured$ <span class="token function">curl</span> https://injuredandroid.firebaseio.com/flags/.json
+<span class="token string">"[nine!_flag]"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>If the url returns data, means our endpoint is vulnerable. From the above output we were able to successfully solve the challenge.</p>
+<h3 id="Securing-Firebase"><a href="#Securing-Firebase" class="headerlink" title="Securing Firebase"></a>Securing Firebase</h3><p>One can secure Firebase database by only allowing users of application to have only read permissions to a certain tree node instead of allowing read to the root node in the application. This means the applications can not read data from the neighboring nodes.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"rules"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">"flag"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">".read"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token property">".write"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Flag7-Sqlite"><span class="top-box-text">Flag7 - Sqlite</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#FLag8-AWS-Storage-and-Security"><span class="top-box-text">FLag8 - AWS Storage and Security.</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Flag9-FireBase"><span class="top-box-text">Flag9- FireBase</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#What-is-firebase"><span class="top-box-text">What is firebase?</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Firebase-Realtime-Rules"><span class="top-box-text">Firebase Realtime Rules</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Securing-Firebase"><span class="top-box-text">Securing Firebase</span></a></li></ol></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/Android-appsec-part-1/">
+          <h3 class="post-title">
+            Next: Android Appsec Series - Part 1
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

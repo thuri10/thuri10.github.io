@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>API Security - Excessive Data Exposure</title>
+<meta name="keywords" content="API Security - Excessive Data Exposure, LaByte">
+<meta name="description" content="Excessive Data Exposure is a vulnerability that occurs due to additional information which is returned by the API which expected to be filtered or ignored by client.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">API Security - Excessive Data Exposure</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-12-16</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/apisec/">
+              apisec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/crAPI/">
+              crAPI
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Excessive Data Exposure is a vulnerability that occurs due to additional information which is returned by the API, which expected to be filtered or ignored by client. The extra information returned by the API endpoint may contain sensitive data about users, financial data etc, which may lead to a breach of data or breach data protection laws.</p>
+<h2 id="Challenge-4-Find-an-API-endpoint-that-leaks-sensitive-information-to-other-users"><a href="#Challenge-4-Find-an-API-endpoint-that-leaks-sensitive-information-to-other-users" class="headerlink" title="Challenge 4 - Find an API endpoint that leaks sensitive information to other users"></a>Challenge 4 - Find an API endpoint that leaks sensitive information to other users</h2><p>The goal of this challenge is to identify the endpoint that leaks sensitive information about its users.The endpoint is <code>/community/api/v2/community/posts/recent</code> which leaks for information about the owner email and vehicle details.</p>
+<p><img src="/../images/crApi/challenge4-leak.png" alt="Endpoint Information leak"></p>
+<p>The information from the sensitive information may be used to escalate the privileges of the system, information disclosure through vehicleID <code>IDOR</code>, resetting other people password and locking them out.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge-4-Find-an-API-endpoint-that-leaks-sensitive-information-to-other-users"><span class="top-box-text">Challenge 4 - Find an API endpoint that leaks sensitive information to other users</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/crapi-part2/">
+          <h3 class="post-title">
+            Next: API Security - Broken User Authentication
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Reversing Simple 8-Bit VM</title>
+<meta name="keywords" content="Reversing Simple 8-Bit VM, LaByte">
+<meta name="description" content="vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The V">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Reversing Simple 8-Bit VM</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2021-12-07</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/reverse/">
+              reverse
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/vm/">
+              vm
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p><code>vm1.exe</code> implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM&#96;s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag?<span id="more"></span> A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).</p>
+<p>Main function analysis</p>
+<p><img src="/images/mal/vmq.png" alt="Main Function"></p>
+<p>From the main function, <strong>HeapAlloc</strong> allocates a memory block of size <strong>0x1FB</strong> bytes. The pointer of the allocated memory block is called <code>allocated_memblock</code> as shown in the image.</p>
+<p>The program does a <strong>memcpy</strong> of the content stored in the <code>rambin</code> offset to newly allocated memory block.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>dest<span class="token punctuation">,</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>src<span class="token punctuation">,</span> <span class="token class-name">size_t</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><code>memcpy</code> function copies data from the source address to destination address of size 0x1fb. The destination address of this program is allocate_memblock. The content of the <code>rambin</code> file and content at the rambin offset are the same as examined below.</p>
+<p><img src="/images/mal/rambin.png" alt="Rambin"><br><img src="/images/mal/ida_hex.png" alt="IDA HEX"></p>
+<p>Next step is analyzing <strong>sub_4022E0</strong> function. The disassembled function graph looks like the one below.</p>
+<p><img src="/images/mal/vmflow.png" alt="sub_4022E0 control flow loop"></p>
+<p>From the disassembly above, the binary does some byte operations. The first graph block is doing a bitwise <code>AND</code> operation, which is responsible for setting both <code>SF</code> and <code>ZF</code> to zero.First it sets the value of eax register to 1, and then do a test operation. Because the conditional <strong>“jump if zero”</strong> is not true, we continue our execution to the next control block.</p>
+<p>For decompilation of our binary we use ghidra.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">FUN_004022e0</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+  byte bVar1<span class="token punctuation">;</span>
+  uint uVar2<span class="token punctuation">;</span>
+  byte bVar3<span class="token punctuation">;</span>
+  byte counter<span class="token punctuation">;</span>
+
+  counter <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/* 0 */</span>
+    uVar2 <span class="token operator">=</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>counter<span class="token punctuation">;</span>
+      <span class="token comment">/* 2 */</span>
+    bVar1 <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    bVar3 <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    counter <span class="token operator">=</span> counter <span class="token operator">+</span> <span class="token number">3</span><span class="token punctuation">;</span>
+    uVar2 <span class="token operator">=</span> <span class="token function">FUN_00402270</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> uVar2<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                         <span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>bVar1<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                         <span class="token punctuation">(</span>uint<span class="token punctuation">)</span><span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> <span class="token punctuation">(</span>uint<span class="token punctuation">)</span>bVar3<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>uVar2 <span class="token operator">&amp;</span> <span class="token number">0xff</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> uVar2<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The above c-code like is more easier to understand.The assembly equivalent of this operation is as the one shown in the first memory block of the function.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm"><span class="token label function">loc_4022EA:</span>
+mov     <span class="token register variable">eax</span>, <span class="token number">1</span>
+test    <span class="token register variable">eax</span>, <span class="token register variable">eax</span>
+jz      short loc_402367<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Function <strong>FUN_00402270</strong> is called and three arguments are passed as parameters.The control graph below shows various operation executed by the binary depending on the argument passed to the function.</p>
+<p><img src="/images/mal/vmflow2.png" alt="control flow loop"></p>
+<p>From the above graph, the function does a compare on the arguments passed with either 1, 2 or 3. If the condition is fulfilled, that operation branch is executed as shown in the image above.</p>
+<p>Example: <strong><em>if the argument value passed is 1, control flow branch to loc_4022E address as shown in the graph</em></strong></p>
+<p>For better understanding of the control flow, we decompile the function using ghidra, because <strong>idafree</strong> does not support x86 decompilation.The “C-like style” of the code looks like the one below.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">
+<span class="token keyword">int</span> <span class="token function">FUN_00402270</span><span class="token punctuation">(</span><span class="token keyword">int</span> value1<span class="token punctuation">,</span><span class="token keyword">int</span> value2<span class="token punctuation">,</span><span class="token keyword">int</span> param_3<span class="token punctuation">)</span>
+
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token operator">*</span><span class="token punctuation">(</span>undefined <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span>undefined<span class="token punctuation">)</span>param_3<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      value1 <span class="token operator">=</span> allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">;</span>
+      DAT_00404240 <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span>value1<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>value1 <span class="token operator">!=</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> value1 <span class="token operator">&amp;</span> <span class="token number">0xffffff00</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      value1 <span class="token operator">=</span> allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">;</span>
+      <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>allocated_memblock <span class="token operator">+</span> value2<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token operator">*</span><span class="token punctuation">(</span>byte <span class="token operator">*</span><span class="token punctuation">)</span>value1 <span class="token operator">^</span> DAT_00404240<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token function">CONCAT31</span><span class="token punctuation">(</span><span class="token punctuation">(</span>int3<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uint<span class="token punctuation">)</span>value1 <span class="token operator">>></span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Decompilation of ghidra is not optimal, therefore decompiled code contains some cast which can be fixed by setting correct data types in the functional signatures. Being an easy VM, we implement the logic in python for decryption of contents <strong><em>ram.bin</em></strong> file.</p>
+<p>Fully implemented solution code is below.</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#implement decryption routine function in python</span>
+<span class="token comment">#solution.py</span>
+<span class="token keyword">def</span> <span class="token function">fun_00402270</span><span class="token punctuation">(</span>value1<span class="token punctuation">,</span> value2<span class="token punctuation">,</span> value3<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> dat_420
+    <span class="token keyword">if</span> value1 <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">:</span>
+        membytes<span class="token punctuation">[</span>value2<span class="token punctuation">]</span> <span class="token operator">=</span> value3
+    <span class="token keyword">elif</span> value1 <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">:</span>
+        dat_420 <span class="token operator">=</span> membytes<span class="token punctuation">[</span>value2<span class="token punctuation">]</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> value1 <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">:</span>
+            membytes<span class="token punctuation">[</span>value2<span class="token punctuation">]</span> <span class="token operator">=</span> membytes<span class="token punctuation">[</span>value2<span class="token punctuation">]</span> <span class="token operator">^</span> dat_420
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token boolean">False</span>
+
+    <span class="token keyword">return</span> <span class="token boolean">True</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span><span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> membytes
+    membytes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+    <span class="token comment">#open the encypted file and read bytes</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'ram.bin'</span><span class="token punctuation">,</span><span class="token string">'rb'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rambin<span class="token punctuation">:</span>
+        membytes<span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span>rambin<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    counter  <span class="token operator">=</span><span class="token number">0</span>
+    uvar2 <span class="token operator">=</span> <span class="token number">0</span>
+    bvar1 <span class="token operator">=</span> <span class="token number">1</span>
+    bvar3 <span class="token operator">=</span> <span class="token number">2</span>
+    uvar2_response <span class="token operator">=</span> <span class="token boolean">True</span>
+
+    <span class="token keyword">while</span> uvar2_response<span class="token punctuation">:</span>
+        counter <span class="token operator">+=</span><span class="token number">3</span>
+        uvar2_response <span class="token operator">=</span> fun_00402270<span class="token punctuation">(</span>membytes<span class="token punctuation">[</span>counter<span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> uvar2<span class="token punctuation">]</span><span class="token punctuation">,</span> membytes<span class="token punctuation">[</span>counter<span class="token operator">+</span><span class="token number">0xff</span> <span class="token operator">+</span> bvar1<span class="token punctuation">]</span><span class="token punctuation">,</span> membytes<span class="token punctuation">[</span>counter<span class="token operator">+</span> <span class="token number">0xff</span> <span class="token operator">+</span> bvar3<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token builtin">chr</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> membytes<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">26</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Running the above script in the terminal gets us our flag</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vx@archie:vm$ python3 x.py
+<span class="token punctuation">[</span><span class="token string">'F'</span>, <span class="token string">'L'</span>, <span class="token string">'A'</span>, <span class="token string">'G'</span>, <span class="token string">'&#123;'</span>, <span class="token string">'V'</span>, <span class="token string">'M'</span>, <span class="token string">'S'</span>, <span class="token string">'-'</span>, <span class="token string">'A'</span>, <span class="token string">'R'</span>, <span class="token string">'E'</span>, <span class="token string">'-'</span>, <span class="token string">'F'</span>, <span class="token string">'O'</span>, <span class="token string">'R'</span>, <span class="token string">'-'</span>, <span class="token string">'M'</span>, <span class="token string">'A'</span>, <span class="token string">'L'</span>, <span class="token string">'W'</span>, <span class="token string">'A'</span>, <span class="token string">'R'</span>, <span class="token string">'E'</span>, <span class="token string">'&#125;'</span>, <span class="token string">'\x00'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>After a successful decryption of the rambin contents, the <code>sub_4022E0</code> function return the pointer to the flag to main function as shown in the image below.</p>
+<p><img src="/images/mal/retflag.png" alt="Return value of sub_4022E0"></p>
+<p>Therefore main function calculates MD5 hash of the flag and outputs to message dialogbox using <strong>MessageBoxA</strong> function.</p>
+<p>The correct flag for the vm challenge is <code>FLAG&#123;VMS-ARE-FOR-MALWARE&#125;</code></p>
+
+        </div>
+        <div class="top-div">
+          
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/Android-appsec-part-2/">
+          <h3 class="post-title">
+            Next: Android Appsec Series -Part 2
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

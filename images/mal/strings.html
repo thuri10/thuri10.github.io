@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Static Analysis of Malware Strings</title>
+<meta name="keywords" content="Static Analysis of Malware Strings, LaByte">
+<meta name="description" content="Strings challenges contains an un-encrypted flag stored within the executable. When run, the program will output an MD5 hash of the flag but not the original. Can you extract the flag?">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Static Analysis of Malware Strings</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2021-12-07</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/">
+              
+                
+                  ，
+                
+              </a>
+            
+              <a href="/">
+              
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>This post is a brief walkthrough of <strong>“strings”</strong> challenges provided by MalwareTech. The challenges can be downloaded from the following website <a target="_blank" rel="noopener" href="https://www.malwaretech.com/challenges/windows-reversing">challenges</a>.</p>
+<p>The goal of “strings” challenges is to understand various implementation of strings in malware through static analysis. Strings are very useful in storing the configurations, decryption keys, data and c&amp;c server addresses.</p>
+<p>For analysis, I will use IDApro free for analysis. The author of the challenges provides a set of rules to follow while solving the challenges</p>
+<p><strong>Rules &amp; Information</strong></p>
+<pre><code>- You are not require to run strings1.exe, this challenge is static analysis only.
+- Do not use a debugger or dumper to retrieve the decrypted flag from memory, this is cheating.
+- Analysis can be done using the free version of IDA Pro (you don’t need the debugger).
+</code></pre>
+<h2 id="challenge1-Strings1"><a href="#challenge1-Strings1" class="headerlink" title="challenge1- Strings1"></a>challenge1- Strings1</h2><p><strong>Description</strong></p>
+<blockquote>
+<p>strings1.exe contains an un-encrypted flag stored within the executable. When run, the program will output an MD5 hash of the flag but not the original. Can you extract the flag?</p>
+</blockquote>
+<p>Knowing the binary is a windows PE, we drag the binary into IDA for analysis. The analysis of the binary is fast because the binary relative small. The disassembled code is as the one shown in the image below.</p>
+<p><img src="/post/mal/strings1.png" alt="Strings IDA"></p>
+<p>From the analysis of the above code, we take flag as our input and print out the md5 of the flag. The <strong>md5_hash</strong> function is responsible for calculating the MD5 hash of the flag. The MessageBoxA is responsible for displaying the md5hash of the flag in a modal dialog box.</p>
+<p>The correct flag is <strong>FLAG{CAN-I-MAKE-IT-ANYMORE-OBVIOUS}</strong></p>
+<p>Inputting the above flag in the authors website we get a correct message.</p>
+<blockquote>
+<p>Correct flag for strings1!</p>
+</blockquote>
+<h2 id="Challenge2-Strings2"><a href="#Challenge2-Strings2" class="headerlink" title="Challenge2- Strings2"></a>Challenge2- Strings2</h2><blockquote>
+<p>strings2.exe contains an un-encrypted flag stored within the executable. When run, the program will output an MD5 hash of the flag but not the original. Can you extract the flag?</p>
+</blockquote>
+<p>The goal of the second challenge is to understand about stack strings. stack strings is where strings are copied in single bytes, this helps malware avoid detection algorithms of common strings.</p>
+<p>Drag the binary into IDA for analysis. The main function of the binary looks like the one shown in the image below.</p>
+<p><img src="/post/mal/strings2.png" alt="Strings IDA"></p>
+<p>From above disassembled code, the flag string is pushed in single bytes, and then passed to the md5_char function. m5_char function is responsible for calculating the MD5sum of the flag as previous seen in <strong>challenge1</strong>.</p>
+<p>The flag of the second challenge is <strong>FLAG{STACK-STRINGS-ARE-BEST-STRINGS}</strong></p>
+<h2 id="Challenge3-Strings3"><a href="#Challenge3-Strings3" class="headerlink" title="Challenge3 - Strings3"></a>Challenge3 - Strings3</h2><blockquote>
+<p>strings3.exe contains an un-encrypted flag stored within the executable. When run, the program will output an MD5 hash of the flag but not the original. Can you extract the flag?</p>
+</blockquote>
+<p>The goal of the third challenge is to understand how malware uses resources section of the PE. Drag the strings3 binary into IDA and disassemble the main function. The disassembled code looks the one in the image below.</p>
+<p><img src="/post/mal/resourcestrings3.png" alt="Strings IDA"></p>
+<p>Looking at the above function is we have a new function, <strong>FindResourceA</strong>. Looking at the windows documentation, FindResourceA function is responsible determination of a resource with the specified type and name in the specified module as shown in the code snip below.</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">HRSRC FindResourceA(
+  [in, optional] HMODULE hModule,
+  [in]           LPCSTR  lpName,
+  [in]           LPCSTR  lpType
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From the disassembly above, the name of the resource we are referencing is <strong>rc.rc</strong>. After the execution of FindResourceA function it returns an handle to the specified resource&#96;s information block. In x86 assembly code the return values of functions are put in <strong>eax</strong> register.</p>
+<p>From the above code we can reconstruct the c-style code of the FindResource function.</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">FindResourceA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">"rc.rc"</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>The handle module is 0 which is then stored in eax register and then used for calculation of the UID of the resource as shown in assembly below.</p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm">mov <span class="token operator">[</span><span class="token register variable">ebp</span><span class="token operator">+</span>var_8<span class="token operator">]</span>, <span class="token register variable">eax</span>
+mov <span class="token register variable">eax</span>, <span class="token number">1</span>
+shl <span class="token register variable">eax</span>, <span class="token number">8</span>
+xor <span class="token register variable">edx</span>, <span class="token register variable">edx</span>
+inc <span class="token register variable">edx</span>
+shl <span class="token register variable">edx</span>, <span class="token number">4</span>
+or <span class="token register variable">eax</span>, <span class="token register variable">edx</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>From the above assembly code, the value of eax is 0. The first line saves eax value to a memory register.</p>
+<p>Second line increments the value of eax register by 1. Therefore the new value of eax register is eax&#x3D;1.</p>
+<p>Third line, shifts the bits value of eax register to the left by 8 times. we calculate the new value using python.</p>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">&gt;&gt;&gt; 1 &lt;&lt;8
+256
+&gt;&gt;&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>value of 1 shifted to the left 8 times becomes 256 as shown above.</p>
+<p>Fourth line, is we are clearing the edx register through xor operation. Therefore the value of edx is 0.</p>
+<p>Line 5 we increment the value of edx by 1. The new value stored in edx register is 1, <strong>edx&#x3D;1</strong> .</p>
+<p>Line 6 we shift the value of edx register by 4 positions to the left.</p>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">&gt;&gt;&gt; 1 &lt;&lt;4
+16
+&gt;&gt;&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>From the calculation above, the new value od edx register is 16. <strong>edx&#x3D;16</strong>. Therefore for the last line we are doing a bitwise inclusive <strong>OR</strong> operation of value at eax and edx register.</p>
+<p>The values for eax and edx registers are 256 and 16 respectively.</p>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">&gt;&gt;&gt; 256 | 16
+272
+&gt;&gt;&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>The result of the bits operation are therefore stored on the eax register. The new <strong>eax</strong> value is 272. Finally the value of eax register is the stored in memory address referenced below by <strong>UID</strong></p>
+<pre class="line-numbers language-nasm" data-language="nasm"><code class="language-nasm">mov <span class="token operator">[</span><span class="token register variable">ebp</span><span class="token operator">+</span>UID<span class="token operator">]</span>, <span class="token register variable">eax</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/post/mal/strings3.png" alt="Strings IDA"></p>
+<p>The analysis of the disassembled code above, shows the binary loads a resource from the executable referenced by <strong>uID</strong>. The function structure for the LoadStringA functions looks like the one below.</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int LoadStringA(
+  [in, optional] HINSTANCE hInstance,
+  [in]           UINT      uID,
+  [out]          LPSTR     lpBuffer,
+  [in]           int       cchBufferMax
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The <strong>uID</strong> integer value of the resource to be loaded is 272. For viewing the executable resources you can use the <strong>ResourcesEditor</strong> tool or python3 <strong>pefile</strong> library as shown in the code below.</p>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">import pefile
+pe &#x3D; pefile.PE(&quot;.&#x2F;strings3.exe_&quot;)***
+pe.print_info()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>The above 2 line of python3 code print all the information about the executable. As shown below is our resources section and references the string uid we are loading.</p>
+<p><img src="/post/mal/string3rc.png" alt="PE Resources"></p>
+<p>From the image above, we are loading <strong>FLAG{RESOURCES-ARE-POPULAR-FOR-MALWARE}</strong> string to our buffer through <strong>LoadStringA</strong> function which is referenced by uid 272. The pointer to the string is then passed to md5 function which is then used for calculating the md5 value of the string and then displayed in the modal box.</p>
+<p>The correct flag of the challenge is <strong>FLAG{RESOURCES-ARE-POPULAR-FOR-MALWARE}</strong>.</p>
+<p>For learning more about resource section of Portable Executable, check <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=3PcgwKffytI">PE resources</a> by <a target="_blank" rel="noopener" href="https://twitter.com/struppigel">@struppigel</a> .</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#challenge1-Strings1"><span class="top-box-text">challenge1- Strings1</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge2-Strings2"><span class="top-box-text">Challenge2- Strings2</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge3-Strings3"><span class="top-box-text">Challenge3 - Strings3</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Information Disclosure Vulnerability</title>
+<meta name="keywords" content="Information Disclosure Vulnerability, LaByte">
+<meta name="description" content="Information disclosure is a web vulnerability that allows leakage of sensitive information to it's users. Information leaked may include other user's sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Information Disclosure Vulnerability</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-10-31</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/appsec/">
+              appsec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/disclosure/">
+              disclosure
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Information disclosure is a web vulnerability that allows leakage of sensitive information to it’s users. Information leaked may include other user’s sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application.</p>
+<p>To understand impact of the information disclosure vulnerabilities, we solve <strong>portswigger</strong> information disclosure labs.</p>
+<h2 id="Lab1-Information-disclosure-in-error-messages"><a href="#Lab1-Information-disclosure-in-error-messages" class="headerlink" title="Lab1 - Information disclosure in error messages"></a>Lab1 - Information disclosure in error messages</h2><blockquote>
+<p>This lab’s verbose error messages reveal that it is using a vulnerable version of a third-party framework. To solve the lab, obtain and submit the version number of this framework.</p>
+</blockquote>
+<p>To solve the challenge, we need to trigger an error message according to lab description. To trigger an error for example we can change the data type of productID from <code>int</code> to <code>string</code> and observer the response from the server. Image below response when we trigger an error with <strong>aa</strong> as our product ID.<br><img src="/images/websec/disclosure/lab1.png" alt="Trigger an Error message"></p>
+<p>From the http response we are able to leak information about the server by triggering an exception on the server.The version of the software is <strong>Apache Struts 2 2.3.31</strong> as shown in the response.</p>
+<h2 id="Lab2-Information-disclosure-on-debug-page"><a href="#Lab2-Information-disclosure-on-debug-page" class="headerlink" title="Lab2 - Information disclosure on debug page"></a>Lab2 - Information disclosure on debug page</h2><blockquote>
+<p>This lab contains a debug page that discloses sensitive information about the application. To solve the lab, obtain and submit the SECRET_KEY environment variable.</p>
+</blockquote>
+<p>To solve the challenge, first we start with reconnaissance in order to understand how the application is structured. First thing is to check for robots.txt file and view source code of the index page.</p>
+<p><img src="/images/websec/disclosure/lab2-sourcecode.png" alt="Debug information"></p>
+<p>By viewing source code , we have debug page URL path commented out. <strong>&#x2F;cgi-bin&#x2F;phpinfo.php</strong>. By navigating to the referenced URI we get a PHP debug page as shown below.<br><img src="/images/websec/disclosure/lab2_secret.png" alt="Debug page"></p>
+<p>Looking at the environment variables, we are able to get <strong>SECRET_KEY</strong> parameter value.The secret key is <code>qxptwgij0q108ugpi5btaxyjb9pq7...</code></p>
+<h2 id="Lab3-Source-code-disclosure-via-backup-files"><a href="#Lab3-Source-code-disclosure-via-backup-files" class="headerlink" title="Lab3 - Source code disclosure via backup files"></a>Lab3 - Source code disclosure via backup files</h2><blockquote>
+<p>This lab leaks its source code via backup files in a hidden directory. To solve the lab, identify and submit the database password, which is hard-coded in the leaked source code.</p>
+</blockquote>
+<p>First step is to do a reconnaissance on the web application on whether the robots.txt file is available or not. By navigating to the robots.txt file path, we now get the backup URL.</p>
+<p><img src="/images/websec/disclosure/lab3-backup.png" alt=" Backup file path"></p>
+<p>By visiting <strong>&#x2F;backup</strong> path we get Java source code which has been backed up.<br><img src="/images/websec/disclosure/lab3-backupfile.png" alt="Source code path"></p>
+<p>The source code Backup is below.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">data<span class="token punctuation">.</span>productcatalog</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">common<span class="token punctuation">.</span>db<span class="token punctuation">.</span></span><span class="token class-name">JdbcConnectionBuilder</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">IOException</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">ObjectInputStream</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">Serializable</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>sql<span class="token punctuation">.</span></span><span class="token class-name">Connection</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>sql<span class="token punctuation">.</span></span><span class="token class-name">ResultSet</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>sql<span class="token punctuation">.</span></span><span class="token class-name">SQLException</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>sql<span class="token punctuation">.</span></span><span class="token class-name">Statement</span></span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProductTemplate</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> <span class="token number">1L</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> id<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">transient</span> <span class="token class-name">Product</span> product<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">ProductTemplate</span><span class="token punctuation">(</span><span class="token class-name">String</span> id<span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">readObject</span><span class="token punctuation">(</span><span class="token class-name">ObjectInputStream</span> inputStream<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">ClassNotFoundException</span>
+    <span class="token punctuation">&#123;</span>
+        inputStream<span class="token punctuation">.</span><span class="token function">defaultReadObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">ConnectionBuilder</span> connectionBuilder <span class="token operator">=</span> <span class="token class-name">ConnectionBuilder</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>
+                <span class="token string">"org.postgresql.Driver"</span><span class="token punctuation">,</span>
+                <span class="token string">"postgresql"</span><span class="token punctuation">,</span>
+                <span class="token string">"localhost"</span><span class="token punctuation">,</span>
+                <span class="token number">5432</span><span class="token punctuation">,</span>
+                <span class="token string">"postgres"</span><span class="token punctuation">,</span>
+                <span class="token string">"postgres"</span><span class="token punctuation">,</span>
+                <span class="token string">"jp2sytqk09qeraocb9a8ud5536r7loho"</span>
+        <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">withAutoCommit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token class-name">Connection</span> connect <span class="token operator">=</span> connectionBuilder<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">String</span> sql <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"SELECT * FROM products WHERE id = '%s' LIMIT 1"</span><span class="token punctuation">,</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">Statement</span> statement <span class="token operator">=</span> connect<span class="token punctuation">.</span><span class="token function">createStatement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token class-name">ResultSet</span> resultSet <span class="token operator">=</span> statement<span class="token punctuation">.</span><span class="token function">executeQuery</span><span class="token punctuation">(</span>sql<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>resultSet<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            product <span class="token operator">=</span> <span class="token class-name">Product</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>resultSet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SQLException</span> e<span class="token punctuation">)</span>
+        <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IOException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Product</span> <span class="token function">getProduct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> product<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>By auditing the above source code we now have the database password which is <strong>jp2sytqk09qeraocb9a8ud5536r7loho</strong>.</p>
+<p>Lesson: Never HARDCODE passwords or username in the source code, use environment variables to reduce damage or impact incase of a compromise.</p>
+<h2 id="Lab4-Authentication-bypass-via-information-disclosure"><a href="#Lab4-Authentication-bypass-via-information-disclosure" class="headerlink" title="Lab4 - Authentication bypass via information disclosure"></a>Lab4 - Authentication bypass via information disclosure</h2><blockquote>
+<p>This lab’s administration interface has an authentication bypass vulnerability, but it is impractical to exploit without knowledge of a custom HTTP header used by the front-end.<br>To solve the lab, obtain the header name then use it to bypass the lab’s authentication. Access the admin interface and delete Carlos’s account.<br>You can log in to your own account using the following credentials: wiener:peter</p>
+</blockquote>
+<p>To solve the lab, we visit the admin interface as shown in image below.</p>
+<p><img src="/images/websec/disclosure/lab4-localuser.png" alt="Custom header"><br>From the description above, the admin interface is only available for local users. To bypass this restriction, we need to modify our HTTP request to appear as if sent from the local user. To determine the custom X-Forward Method, we use <strong>TRACE</strong> to send our request instead of <strong>GET</strong>.<br><img src="/images/websec/disclosure/lab4-trace.png" alt="Trace Method"></p>
+<p>From the response, the server implements <code>X-Custom-IP-Authorization</code> header in order to access the admin page.Using <code>X-Custom-IP-Authorization: 127.0.0.1</code> in our HTTP header, we can proxy our request in burpSuite and delete <code>carlos</code> from the server.</p>
+<p><img src="/images/websec/disclosure/lab4-deleteuser.png" alt="Delete Request"></p>
+<h2 id="Lab5-Authentication-disclosure-in-version-control-history"><a href="#Lab5-Authentication-disclosure-in-version-control-history" class="headerlink" title="Lab5 - Authentication disclosure in version control history"></a>Lab5 - Authentication disclosure in version control history</h2><blockquote>
+<p>This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the administrator user then log in and delete Carlos’s account.</p>
+</blockquote>
+<p>By appending <code>.git</code> to the URL we get a git folder structure.<br><img src="/images/websec/disclosure/lab5-gitdir.png" alt="Git folder"></p>
+<p>To download all files, one can use <strong>wget -r URLPATH</strong> into a local folder.First, Use <code>git diff</code> to check files contents have been modified or changed as shown in image below.</p>
+<p><img src="/images/websec/disclosure/lab5-gitdiff.png" alt="Git Diff"></p>
+<p>To get original values before being modified, we check out the previous commit. Now we are able to get the configured admin password from the configuration file as shown in image below.</p>
+<p><img src="/images/websec/disclosure/lab5-gitcheckpass.png" alt="Folder environment variables"></p>
+<p>The admin password is <strong>d72v1x6td9v0kqy39xr5</strong></p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab1-Information-disclosure-in-error-messages"><span class="top-box-text">Lab1 - Information disclosure in error messages</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab2-Information-disclosure-on-debug-page"><span class="top-box-text">Lab2 - Information disclosure on debug page</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab3-Source-code-disclosure-via-backup-files"><span class="top-box-text">Lab3 - Source code disclosure via backup files</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab4-Authentication-bypass-via-information-disclosure"><span class="top-box-text">Lab4 - Authentication bypass via information disclosure</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab5-Authentication-disclosure-in-version-control-history"><span class="top-box-text">Lab5 - Authentication disclosure in version control history</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/directory-traversal/">
+          <h3 class="post-title">
+            Next: Directory Traversal Vulnerabilities
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

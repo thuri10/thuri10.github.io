@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Reversing C++ - Basic Templates</title>
+<meta name="keywords" content="Reversing C++ - Basic Templates, LaByte">
+<meta name="description" content="A Template is a c++ entity that accepts different data types but performs the same functionality. The data types are passed as template parameters to template function so that we don't need to write same code functionality for different data types.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Reversing C++ - Basic Templates</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-07-16</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/reverse/">
+              reverse
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/opensecurity/">
+              opensecurity
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/c/">
+              c++
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <blockquote>
+<p>In this exercise you will need to reverse engineer a binary, research different functions, and understand if the functions are part of a template or not.</p>
+</blockquote>
+<p><strong>NB: Decompilers are not permitted, please use only static reverse engineering during this lab.</strong></p>
+<p>The lab can be downloaded at the following link <a target="_blank" rel="noopener" href="https://gitlab.com/opensecuritytraining/re3011_cpp_re_binaries/-/blob/main/CalcNum%C2%A0">CalcNum lab</a></p>
+<h2 id="What-is-a-C-template"><a href="#What-is-a-C-template" class="headerlink" title="What is a C++ template?"></a>What is a C++ template?</h2><p>A Template is a c++ entity that accepts different data types but performs the same functionality. The data types are passed as template parameters to template function so that we don’t need to write same code functionality for different data types.</p>
+<h2 id="Lab-Analysis"><a href="#Lab-Analysis" class="headerlink" title="Lab Analysis"></a>Lab Analysis</h2><p>For solving the questions, I used an approach of first reading questions and then reverse engineering those functions only. This ensured I only reversed functions important to our analysis.</p>
+<h2 id="Question-1"><a href="#Question-1" class="headerlink" title="Question 1"></a>Question 1</h2><blockquote>
+<p>Which of the the following functions are part of the same template?</p>
+</blockquote>
+<p>For reverse engineering we will focus on the following functions, <code>0x1229</code>, <code>0x1620</code>, <code>0x1342</code>, <code>0x15fa</code>, and <code>0x1245</code> in order to answer the first and subsequent questions.</p>
+<p>The first step to manually reverse functions and understand what each function is doing.<br>For analysis I will be using IDA Pro freeware.</p>
+<h3 id="0x1229-Function-Analysis"><a href="#0x1229-Function-Analysis" class="headerlink" title="0x1229 Function Analysis"></a><code>0x1229</code> Function Analysis</h3><p><img src="/images/ost2/sub_func1.png" alt="Subtraction"></p>
+<p>Looking at the function as shown in image above, it accepts two parameters of type <code>int</code> and does Subtraction (assembly instruction<code>sub</code>) of local variables <code>x</code> and <code>y</code> ant then returns the result. The return value is of type <code>int</code>, therefore we can set type of our function as shown in the image above.</p>
+<h3 id="0x1620-Function-Analysis"><a href="#0x1620-Function-Analysis" class="headerlink" title="0x1620 Function Analysis"></a><code>0x1620</code> Function Analysis</h3><p><img src="/images/ost2/max_func.png" alt="Max value"></p>
+<p>From the analysis of this function, it accepts two parameters of type <code>long</code> and finds the maximum value between the two. The two parameters are compared through use of <code>jge</code> assembly instruction as shown above.</p>
+<h3 id="0x1342-Function-Analysis"><a href="#0x1342-Function-Analysis" class="headerlink" title="0x1342 Function Analysis"></a><code>0x1342</code> Function Analysis</h3><p><img src="/images/ost2/func3.png" alt="Max value"></p>
+<p>The function accepts two parameters of type <code>long</code> and checks if one parameter is equal to <code>zero</code>. If the value is not equal to <code>zero</code>, it does math and bit operations.</p>
+<h3 id="0x15fa-Function-Analysis"><a href="#0x15fa-Function-Analysis" class="headerlink" title="0x15fa Function Analysis"></a><code>0x15fa</code> Function Analysis</h3><p><img src="/images/ost2/max_value2.png" alt="Max value"></p>
+<p>From the analysis of this function, function accepts two parameters of type <code>int</code> and finds the maximum value between the two. The two parameters are compared through use of <code>jge</code> assembly instruction. Therefore the maximum value is returned by the function.</p>
+<h3 id="0x1245-Function-Analysis"><a href="#0x1245-Function-Analysis" class="headerlink" title="0x1245 Function Analysis"></a><code>0x1245</code> Function Analysis</h3><p><img src="/images/ost2/func4.png" alt="0x1245 analysis"></p>
+<p>This function takes four parameters of type <code>int</code> and does further bits operations as shown in the disassembly code.</p>
+<p>From the above functions analysis, only two functions qualify as templates. <code>0x1620</code> and <code>0x15fa</code> are templates functions because they perform the same functionality( <code>Finding the Maximum value</code>) and number of parameters passed to each function are the same.</p>
+<h2 id="Question-2"><a href="#Question-2" class="headerlink" title="Question 2"></a>Question 2</h2><blockquote>
+<p>Review the function at address <code>0x12C5</code> and other functions in the binary. Is this function a template function?</p>
+</blockquote>
+<h3 id="0x12C5-Function-Analysis"><a href="#0x12C5-Function-Analysis" class="headerlink" title="0x12C5 Function Analysis"></a><code>0x12C5</code> Function Analysis</h3><p><img src="/images/ost2/func5.png" alt="0x12c5 analysis"></p>
+<p>This function does the same functionality as the function <code>0x1245</code>, but the difference is the unequal number of parameters passed to each function.<br>Therefore, it does <code>not</code> qualify as a template function.</p>
+<h2 id="Question-3"><a href="#Question-3" class="headerlink" title="Question 3"></a>Question 3</h2><blockquote>
+<p>Review the function at address <code>0x15cc</code> and the function at address <code>0x15fa</code>. Are these functions part of the same template function?</p>
+</blockquote>
+<h3 id="0x15cc-Function-Analysis"><a href="#0x15cc-Function-Analysis" class="headerlink" title="0x15cc Function Analysis"></a><code>0x15cc</code> Function Analysis</h3><p>This function is used for calculating minimum value of the two parameters passed to function.</p>
+<p><img src="/images/ost2/min_value.png" alt="0x15cc analysis"></p>
+<p>The two functions are <code>not</code> of the same template function. This is because one is used for calculating the maximum value and other one for minimum value. The difference between the two is <code>jge</code> and <code>jle</code> conditional assembly instructions as shown in IDA disassembly above.</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li>C++ Templates Basics - <a target="_blank" rel="noopener" href="https://m.cplusplus.com/doc/oldtutorial/templates/">https://m.cplusplus.com/doc/oldtutorial/templates/</a></li>
+</ol>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#What-is-a-C-template"><span class="top-box-text">What is a C++ template?</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab-Analysis"><span class="top-box-text">Lab Analysis</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Question-1"><span class="top-box-text">Question 1</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x1229-Function-Analysis"><span class="top-box-text">0x1229 Function Analysis</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x1620-Function-Analysis"><span class="top-box-text">0x1620 Function Analysis</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x1342-Function-Analysis"><span class="top-box-text">0x1342 Function Analysis</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x15fa-Function-Analysis"><span class="top-box-text">0x15fa Function Analysis</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x1245-Function-Analysis"><span class="top-box-text">0x1245 Function Analysis</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Question-2"><span class="top-box-text">Question 2</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x12C5-Function-Analysis"><span class="top-box-text">0x12C5 Function Analysis</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Question-3"><span class="top-box-text">Question 3</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#0x15cc-Function-Analysis"><span class="top-box-text">0x15cc Function Analysis</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#References"><span class="top-box-text">References</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/RedLineStealer-Stealer/">
+          <h3 class="post-title">
+            Next: RedLineStealer - Information Stealer Analysis
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

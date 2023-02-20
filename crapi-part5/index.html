@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>API Security - BFLA</title>
+<meta name="keywords" content="API Security - BFLA, LaByte">
+<meta name="description" content="BFLA is a vulnerability that allows one user to do CRUD (Create, Read, Update, Delete) operations as another user of the vulnerable application.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">API Security - BFLA</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-12-16</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/apisec/">
+              apisec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/crAPI/">
+              crAPI
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>BFLA is a vulnerability that allows one user to do CRUD (Create, Read, Update, Delete) operations as another user of the vulnerable application. This vulnerability may lead to data loss and breach or DOS if the user is locked out of his&#x2F;her own account.</p>
+<h2 id="challenge-7-Delete-a-video-of-another-user"><a href="#challenge-7-Delete-a-video-of-another-user" class="headerlink" title="challenge 7 - Delete a video of another user"></a>challenge 7 - Delete a video of another user</h2><p>To delete a video of another user, One needs to create another account in the Platform so as to replicate the scenario of the other user. Create a new user in the application and upload a new video under the new user. Example, upload video as <code>george</code> and note ID of the video uploaded. This will help in performing an BFLA attack as another user</p>
+<p><img src="/../images/crApi/challenge7_videoburp.png" alt="Admin Privileges"></p>
+<p>The uploaded video ID is <code>35</code> as shown in figure above. By deleting the video, a normal user can’t delete a video unless he&#x2F;she is an admin, <code>DELETE</code> is only possible to users with admin privileges. One can bypass Authorization implementation in the API by forging a new JWT token.</p>
+<p><img src="/../images/crApi/challenge7_admin.png" alt="Delete video"></p>
+<p>Because the API does not validate JWT Tokens, One can manipulate the user Role privileges stored in the token body payload and therefore delete george video. After forging the tokens, replace the Authorization with the new one and send a request.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#challenge-7-Delete-a-video-of-another-user"><span class="top-box-text">challenge 7 - Delete a video of another user</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/crapi-part3/">
+          <h3 class="post-title">
+            Next: API Security - Excessive Data Exposure
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

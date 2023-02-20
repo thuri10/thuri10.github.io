@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>RedLineStealer - Information Stealer Analysis</title>
+<meta name="keywords" content="RedLineStealer - Information Stealer Analysis, LaByte">
+<meta name="description" content="Redline malware is an Information Stealer written in c#, targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">RedLineStealer - Information Stealer Analysis</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-02-07</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/Malware/">
+              Malware
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/reverse/">
+              reverse
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Redline malware is an Information Stealer written in c#, targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens, OS information,Languages, VPN profiles, Installed Programs and Network configurations.</p>
+<p>The malware is capable of downloading additional malware from its C2 servers.</p>
+<h2 id="Stage1-Loader-Analysis"><a href="#Stage1-Loader-Analysis" class="headerlink" title="Stage1 - Loader Analysis"></a>Stage1 - Loader Analysis</h2><p>The first stage of sample malware is used for assembling and executing an additional payload. The sample used throughout this post is <code>RedlineStealer</code> malware which can be downloaded from <a target="_blank" rel="noopener" href="https://bazaar.abuse.ch/">MalwareBaazar</a>.</p>
+<p>The sha256 hash of the sample is <code>72b7f772e019def30abcf817ae7a3004a84215daef67588eaa1fde3839df2fa2</code>. First step is loading sample in <code>Detect it Easy</code> tool to check whether is packed or not.</p>
+<p><img src="/images/redline/redliner.png"></p>
+<p>From the initial Analysis, the sample is not packed and is a <code>.NET</code> Family malware. Vast amount of <code>.NET</code> family programming languages functionality has given malware authors power to write simple yet powerful tools therefore leading to an increase in malware distributed.</p>
+<h2 id="Payload-Extraction"><a href="#Payload-Extraction" class="headerlink" title="Payload Extraction"></a>Payload Extraction</h2><p>For Analysis of compiled binaries, <code>IDA</code> and <code>ghidra</code> are main first tools of choice to an analyst. For analysis of .NET binaries is different, use <code>dnSpy</code> which helps debug the functionality of the sample.</p>
+<p>For extraction of our payload, we will do both manual and dynamic extraction of the second stage binary. Both methods have their own advantages and disadvantages as highlighted below.</p>
+<h3 id="Method1-Manual-Extraction"><a href="#Method1-Manual-Extraction" class="headerlink" title="Method1 - Manual Extraction"></a>Method1 - Manual Extraction</h3><p>This method is we extract payload from the encrypted string arrays <code>s</code> as shown in the image below. Malware uses anti-analysis techniques to prevent it from being analyzed.</p>
+<p><img src="/images/redline/stringarray.png"></p>
+<p>From image above, we de-obfuscate malware by replacing the strings with the target strings as shown in the program. After replacing all the strings,we write a small python program to convert the base64 encoded string to PE binary.</p>
+<p>The python script to decode the base64 encoded string to binary.</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> base64
+
+<span class="token comment">#s string array is our binary</span>
+string_encoded <span class="token operator">=</span> <span class="token string">" "</span>
+decoded <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>string_encoded<span class="token punctuation">)</span>
+<span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'stage2.exe'</span><span class="token punctuation">,</span> <span class="token string">'wb'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>write<span class="token punctuation">(</span>decoded<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Our dumped files are valid binaries, but do not contain all features because the malware is using Reflection method to load additional assembly code. Reflection is a method used to load other assemblies at runtime of the program. This enables the malware to add extra features and validation of the program.</p>
+<h3 id="Method2-Dynamic-Extraction"><a href="#Method2-Dynamic-Extraction" class="headerlink" title="Method2 - Dynamic Extraction"></a>Method2 - Dynamic Extraction</h3><p>The second method <code>Dynamic</code> is more powerful compared to the manual method.This enables us to inspect the program behavior at runtime. For extraction of the second stage payload we put a breakpoint on the line <code>22</code> as shown in image below.</p>
+<p><img src="/images/redline/breakpoint.png"></p>
+<p>On <code>dnspy</code> debugger put a breakpoint on line 22, Run the program until the execution hits the breakpoint.</p>
+<p><img src="/images/redline/righclick_array.png"></p>
+<p>By examining the values in image above,we can examine the array we passing to the object method. Looking at the bytes data of the above array, the first two bytes are magic number of PE file <code>4D5A</code> or ascii <code>MZ</code>. From the first two bytes we can make an assumption the buffer is our second stage binary. Right click the buffer memory to save the sample.</p>
+<h2 id="Stage2-Payload-Analysis"><a href="#Stage2-Payload-Analysis" class="headerlink" title="Stage2 - Payload Analysis"></a>Stage2 - Payload Analysis</h2><p>This is the second stage analysis of our extracted malware file, The extracted binary is <code>.NET</code> binary. Opening the binary in debugger, entrypoint of the binary looks as shown in the image below. The main function executes the <code>WriteLine</code> function.</p>
+<p><img src="/images/redline/dumpedfile.png"></p>
+<p>FMalware does environment check before communication to configured C2 servers.</p>
+<h3 id="Language-Culture-check"><a href="#Language-Culture-check" class="headerlink" title="Language Culture check"></a>Language Culture check</h3><p>The malware checks the language, Timezone, CultureInfo and region country of the Victims Machine. The cultureInfo class provides information about a specific culture, known as <code>locale</code>. The information includes the formatting of the dates, writing system, numbers and calendar used.<br><img src="/images/redline/languagecheck.png"></p>
+<p>The malware check if victims region country is within the array of the strings shown above and if the does not contain <code>EnglishName</code>.</p>
+<h3 id="Network-Communication-Analysis"><a href="#Network-Communication-Analysis" class="headerlink" title="Network Communication Analysis"></a>Network Communication Analysis</h3><p>The second part of our analysis is determining IP address in which the malware is communicating to.The Ip address of the malware seems to be encrypted as shown in the image below. <code>StringDecrypt</code> function takes two arguments, the IP address and Key and decrypts the <code>address</code><br><img src="/images/redline/connection.png"></p>
+<p>The arguments variables of the malware are shown in the image below. The arguments includes the IP address and Key used for encryption of the data.</p>
+<p><img src="/images/redline/args_key.png"></p>
+<p>With the encrypted <code>IP</code> and <code>key</code> we can decrypt the address used for providing the connection.</p>
+<h3 id="IP-address-Decryption"><a href="#IP-address-Decryption" class="headerlink" title="IP address Decryption"></a>IP address Decryption</h3><p>The <code>StringDecrypt</code> is a multistage decryption method which employs both <code>base64</code> encoding and bitwise <code>xor</code> logic for decryption of the data.</p>
+<p><img src="/images/redline/decrypt_method.png" alt="Decrypt Strings"></p>
+<p>From the logic above, reimplement the logic in <code>python</code> and recover the encrypted data.</p>
+<p>The python code used for decrypting the code is,</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># -*- coding: utf-8 -*-</span>
+<span class="token keyword">import</span> base64
+<span class="token keyword">import</span> pwn
+ip_addr <span class="token operator">=</span><span class="token string">b"AiE1CyQDBVA/JR4OPwIKGSoZGkU6NyVa"</span>
+key <span class="token operator">=</span><span class="token string">b"Outshines"</span>
+
+ip_addr_decode <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>ip_addr<span class="token punctuation">)</span>
+result_encoded <span class="token operator">=</span>pwn<span class="token punctuation">.</span>xor<span class="token punctuation">(</span>ip_addr_decode<span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+result <span class="token operator">=</span> base64<span class="token punctuation">.</span>b64decode<span class="token punctuation">(</span>result_encoded<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Running above code we get C2 server address</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"> $ python3 base.py
+b<span class="token string">'101.99.93.70:54437'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="Strings-Conciliation-methods"><a href="#Strings-Conciliation-methods" class="headerlink" title="Strings Conciliation methods"></a>Strings Conciliation methods</h3><p>The malware employs strings concilation methods to slow down analysis. It adds some junk strings to the target strings which is replaced during the runtime of the malware with an empty string.</p>
+<p><img src="/images/redline/stringreplace.png"></p>
+<p>Example of string concilation tactic is above function. The junk string added to the string array is <code>MANGO</code> which is replaced with an empty string.<br>The string from the char array is <code>coMANGOokies.sqMANGOlite</code> , replacing the <code>MANGO</code> string with an empty string, we get <code>cookies.sqlite</code> which is a file used for storing cookies by Firefox browser.</p>
+<h2 id="Information-Harvesting"><a href="#Information-Harvesting" class="headerlink" title="Information Harvesting"></a>Information Harvesting</h2><p>The Malware harvest a lot of Victims data and sends back to the configured c2 server. The malware is simple but effective in collecting a lot of user information. The information collected by malware includes cookies, user tokens, system configurations, graphic cards, processor count, Network information, application installed, credit wallet information and many more.</p>
+<p>Below is explanation of the capabilities of the malware.</p>
+<h3 id="Browser"><a href="#Browser" class="headerlink" title="Browser"></a>Browser</h3><p>The malware is capable of stealing the user&#96;s credentials and cookies of from browser session.</p>
+<p><img src="/images/redline/browsers.png"></p>
+<p>The malware is also capable of enumerating chrome and Opera Mini if installed on the Victim&#96;s machine. It also gets the version of the installed browser as shown in the image below.<br><img src="/images/redline/chrome_scan.png"></p>
+<h3 id="FileZilla"><a href="#FileZilla" class="headerlink" title="FileZilla"></a>FileZilla</h3><p>Filezilla is a professional software that makes transfer of files from one computer to another easier via FTP, SFTP, FTPs protocols and other cloud services such as Amazon S3.<br><img src="/images/redline/filezillacredentials.png"><br>The malware scans for the saved credentials used by Victim in transferring files to other machines. The malware collects <code>host, Port, User, Pass</code> of the machines</p>
+<h3 id="Programs-Enumeration"><a href="#Programs-Enumeration" class="headerlink" title="Programs Enumeration"></a>Programs Enumeration</h3><p>Malware is also capable of collecting all installed applications on the machine using <code>ListofPrograms</code> function as shown in the below. After enumerating all the installed applications, the malware sends data back to the C2 server.</p>
+<p><img src="/images/redline/program_exfil.png"></p>
+<p>The malware enumerates installed application through use of registry. Querying of registry is an effective way of finding out all installed applications in Windows. The malware gets the program name and version as shown by <code>text</code> and <code>text2</code> strings.</p>
+<p><img src="/images/redline/programenumeration_registry.png"></p>
+<h3 id="VPN-information-Gathering"><a href="#VPN-information-Gathering" class="headerlink" title="VPN information Gathering"></a>VPN information Gathering</h3><p>The malware scans for Victim&#96;s configuration files and profiles of various VPNs installed on the device. The malware scans File configs NordVPN, OpenVpn configs and ProtonVPN profiles.</p>
+<p><img src="/images/redline/vpns.png"></p>
+<h3 id="Exfilitration"><a href="#Exfilitration" class="headerlink" title="Exfilitration"></a>Exfilitration</h3><p>For the exfiltration of the data, the malware creates a folder in <code>APPdata</code> folder called <code>Yandex\YAddon</code>. The data collected is uploaded in chunks to c2 server.</p>
+<p><img src="/images/redline/exfil_folder.png"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.natlawreview.com/article/privacy-tip-315-redline-malware-used-to-steal-saved-credentials">https://www.natlawreview.com/article/privacy-tip-315-redline-malware-used-to-steal-saved-credentials</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zdnet.com/article/fortinet-warns-of-cybercriminals-using-omicron-variant-news-to-distribute-redline-stealer">https://www.zdnet.com/article/fortinet-warns-of-cybercriminals-using-omicron-variant-news-to-distribute-redline-stealer</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.proofpoint.com/us/blog/threat-insight/new-redline-stealer-distributed-using-coronavirus-themed-email-campaign">https://www.proofpoint.com/us/blog/threat-insight/new-redline-stealer-distributed-using-coronavirus-themed-email-campaign</a></li>
+</ol>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Stage1-Loader-Analysis"><span class="top-box-text">Stage1 - Loader Analysis</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Payload-Extraction"><span class="top-box-text">Payload Extraction</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Method1-Manual-Extraction"><span class="top-box-text">Method1 - Manual Extraction</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Method2-Dynamic-Extraction"><span class="top-box-text">Method2 - Dynamic Extraction</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Stage2-Payload-Analysis"><span class="top-box-text">Stage2 - Payload Analysis</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Language-Culture-check"><span class="top-box-text">Language Culture check</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Network-Communication-Analysis"><span class="top-box-text">Network Communication Analysis</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#IP-address-Decryption"><span class="top-box-text">IP address Decryption</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Strings-Conciliation-methods"><span class="top-box-text">Strings Conciliation methods</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Information-Harvesting"><span class="top-box-text">Information Harvesting</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Browser"><span class="top-box-text">Browser</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#FileZilla"><span class="top-box-text">FileZilla</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Programs-Enumeration"><span class="top-box-text">Programs Enumeration</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#VPN-information-Gathering"><span class="top-box-text">VPN information Gathering</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Exfilitration"><span class="top-box-text">Exfilitration</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#References"><span class="top-box-text">References</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/REMCOSrat-Macros/">
+          <h3 class="post-title">
+            Next: Remcosrat - Excel Macro Analysis
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

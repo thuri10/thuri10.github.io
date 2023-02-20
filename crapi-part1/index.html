@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>API Security - BOLA Vulnerabilities</title>
+<meta name="keywords" content="API Security - BOLA Vulnerabilities, LaByte">
+<meta name="description" content="BOLA vulnerabilities are vulnerabilities that allows disclosure of sensitive information about other users. First step in finding BOLA vulnerabilities is to look for UUID of other accounts/users.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">API Security - BOLA Vulnerabilities</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-12-16</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/apisec/">
+              apisec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/crAPI/">
+              crAPI
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>crAPI is a vulnerable API used to illustrate and educate OWASP API Top 10 vulnerabilities. The goal is to find many vulnerabilities as possible and understand root cause by exploiting the bug. The vulnerable API can be downloaded from the following github repository <a target="_blank" rel="noopener" href="https://github.com/OWASP/crAPI">crAPI</a>.</p>
+<p>BOLA vulnerabilities are vulnerabilities that allows disclosure of sensitive information about other users. First step in finding BOLA vulnerabilities is to look for UUID of other accounts&#x2F;users. The challenges in this API security shows how various security implications are manifested and how they can be exploited.</p>
+<h2 id="Challenge-1-Access-details-of-another-user’s-vehicle"><a href="#Challenge-1-Access-details-of-another-user’s-vehicle" class="headerlink" title="Challenge 1 - Access details of another user’s vehicle"></a>Challenge 1 - Access details of another user’s vehicle</h2><blockquote>
+<p>To solve the challenge, you need to leak sensitive information of another user’s vehicle.</p>
+<ul>
+<li>Since vehicle IDs are not sequential numbers, but GUIDs, you need to find a way to expose the vehicle ID of another user.</li>
+<li>Find an API endpoint that receives a vehicle ID and returns information about it.</li>
+</ul>
+</blockquote>
+<p>To solve first challenge is to identify UUID of another user’s vehicle and try to access their resources. The figure belows shows the vehicle ID of the logged in user.</p>
+<p><img src="/../../../images/crApi/challenge1-endpoint.png" alt="challenge API endpoint"></p>
+<p>The API endpoint URL showing the vehicle details is <strong>&#x2F;identity&#x2F;api&#x2F;v2&#x2F;vehicle&#x2F;986545c7-afa8-4711-bdab-329011db46fe&#x2F;location</strong>. To access the information of another vehicle details, we need to replace the UUID with the one of the target vehicle. Because of an high entropy of the UUID, they cannot be easily guessed, therefore to get UUID of vehicles, one should for clues either in comments, profile, images e.t.c. This is possible due to excessive data exposure in the community post section.</p>
+<p><img src="/../images/crApi/challenge1-%20guid_leak.png" alt="vehicle GUID leak"></p>
+<p>Looking at the community posts as shown in the image above, we are able to leak vehicleID of other users, i.e <code>pogba</code> whose vehicleID is <strong>c562d2d3-2faf-4410-909a-ac8862d7509f</strong>.Replacing logged in user car UUI with <strong>pogba</strong>, we are able to leak location details. For replaying http requests use <code>repeater</code> which is part of BurpSuite toolkit.</p>
+<p><img src="/../images/crApi/challenge1-repeater.png" alt="API data leak results"></p>
+<h2 id="Challenge-2-Access-mechanic-reports-of-other-users"><a href="#Challenge-2-Access-mechanic-reports-of-other-users" class="headerlink" title="Challenge 2 - Access mechanic reports of other users"></a>Challenge 2 - Access mechanic reports of other users</h2><blockquote>
+<p>crAPI allows vehicle owners to contact their mechanics by submitting a “contact mechanic” form. This challenge is about accessing mechanic reports that were submitted by other users.</p>
+<ul>
+<li>Analyze the report submission process</li>
+<li>Find an hidden API endpoint that exposes details of a mechanic report</li>
+<li>Change the report ID to access other reports</li>
+</ul>
+</blockquote>
+<p>For Solving the challenge, First is to intercept the http requests sent to the backend server in order to identify the URL endpoint using Burp proxy. The endpoint for viewing mechanic report is <code>http://localhost:8888/workshop/api/mechanic/receive_report</code>.</p>
+<p><img src="/../images/crApi/challenge2-hiddenapi.png" alt="Hidden API"></p>
+<p>To access report of another user, we can change the report id with another in the API endpoint <code>/workshop/api/mechanic/mechanic_report?report_id=1</code> and replay requests. Changing report_id value, results to us disclosing report by james.</p>
+<p><img src="/../images/crApi/challenge2-report.png" alt="Read other Reports"></p>
+<p>For Bruteforcing the <strong>report_id</strong> value, one can use Intruder to check various payload in the id position and check for successful response status. IF the response status is <code>200</code> means the id contains a report.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge-1-Access-details-of-another-user%E2%80%99s-vehicle"><span class="top-box-text">Challenge 1 - Access details of another user’s vehicle</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Challenge-2-Access-mechanic-reports-of-other-users"><span class="top-box-text">Challenge 2 - Access mechanic reports of other users</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/vulnerable-graphql/">
+          <h3 class="post-title">
+            Next: GraphQL Vulnerabilities - DVGA
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

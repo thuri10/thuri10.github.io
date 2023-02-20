@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+<script>!function(){var e=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,t=localStorage.getItem("use-color-scheme")||"auto";("dark"===t||e&&"light"!==t)&&document.documentElement.classList.toggle("dark",!0)}()</script>
+
+<meta charset="utf-8" >
+
+<title>Access Control Vulnerabilities - Part 1</title>
+<meta name="keywords" content="Access Control Vulnerabilities - Part 1, LaByte">
+<meta name="description" content="Access control vulnerabilities are web vulnerabilities that allows an user to access or modify they are not allowed to access or modify.This allows an user to perform actions they are not allowed to access.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style/main.css">
+
+
+<link rel="stylesheet" href="/style/jquery.fancybox.min.css">
+
+
+
+
+    <link rel="stylesheet" href="/style/prism.css"/>
+
+
+
+
+  <meta name="generator" content="Hexo 6.3.0"></head>
+  <body>
+    <div id="app" class="main">
+
+<div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="http://thuri10.github.io">
+        <img class="avatar" src="/images/avatar.png" alt="" width="32px" height="32px">
+      </a>
+      <a href="http://thuri10.github.io">
+        <h1 class="site-title">LaByte</h1>
+      </a>
+    </div>
+    <div class="right">
+        <i class="icon menu-switch icon-menu-outline" ></i>
+    </div>
+  </div>
+</div>
+
+<div class="menu-container" style="height: 0;opacity: 0;">
+<nav class="menu-list">
+  
+    
+      <a href="/" class="menu purple-link">
+        Home
+      </a>
+    
+  
+    
+      <a href="/archives" class="menu purple-link">
+        Archives
+      </a>
+    
+  
+    
+      <a href="/about" class="menu purple-link">
+        About
+      </a>
+    
+  
+</nav>
+</div>
+
+
+
+  <div class="content-container">
+    <div class="post-detail">
+      
+      <h2 class="post-title">Access Control Vulnerabilities - Part 1</h2>
+      <div class="post-info post-detail-info">
+        <span><i class="icon icon-calendar-outline"></i> 2022-11-10</span>
+        
+          <span>
+          <i class="icon icon-pricetags-outline"></i>
+            
+              <a href="/tags/appsec/">
+              appsec
+                
+                  ，
+                
+              </a>
+            
+              <a href="/tags/websec/">
+              websec
+                
+              </a>
+            
+          </span>
+        
+      </div>
+      <div class="post-content-wrapper">
+        <div class="post-content">
+          <p>Access control vulnerabilities are web vulnerabilities that allows an user to access or modify they are not allowed to access or modify.This allows an user to perform actions they are not allowed to access.</p>
+<p>Access control vulnerability may lead to an user doing a vertical or horizontal privilege escalation. Vertical escalation is where an user gets more access than the current role assigned while horizontal escalation is where an user can access another user’s data or modify it.</p>
+<p>To understand broken access control vulnerabilities impact by solving the <strong>portswigger</strong> academy labs.</p>
+<h2 id="Lab1-Unprotected-admin-functionality"><a href="#Lab1-Unprotected-admin-functionality" class="headerlink" title="Lab1 - Unprotected admin functionality"></a>Lab1 - Unprotected admin functionality</h2><blockquote>
+<p>This lab has an unprotected admin panel.<br>Solve the lab by deleting the user carlos.</p>
+</blockquote>
+<p>In order to solve the lab we need to access the admin panel and delete an user from the system. To get the URL path to the admin panel, whe check the <code>Robots.txt</code> file.</p>
+<p><img src="/../images/websec/accesscontrol/lab1-adminpanel.png" alt="Admin panel path"></p>
+<p>By visiting the above path we are able to delete the user carlos</p>
+<p><img src="/../images/websec/accesscontrol/lab1-delete.png" alt="Delete Carlos"></p>
+<h2 id="Lab2-Unprotected-admin-functionality-with-unpredictable-URL"><a href="#Lab2-Unprotected-admin-functionality-with-unpredictable-URL" class="headerlink" title="Lab2 - Unprotected admin functionality with unpredictable URL"></a>Lab2 - Unprotected admin functionality with unpredictable URL</h2><blockquote>
+<p>This lab has an unprotected admin panel. It’s located at an unpredictable location, but the location is disclosed somewhere in the application.<br>Solve the lab by accessing the admin panel, and using it to delete the user carlos.</p>
+</blockquote>
+<p>To solve the challenge we look at the source code of the challenge.</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> isAdmin <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>isAdmin<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> topLinksTag <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementsByClassName</span><span class="token punctuation">(</span><span class="token string">"top-links"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> adminPanelTag <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  adminPanelTag<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span><span class="token string">"href"</span><span class="token punctuation">,</span> <span class="token string">"/admin-b95shg"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  adminPanelTag<span class="token punctuation">.</span>innerText <span class="token operator">=</span> <span class="token string">"Admin panel"</span><span class="token punctuation">;</span>
+  topLinksTag<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>adminPanelTag<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">var</span> pTag <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">"p"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pTag<span class="token punctuation">.</span>innerText <span class="token operator">=</span> <span class="token string">"|"</span><span class="token punctuation">;</span>
+  topLinksTag<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>pTag<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>The path of the admin panel is <strong>&#x2F;admin-b95shg</strong>. By visiting the above URL we get the admin panel and we are able to delete the <code>carlos</code></p>
+<p><img src="/../images/websec/accesscontrol/lab2-adminpanel.png" alt="Lab2 Admin Panel"></p>
+<h2 id="Lab3-User-role-controlled-by-request-parameter"><a href="#Lab3-User-role-controlled-by-request-parameter" class="headerlink" title="Lab3 - User role controlled by request parameter"></a>Lab3 - User role controlled by request parameter</h2><blockquote>
+<p>This lab has an admin panel at &#x2F;admin, which identifies administrators using a forgeable cookie.<br>Solve the lab by accessing the admin panel and using it to delete the user carlos.<br>You can log in to your own account using the following credentials: wiener:peter</p>
+</blockquote>
+<p>For this challenge, we are able to forge user admin because we control access control parameter in the client side. First Login as <strong>wiener:peter</strong></p>
+<p><img src="/../images/websec/accesscontrol/lab3-accessdenied.png" alt="Lab3 Access Denied"></p>
+<p>For accessing the admin panel with correct permissions, we can modify the admin value to <strong>true</strong> and reload the page.</p>
+<p><img src="/../images/websec/accesscontrol/lab3-solution.png" alt="Admin page modified"><br>By modifying the admin default permissions, we are now able to delete the user <strong>carlos</strong>.</p>
+<h2 id="Lab4-User-role-can-be-modified-in-user-profile"><a href="#Lab4-User-role-can-be-modified-in-user-profile" class="headerlink" title="Lab4 - User role can be modified in user profile"></a>Lab4 - User role can be modified in user profile</h2><blockquote>
+<p>This lab has an admin panel at &#x2F;admin. It’s only accessible to logged-in users with a roleid of 2.<br>Solve the lab by accessing the admin panel and using it to delete the user carlos.</p>
+</blockquote>
+<p>You can log in to your own account using the following credentials: wiener:peter</p>
+
+        </div>
+        <div class="top-div">
+          <ol class="top-box"><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab1-Unprotected-admin-functionality"><span class="top-box-text">Lab1 - Unprotected admin functionality</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab2-Unprotected-admin-functionality-with-unpredictable-URL"><span class="top-box-text">Lab2 - Unprotected admin functionality with unpredictable URL</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab3-User-role-controlled-by-request-parameter"><span class="top-box-text">Lab3 - User role controlled by request parameter</span></a></li><li class="top-box-item top-box-level-2"><a class="top-box-link" href="#Lab4-User-role-can-be-modified-in-user-profile"><span class="top-box-text">Lab4 - User role can be modified in user profile</span></a></li></ol>
+        </div>
+      </div>
+    </div>
+
+    
+      <div class="next-post">
+        <a class="purple-link" href="/informationdisclosure/">
+          <h3 class="post-title">
+            Next: Information Disclosure Vulnerability
+          </h3>
+        </a>
+      </div>
+    
+  </div>
+
+
+
+
+<footer>
+<div class="site-footer">
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/thuri10" target="_blank">
+          <i class="icon icon-github"></i>
+        </a>
+      
+    
+      
+        <a href="https://twitter.com/thuri0" target="_blank">
+          <i class="icon icon-twitter"></i>
+        </a>
+      
+    
+  </div>
+  
+    Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> <a href="https://github.com/f-dong/hexo-theme-minimalism" target="_blank">Theme</a>
+  
+  
+  
+  
+  
+  
+</div>
+</footer>
+      </div>
+      
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.fancybox.min.js"></script>
+
+
+
+    <script>window.is_post = true;</script>
+
+
+<script src="/js/main.js"></script>
+
+
+
+
+
+    </div>
+  </body>
+</html>
+
