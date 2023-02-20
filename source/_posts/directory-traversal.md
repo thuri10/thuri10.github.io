@@ -2,6 +2,7 @@
 layout: blog
 title: Directory traversal vulnerabilities
 date: 2022-10-24 13:04:41
+summary: Directory traversal is a web vulnerability that allows an attacker to access unauthorized resources outside the root server directory due to the way server handles files.
 tags:
   - websec
   - traversal
@@ -12,7 +13,7 @@ Directory traversal is a web vulnerability that allows an attacker to access una
 
 The files which an attacker can read includes Intellectual property, customer data, code and sensitive file system files such as configuration keys, tokens.
 
-To understand the vulnerability class we solve `portswigger.net` academy directory traversal labs.
+To understand the vulnerability class, we solve `portswigger.net` academy directory traversal labs. PortSwigger Academy helps in providing a playground for testing and learning new web security research techniques.
 
 ## Lab1 - Simple case file path traversal
 
@@ -21,10 +22,10 @@ To understand the vulnerability class we solve `portswigger.net` academy directo
 
 For solving the challenge, right click one of the images and open it in a new tab.This will enable us to capture image url path in BurpSuite through proxy. Image below shows an example image path rendered in BurpSuite application.
 
-![Lab 1 Image path](../images/websec/dirtraversal/lab1_imagepath.png)
+![Lab 1 Image path](/images/websec/dirtraversal/lab1_imagepath.png)
 
 To solve the challenge, we need to change the filename location from **29.jpg** to **/etc/passwd**. Assumption is our full path of the image is `/var/www/images/29.jpg`. In order to read target file, we need to traverse back directory structure in unix using **dot-dot-slash** attack as shown in image below.
-![Read Password](../images/websec/dirtraversal/lab1_passwd.png)
+![Read Password](/images/websec/dirtraversal/lab1_passwd.png)
 
 ## Lab2 - Absolute path traversal bypass
 
@@ -34,11 +35,11 @@ To solve the challenge, we need to change the filename location from **29.jpg** 
 
 This challenge allows absolute path resolution on the server. Filepath of an image **65.jpg** is as shown in image below.
 
-![Lab image](../images/websec/dirtraversal/lab2_image.png)
+![Lab image](/images/websec/dirtraversal/lab2_image.png)
 
 For solving the lab, we change the filename parameter path to **/etc/passwd** and sent back our request to the server through repeater. **Repeater** is an handy tool that enables one to replay and manipulate http requests.
 
-![Read file path](../images/websec/dirtraversal/lab2_passwd.png)
+![Read file path](/images/websec/dirtraversal/lab2_passwd.png)
 
 ## Lab3 - Stripped non-recursive path traversal
 
@@ -50,7 +51,7 @@ This lab implements a simple defense mechanism of filtrating **dot-dot-slash** p
 
 To bypass the restriction, we use nested traversal sequences such as `....//` , which will revert to `../` when the inner dot-dot-dot-slash is stripped. Image below shows how the attack is still possible by replacing image name with the following payload **....//....//....//etc/passwd**.
 
-![Lab 3 solution](../images/websec/dirtraversal/lab3_solution.png)
+![Lab 3 solution](/images/websec/dirtraversal/lab3_solution.png)
 
 ## Lab4 - Superfluous URL-decode traversal stripped sequences path traversal
 
@@ -61,11 +62,11 @@ To bypass the restriction, we use nested traversal sequences such as `....//` , 
 For solving the challenge, we need to encode URL to bypass for bypassing the kind of sanitization. The dot-dot-slash **../** can be encoded to **%2e%2e%2f**.
 For encoding, single encoding results to file not found. Therefore, we double encode our payload.
 
-![Payload Encoding](../images/websec/dirtraversal/lab4-decoder.png)
+![Payload Encoding](/images/websec/dirtraversal/lab4-decoder.png)
 
 Now with our payload as shown in decoder tab above, we replace the parameter of filename with our payload.
 
-![Payload Encoding](../images/websec/dirtraversal/lab4-encoder.png)
+![Payload Encoding](/images/websec/dirtraversal/lab4-encoder.png)
 
 Boom!!, we are able to read the **/etc/passwd** file using double encoding to bypass filters.
 
@@ -77,10 +78,10 @@ Boom!!, we are able to read the **/etc/passwd** file using double encoding to by
 
 Lab five does validation of initial file path if lies in the server directory **/var/www/images**. If filename contains the base directory folder we get a successful response as shown by the request below.
 
-![Lab5 image](../images/websec/dirtraversal/lab5_image.png)
+![Lab5 image](/images/websec/dirtraversal/lab5_image.png)
 
 For solving the lab, retrieve **passwd** file, we reuse the Lab1 attack payload but we preserve original file path as we traverse base directory structure. Successful attack will look like one below. The payload path is **`/var/www/images/../../../etc/passwd`**
-![lab5 solution](../images/websec/dirtraversal/lab5_passwd.png)
+![lab5 solution](/images/websec/dirtraversal/lab5_passwd.png)
 
 ## Lab6 - Bypass validation of path file extension
 
@@ -92,6 +93,6 @@ Lab6 implements a defense mechanism of file extension validation. The applicatio
 
 When the program is reading the file at **filename** and encounters a null byte, it terminates the file path before extension.
 
-![lab 6 passwd](../images/websec/dirtraversal/lab6_passwd.png)
+![lab 6 passwd](/images/websec/dirtraversal/lab6_passwd.png)
 
 File extension validation is never an enough defense mechanism.

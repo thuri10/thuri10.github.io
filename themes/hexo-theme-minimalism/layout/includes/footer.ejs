@@ -1,7 +1,7 @@
 <footer>
 <div class="site-footer">
   <div class="social-container">
-    <% ['github', 'twitter', 'weibo', 'zhihu', 'facebook'].forEach((item) => { %>
+    <% ['github', 'twitter' ].forEach((item)=> { %>
       <% if (theme.contact[item]) { %>
         <a href="<%= theme.contact[item] %>" target="_blank">
           <i class="icon icon-<%= item %>"></i>
@@ -22,8 +22,6 @@
   <% }); %>
 </div>
 </footer>
-
-
       </div>
       <%- partial('includes/scripts', '') %>
     </div>

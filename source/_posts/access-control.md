@@ -2,6 +2,7 @@
 layout: blog
 title: Access control vulnerabilities - part 1
 date: 2022-11-10 22:56:19
+summary: Access control vulnerabilities are web vulnerabilities that allows an user to access or modify they are not allowed to access or modify.This allows an user to perform actions they are not allowed to access.
 tags:
   - appsec
   - websec
@@ -65,3 +66,10 @@ For accessing the admin panel with correct permissions, we can modify the admin 
 
 ![Admin page modified](../images/websec/accesscontrol/lab3-solution.png)
 By modifying the admin default permissions, we are now able to delete the user **carlos**.
+
+## Lab4 - User role can be modified in user profile
+
+> This lab has an admin panel at /admin. It's only accessible to logged-in users with a roleid of 2.
+> Solve the lab by accessing the admin panel and using it to delete the user carlos.
+
+You can log in to your own account using the following credentials: wiener:peter
