@@ -1,0 +1,289 @@
+baseURL = 'https://thuri.dev'
+
+defaultContentLanguage= "en"
+# Language code
+languageCode = "en-us"
+title = 'Thuri'
+
+# Change theme
+theme="DoIt"
+
+[params]
+    #DOit theme version
+    version ="0.4.x"
+
+    # website title
+    title = "Thuri"
+    # site description
+    description = "Vulnerability Research and Application security"
+
+    # Search configuration
+    [params.search]
+        enable = true
+
+        # type of search engine
+        type="fuse"
+
+        # max index of the chunkend content
+        contentLength = 4000
+        # placehoder
+        placehoder=""
+        maxResultLength= 10
+        snippetLength = 30
+        highlightTag ="em"
+        absoluteURL= false
+
+        [params.search.fuse]
+            isCaseSensitive= false
+            minMatchCharLength = 2
+            findAllMatches = false
+            location =0
+            threshold = 0.3
+            distance =100
+            ignoreLocation = false
+            useExtendedSearch = false
+            ignoreFieldNorm = false
+        
+    [params.header]
+        desktopMode ="auto"
+        mobileMode ="auto"
+        themeChangeMode="select"
+        
+        [params.header.title]
+            # URL of the LOGO
+            logo = ""
+            # title name
+            name = "Thuri "
+            # you can add extra information before the name (HTML format is supported), such as icons
+            pre = ""
+            # you can add extra information after the name (HTML format is supported), such as icons
+            post = ""
+            # typeit animation for title name
+            typeit = true
+
+    [params.footer]
+        enable= true
+        custom = ''
+        hugo = true
+        copyright=true
+        author = true
+        since = 2019
+    
+    #Section (all posts) page config
+    [params.section]
+        paginate = 20
+        # date format (month and day)
+        dateFormat = "01-02"
+        rss = 10
+        # recently updated posts settings
+        [params.section.recentlyUpdated]
+        enable = false
+        rss = false
+        days = 30
+        maxCount = 10
+
+    # List (category or tag) page config
+    [params.list]
+        paginate = 20
+        dateFormat = "01-02"
+        rss = 10
+
+    
+    # Home page config
+    [params.home]
+        # amount of RSS pages
+        rss = 10
+        # Home page profile
+        [params.home.profile]
+        enable = false
+        # Gravatar Email for preferred avatar in home page
+        gravatarEmail = ""
+        # The filepath is relative to the static or assets directory
+        avatarURL = ""
+        # URL the avatar links to
+        avatarLinkURL = ""
+        # title shown in home page (HTML format is supported)
+        title = "Thuri"
+        # subtitle shown in home page
+        subtitle = "Messing Bits and Signals"
+        # whether to use typeit animation for subtitle
+        typeit = true
+        # whether to show social links
+        social = true
+        # disclaimer (HTML format is supported)
+        disclaimer = ""
+        # Home page posts
+        [params.home.posts]
+            enable = true
+            paginate = 6
+            defaultHiddenFromHomePage = false
+    
+    # Social information about the author
+    [params.social]
+        Github = "thuri10"
+        Twitter ="thuri0"
+        Email ="thuri783@gmail.com"
+
+
+    [params.page]
+        #Hide a page from home page
+        hiddenFromHomePage = false
+        # hide a page from search results
+        hiddenFromSearch = false
+        # enable twemoji
+        twemoji = false
+        # whether to enable lightgallery
+        lightgallery = false
+        # ruby extended syntax
+        ruby = true
+        # enable the fraction extended syntax
+        fraction = true
+        # fontawesome extended syntax
+        fontawesome = true
+        # whether to show link to Raw Markdown content of the content
+        linkToMarkdown = true
+        # DoIt NEW | 0.2.14 configure the link to the source file of the post
+        linkToSource = false
+     
+        linkToEdit = false
+        linkToReport = false
+        rssFullText = false
+        seriesNavigation = true
+        enableLastMod = false
+        # whether to enable word count
+        enableWordCount = false
+        enableReadingTime = true
+        [params.page.outdatedArticleReminder]
+            enable = false
+            # Display the reminder if the last modified time is more than 90 days ago.
+            reminder = 90
+            # Display warning if the last modified time is more than 180 days ago.
+            warning = 180
+        #  Table of the contents config
+        [params.page.toc]
+            # whether to enable the table of the contents
+            enable = true
+            keepStatic = true
+            auto = true
+        #0.2.0 KaTeX mathematical formulas
+        [params.page.math]
+            enable = true
+            # default block delimiter is $$ ... $$ and \\[ ... \\]
+            blockLeftDelimiter = ""
+            blockRightDelimiter = ""
+            # default inline delimiter is $ ... $ and \\( ... \\)
+            inlineLeftDelimiter = ""
+            inlineRightDelimiter = ""
+            # KaTeX extension copy_tex
+            copyTex = true
+            # KaTeX extension mhchem
+            mhchem = true
+            # DoIt NEW | 0.2.0 Code config
+        [params.page.code]
+            # how the copy button of the code block
+            copy = true
+            # the maximum number of lines of displayed code by default
+            maxShownLines = 10
+            #Table config
+            [params.page.table]
+            #enable sorting in the tables
+            sort = true
+            #Mapbox GL JS config
+            [params.page.mapbox]
+            #Mapbox GL JS
+            accessToken = ""
+            # style for the light theme
+            lightStyle = "mapbox://styles/mapbox/light-v9"
+            # style for the dark theme
+            darkStyle = "mapbox://styles/mapbox/dark-v9"
+            # whether to add NavigationControl
+            navigation = true
+            # whether to add GeolocateControl
+            geolocate = true
+            # whether to add ScaleControl
+            scale = true
+            # whether to add FullscreenControl
+            fullscreen = true
+        [params.page.comment]
+            enable= false
+    # Type it configurations
+    [params.typeit]
+        speed = 100
+        cursorSpeed = 1000
+        cursorChar = "|"
+        duration = -1
+    
+    # Site analytics
+    [params.analytics]
+        enable= false
+    # Compatability with older browsers
+    [params.compatibility]
+        polyfill = false
+        objectFit = false
+
+[menu]
+    [[menu.main]]
+        identifier = "posts"
+        pre =""
+        post =""
+        name="Articles"
+        url="/posts"
+
+        title=""
+        weight=1
+    [[menu.main]]
+        identifier = "tags"
+        pre = ""
+        post = ""
+        name = "Tags"
+        url = "/tags/"
+        title = ""
+        weight = 2
+    [[menu.main]]        
+        identifier = "about"
+        pre = ""
+        post = ""
+        name = "About"
+        url = "/about/"
+        title = ""
+        weight = 3
+
+[markup]
+  # Syntax Highlighting
+    [markup.highlight]
+        codeFences = true
+        guessSyntax = true
+        lineNos = true
+        lineNumbersInTable = true
+        noClasses = false
+    # Goldmark is from Hugo 0.60 the default library used for Markdown
+    [markup.goldmark]
+        [markup.goldmark.extensions]
+        definitionList = true
+        footnote = true
+        linkify = true
+        strikethrough = true
+        table = true
+        taskList = true
+        typographer = true
+        [markup.goldmark.renderer]
+        # whether to use HTML tags directly in the document
+        unsafe = true
+    # Table Of Contents settings
+    [markup.tableOfContents]
+        startLevel = 2
+        endLevel = 6
+
+[author]
+  name = "thuri"
+  email = ""
+  link = "https://thuri.dev"
+  avatar = ""
+  gravatarEmail = ""
+
+# Privacy config
+[privacy]
+  [privacy.twitter]
+    enableDNT = true
+  [privacy.youtube]
+    privacyEnhanced = true
