@@ -11,6 +11,10 @@ theme="DoIt"
 # Enable Emoji support
 enableEmoji = true
 
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+
 [params]
     #DOit theme version
     version ="0.4.x"
