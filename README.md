@@ -1,7 +1,7 @@
-# Blog
+# Thuri.dev
 
-Personal blog for sharing Code, projects and Research.
+Personal blog for sharing Code, projects and Research on programming and application security.
 
-## theme
-Migrated to Hugo template theme for easier content management using DOIt theme.
+## Blog Theme
 
+The Blog theme used is [DoIt](https://github.com/HEIGE-PCloud/DoIt.git) for easier content management and documentation.

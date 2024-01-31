@@ -1,4 +1,4 @@
-baseURL = 'https://thuri.dev'
+baseURL = 'https://thuri.10.github.io'
 
 defaultContentLanguage= "en"
 # Language code
@@ -8,16 +8,21 @@ title = 'Thuri'
 # Change theme
 theme="DoIt"
 
+# Enable Emoji support
+enableEmoji = true
+
 [params]
     #DOit theme version
     version ="0.4.x"
 
-    # website title
+    #website title
     title = "Thuri"
-    # site description
-    description = "Vulnerability Research and Application security"
+    #site description
+    description = "Vulnerability Research and Application security blog"
 
     summaryLength = 50
+
+   
 
     # Search configuration
     [params.search]
@@ -48,7 +53,7 @@ theme="DoIt"
     [params.header]
         desktopMode ="auto"
         mobileMode ="auto"
-        themeChangeMode="select"
+        themeChangeMode="switch"
         
         [params.header.title]
             # URL of the LOGO
@@ -83,14 +88,12 @@ theme="DoIt"
         days = 30
         maxCount = 10
 
-
     # List (category or tag) page config
     [params.list]
         paginate = 20
         dateFormat = "01-02"
         rss = 10
 
-    
     # Home page config
     [params.home]
         # amount of RSS pages
@@ -125,7 +128,6 @@ theme="DoIt"
         Github = "thuri10"
         Twitter ="thuri0"
         Email ="thuri783@gmail.com"
-
 
     [params.page]
         #Hide a page from home page
@@ -165,7 +167,7 @@ theme="DoIt"
         [params.page.toc]
             # whether to enable the table of the contents
             enable = true
-            keepStatic = true
+            keepStatic = false
             auto = true
         #0.2.0 KaTeX mathematical formulas
         [params.page.math]
@@ -241,7 +243,6 @@ theme="DoIt"
         post =""
         name="Articles"
         url="/posts"
-
         title=""
         weight=1
     [[menu.main]]
@@ -287,8 +288,8 @@ theme="DoIt"
         startLevel = 2
         endLevel = 6
 
-[author]
-  name = "thuri"
+[params.author]
+  name = "Thuri"
   email = ""
   link = "https://thuri.dev"
   avatar = ""
