@@ -3,16 +3,25 @@ baseURL = 'https://thuri.10.github.io'
 defaultContentLanguage= "en"
 # Language code
 languageCode = "en-us"
-title = 'Thuri'
+title = "Thuri"
+
+
 
 # Change theme
 theme="DoIt"
+
+# site default theme
+defaultTheme ="auto"
+
+keywords = ["appsec", "reverse engineering", "android", "web security", "programming", "vulnerability", "security", "mobile"]
 
 # Enable Emoji support
 enableEmoji = true
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+
+
 
 
 [params]
@@ -27,7 +36,6 @@ enableEmoji = true
     summaryLength = 50
 
    
-
     # Search configuration
     [params.search]
         enable = true
@@ -53,6 +61,13 @@ enableEmoji = true
             ignoreLocation = false
             useExtendedSearch = false
             ignoreFieldNorm = false
+
+    [params.image]
+        #cache remote images for better optimisations
+        cacheRemote = true
+
+        # image resizing and optimization
+        optimise = true
         
     [params.header]
         desktopMode ="auto"
@@ -141,7 +156,7 @@ enableEmoji = true
         # enable twemoji
         twemoji = true
         # whether to enable lightgallery
-        lightgallery = false
+        lightgallery = true
         # ruby extended syntax
         ruby = true
         # enable the fraction extended syntax
@@ -295,7 +310,7 @@ enableEmoji = true
 [params.author]
   name = "Thuri"
   email = "thuri@thuri.dev"
-  link = "https://thuri.dev"
+  link = "https://thuri.dev/authors/thuri"
   avatar = ""
   gravatarEmail = "thuri@thuri.dev"
 
