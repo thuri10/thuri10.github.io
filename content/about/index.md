@@ -4,9 +4,9 @@ date = 2023-09-16T12:20:45+03:00
 draft = false
 +++
 
-My name is `Thuri`, a Software Developer currently based in Nairobi, :kenya:.
+My name is `Thuri`, an Application Security Engineer currently based in Nairobi, :kenya:.
 
-Currently focusing on mobile (Android) and web security.
+Currently focusing on Mobile (Android) and Web Security.
 
 ### Tools
 

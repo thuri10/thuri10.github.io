@@ -2,6 +2,7 @@
 title: "RopEmporium - Split"
 date: 2021-12-17T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
 summary: "The goal of this challenge is to understand how function arguments are passed in 64-bit machine when doing return oriented programming."
@@ -13,6 +14,7 @@ code:
     maxShownLines: 100
 ---
 
+> [!NOte]
 > The elements that allowed you to complete ret2win are still present, they've just been split apart. Find them and recombine them using a short ROP chain
 
 The goal of this challenge is to understand how function arguments are passed in 64-bit machine when doing return oriented programming. The binary can be downloaded from the authors website [ropemporium](https://ropemporium.com).
@@ -62,7 +64,7 @@ End of assembler dump.
 
 From the above code, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values that is present in the memory area specified. The memory region we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the boundary of base pointer address in the stack.
 
-![Stack](/ropemporium/stack.png)
+{{< image src="/ropemporium/stack.png" caption="Stack" >}}
 
 Next function is **read** function, which reads for user input from the standard input file descriptor and stores in specified buffer. From disassembled code, we are reading **0x60** bytes from the user input and storing it in our buffer. This means we are reading more than what the buffer can hold, therefore leading to stack buffer overflow.
 
@@ -122,10 +124,11 @@ Gadgets are sequence of instructions that end with `ret` instruction. Because we
 
 For searching gadget in radare2/rizin, use **/R** command as shown in the image below.
 
-![](/ropemporium/split_poprdi.png)
+{{< image src="/ropemporium/split_poprdi.png" caption="POP RDI" >}}
+
 Now we need to chain ropchain exploit as shown in the image below.
 
-![ropchain](/ropemporium/popgadget.png)
+{{< image src="/ropemporium/popgadget.png" caption="Rop Chain" >}}
 
 The goal is to overwrite the return address with the address of **"pop rdi, ret "** and call system function. we need to fill the buffer memory with 32bytes, 8 bytes to overwrite the `rbp` address and 8 bytes to overwrite return address with pop rdi address.
 
@@ -157,6 +160,7 @@ pwn.info(io.clean().decode())
 
 Running python3 code we get a flag.
 
-![Split flag](/ropemporium/split_flag.png)
+{{< image src="/ropemporium/split_flag.png" caption="Split Flag" >}}
 
-> **To avoid the segmentation fault of the above, we can overwrite the rbp address with exit function address in order to exit without segfault.**
+> [!important]
+> To avoid the segmentation fault of the above, we can overwrite the rbp address with exit function address in order to exit without segfault.

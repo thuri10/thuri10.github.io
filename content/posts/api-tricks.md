@@ -2,6 +2,7 @@
 title: "API Testing"
 date: 2023-12-09T00:27:14Z
 draft: true
+lightgallery: true
 authors: ["thuri"]
 tags: ["API", "websec", "portswigger"]
 toc:

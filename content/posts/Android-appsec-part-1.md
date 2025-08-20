@@ -1,7 +1,8 @@
 ---
-title: "Android application security "
+title: "Android Application Security "
 date: 2021-11-20T14:27:14Z
 draft: false
+lightgallery: true
 authors: [Thuri]
 tags: ["mobilesec", "android", "appsec"]
 summary: "Android application security is an important aspect in developer workflow in ensuring confidentility, integrity and Accessibility of an application."
@@ -25,21 +26,23 @@ adb install InjuredAndroid-1.0.12-release.apk
 
 Opening installed application will have a user interface as shown in image below.
 
-![mainActivity user interface](/android_injured.png)
+{{< image src="/android_injured.png" caption="MainActivity Interface" >}}
 
 For analysis of the security posture of an application, one can choose either static analysis or dynamic analysis. Some of the static analysis tools used are:
 
 1. [JADX](https://github.com/skylot/jadx)
-2. Text Editor (visual studio)
+2. Text Editor (Visual Studio)
 3. Android Studio
 
 `JADX` is a bundle of command line and GUI tools that enables one to produce java source code from android Dex and APK files. It aids in decompiling the android application to java code which is more human-readable/friendly.
 
+> [!Note]
 > NB: For reverse engineering/ code auditing of every application, you need to have a clear set of goal or objective of what you want to achieve. This helps narrow down the analysis and avoid many rabbit holes.
 
 ## FLAG 1 - LOGIN
 
-**Goal: Input the right flag.**
+> [!Info]
+> Goal: **Input the right flag**
 
 Objective of the first level is to get the correct flag. `flag` is a piece of reward if you do a correct task you are asked to in the Capture Flag competition. Looking at decompiled code below, there is an interesting function called **submitFlag** which is responsible for the validation of user input.
 
@@ -66,13 +69,14 @@ public static boolean m10785a(Object obj, Object obj2) {
 
 If the true condition is satisfied, a **FlagOneSuccess** Intent is started . Entering hardcoded flag as our input, we get a success message and the color of **Flag1\*\*** in flagsOverview Activity changes to green. Green color means the challenge has been successfully solved.
 
-![Flag one solved](/android/solved.png)
+{{< image src="/android/solved.png" caption="Flag one solved" >}}
 
 Level1 flag is `F1ag_0n3`. For other levels, if solved successfully, the color of the flag corresponding level will change to green.
 
 ## FLAG 2 - EXPORTED ACTIVITY
 
-Goal : **There is a way to bypass the main activity and invoke other activities that are exported.**
+> [!Info]
+> Goal : **There is a way to bypass the main activity and invoke other activities that are exported.**
 
 **What is an activity?**
 
@@ -158,11 +162,12 @@ Starting: Intent { cmp=b3nac.injuredandroid/.b25lActivity }
 
 When activity two is started successfully through an external application, we are rewarded with a flag.
 
-![Flag two](/android/flag2.png)
+{{< image src="/android/flag2.png" caption="Flag 2" >}}
 
 ## FLAG 3 - RESOURCES
 
-**Goal: Understanding how an application references Resources.**
+> [!Info]
+> Goal: **Understanding how an application references Resources.**
 
 Android resources are used for defining colors, images, layouts, menus and string values. Everything defined in resources is referenced in the application`s code.
 
@@ -193,7 +198,8 @@ The flag is **F1ag_thr33**.
 
 ## FLAG 4 - LOGIN2
 
-**Goal: Get the right flag**
+> [!Info]
+> Goal: **Get the right flag**
 
 For flag four we analyze **FlagFourActivity.java.** activity and figure out the logic implemented by the `submitflag` class. In decompiled code, we get user input and compare it with bytes in variable `a`. To understand the logic we analyze the method **_c1489g_** and member class **_m4070a_**.
 
@@ -212,7 +218,8 @@ Public class **c1489g**, implements base64 decoding of the byte string and retur
 
 ## FLAG 5 - EXPORTED BROADCAST RECEIVERS
 
-**Goal:** **Understand how Broadcast receivers work**
+> [!Info]
+> Goal: **Understand how Broadcast receivers work**
 
 An application receives broadcasts in two ways:
 
@@ -310,7 +317,7 @@ public final class FlagFiveReceiver extends BroadcastReceiver {
 
 `onReceive()` method is responsible for receiving intents sent. Invoking our Activity two times we get a flag.
 
-![Flag Five](/android/flag5.png)
+{{< image src="/android/flag5.png" caption="Flag 5" >}}
 
 The flag is **F1v3!**
 
@@ -415,7 +422,8 @@ vx@archie:output$ curl https://injuredandroid.firebaseio.com/f1ag-pa55.json
 
 ## FLag 8 - AWS Storage and Security.
 
-Goal: Understanding misconfiguration of AWS storage and security implementation in the android applications.
+> [!Info]
+> Goal: Understanding misconfiguration of AWS storage and security implementation in the android applications.
 
 Decompiled `flagEightclass` activity code is one below.
 
@@ -566,7 +574,9 @@ public final void onClick(View view) {
 
 `Realtime database` stores data as one large JSON tree and synchronized every time a new device is connected.The data received or stored in the database is determined by the security rules of `read` and `write`.
 
-Firebase allows read and write rules to the database to be set to true or false. When **.read** is set to true means describes if and data is allowed to be read by users and **.write** describes if and when data is allowed to be written.
+> [!important]
+> Firebase allows read and write rules to the database to be set to true or false. When **.read** is set to true means describes if and data is allowed to be read by users and **.write** describes if and when data is allowed to be written.
+
 Example of a firebase rule where read and write are allowed.
 
 ```json

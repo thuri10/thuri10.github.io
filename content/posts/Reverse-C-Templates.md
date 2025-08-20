@@ -1,7 +1,8 @@
 ---
-title: "Reversing Basic c++ templates"
+title: "Reversing Basic c++ Templates"
 date: 2022-07-16T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["ost2", "reverse", "c++"]
 summary: "Template is a c++ entity that accepts different data types but performs the same functionality."
@@ -13,6 +14,7 @@ code:
     maxShownLines: 100
 ---
 
+> [!important]
 > In this exercise you will need to reverse engineer a binary, research different functions, and understand if the functions are part of a template or not.
 
 **NB: Decompilers are not permitted, please use only static reverse engineering during this lab.**
@@ -29,6 +31,7 @@ For solving the questions, I used an approach of first reading questions and the
 
 ## Question 1
 
+> [!info]
 > Which of the the following functions are part of the same template?
 
 For reverse engineering we will focus on the following functions, `0x1229`, `0x1620`, `0x1342`, `0x15fa`, and `0x1245` in order to answer the first and subsequent questions.
@@ -38,31 +41,31 @@ For analysis I will be using IDA Pro freeware.
 
 ### `0x1229` Function Analysis
 
-![Subtraction](/ost2/sub_func1.png)
+{{< image src="/ost2/sub_func1.png" caption="Subtraction" >}}
 
 Looking at the function as shown in image above, it accepts two parameters of type `int` and does Subtraction (assembly instruction`sub`) of local variables `x` and `y` ant then returns the result. The return value is of type `int`, therefore we can set type of our function as shown in the image above.
 
 ### `0x1620` Function Analysis
 
-![Max value](/ost2/max_func.png)
+{{< image src="/ost2/max_func.png" caption="Max Value" >}}
 
 From the analysis of this function, it accepts two parameters of type `long` and finds the maximum value between the two. The two parameters are compared through use of `jge` assembly instruction as shown above.
 
 ### `0x1342` Function Analysis
 
-![Max value](/ost2/func3.png)
+{{< image src="/ost2/func3.png" caption="Max Value" >}}
 
 The function accepts two parameters of type `long` and checks if one parameter is equal to `zero`. If the value is not equal to `zero`, it does math and bit operations.
 
 ### `0x15fa` Function Analysis
 
-![Max value](/ost2/max_value2.png)
+{{< image src="/ost2/max_value2.png" caption="Max Value" >}}
 
 From the analysis of this function, function accepts two parameters of type `int` and finds the maximum value between the two. The two parameters are compared through use of `jge` assembly instruction. Therefore the maximum value is returned by the function.
 
 ### `0x1245` Function Analysis
 
-![0x1245 analysis](/ost2/func4.png)
+{{< image src="/ost2/func4.png" caption="0x1245 Analysis" >}}
 
 This function takes four parameters of type `int` and does further bits operations as shown in the disassembly code.
 
@@ -70,24 +73,26 @@ From the above functions analysis, only two functions qualify as templates. `0x1
 
 ## Question 2
 
+> [!info]
 > Review the function at address `0x12C5` and other functions in the binary. Is this function a template function?
 
 ### `0x12C5` Function Analysis
 
-![0x12c5 analysis](/ost2/func5.png)
+{{< image src="/ost2/func5.png" caption="0x12c5 Analysis" >}}
 
 This function does the same functionality as the function `0x1245`, but the difference is the unequal number of parameters passed to each function.
 Therefore, it does `not` qualify as a template function.
 
 ## Question 3
 
+> [!info]
 > Review the function at address `0x15cc` and the function at address `0x15fa`. Are these functions part of the same template function?
 
 ### `0x15cc` Function Analysis
 
 This function is used for calculating minimum value of the two parameters passed to function.
 
-![0x15cc analysis](/ost2/min_value.png)
+{{< image src="/ost2/min_value.png" caption="0x15cc Analysis" >}}
 
 The two functions are `not` of the same template function. This is because one is used for calculating the maximum value and other one for minimum value. The difference between the two is `jge` and `jle` conditional assembly instructions as shown in IDA disassembly above.
 

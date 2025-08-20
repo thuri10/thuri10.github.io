@@ -2,6 +2,7 @@
 title: "RopEmporium - Write"
 date: 2021-12-17T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
 summary: " Goal of the challenge is to understand how to abuse readable and writable memory regions in binary files"
@@ -15,6 +16,7 @@ code:
 
 Goal of the challenge is to understand how to abuse readable and writable memory regions in binary files. The target binary can be downloaded from the author's website [ropemporium](https://ropemporium.com).
 
+> [!info]
 > Our first foray into proper gadget use.
 > A useful function is still present, but we'll need to write a string into memory somehow.
 
@@ -91,7 +93,7 @@ End of assembler dump.
 
 From the assembly code above, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. `memset` libc function is used to overwrite any values that have the memory area specified. The memory we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32 bytes from the address of base pointer in the stack.
 
-![stack Layout](/ropemporium/stack.png)
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
 
 Therefore the next interesting libc function is **read** function, which reads user input and stores results in the specified buffer.From the above disassembled code, we are reading 0x200 bytes from the user and storing it in our buffer. This means we are reading more than what the buffer can hold, therefore leading to a stack buffer overflow.
 
@@ -102,17 +104,19 @@ ssize_t read(int fd, void *buf, size_t count);  // read(0,[rbp-0x20], 0x200)
 From the vulnerability, we can exploit it to abuse the control flow of the program by controlling the value of the return address.
 From the author's hint, we need to look for an ELF section that is writable to write our target string.
 
+> [!note]
 > Perhaps the most important thing to consider in this challenge is where we're going to write our "flag.txt" string. Use rabin2 or readelf to check out the different sections of this binary and their permissions. Learn a little about ELF sections and their purpose.
 
 Opening the binary in radare2, we can check the permissions of different sections using the command **iS** as shown in the image below.
 From the above, we are able to determine the data and bss section are both readable and writable. Our target for the gadgets is to write our string to the **bss** section. Therefore we need to get the memory address of the **.bss** area.
 From the author's challenge hint, we need to disassemble `usefulFunction` to understand how it works.
 
-> Important!: A PLT entry for a function named print_file() exists within the challenge binary, simply call it with the name of a file you wish to read (like "flag.txt") as the 1st argument.
+> [!important]
+> A PLT entry for a function named print_file() exists within the challenge binary, simply call it with the name of a file you wish to read (like "flag.txt") as the 1st argument.
 
 `usefulFunction` function is responsible for calling **print_file** function as hinted by the author.
 
-![Print file](/ropemporium/write4_useful.png)
+{{< image src="/ropemporium/write4_useful.png" caption="Print File" >}}
 
 From the analysis of the above function, we can determine we are passing a string file name called **"nonexistent"** to the print_file function. The content of the arguments passed to the print_file function will be printed out to the user. Our goal is to pass our string of interest **flag.txt** to the `print_file` function.
 

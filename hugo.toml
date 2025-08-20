@@ -20,9 +20,6 @@ enableEmoji = true
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
-
-
-
 [params]
     #DOit theme version
     version ="0.4.x"
@@ -44,19 +41,21 @@ enableEmoji = true
 
         # max index of the chunkend content
         contentLength = 4000
+
         # placehoder
         placehoder=""
         maxResultLength= 10
         snippetLength = 30
         highlightTag ="em"
         absoluteURL= false
+        
         [params.search.fuse]
             isCaseSensitive= false
             minMatchCharLength = 2
             findAllMatches = false
-            location =0
+            location = 0
             threshold = 0.3
-            distance =100
+            distance = 100
             ignoreLocation = false
             useExtendedSearch = false
             ignoreFieldNorm = false
@@ -253,6 +252,14 @@ enableEmoji = true
     [params.compatibility]
         polyfill = false
         objectFit = false
+    
+    # Author details
+    [params.author]
+        name = "Thuri"
+        email = "thuri@thuri.dev"
+        link = "https://thuri.dev/authors/thuri"
+        avatar = ""
+        gravatarEmail = "thuri@thuri.dev"
 
 [menu]
     [[menu.main]]
@@ -305,13 +312,6 @@ enableEmoji = true
     [markup.tableOfContents]
         startLevel = 2
         endLevel = 6
-
-[params.author]
-  name = "Thuri"
-  email = "thuri@thuri.dev"
-  link = "https://thuri.dev/authors/thuri"
-  avatar = ""
-  gravatarEmail = "thuri@thuri.dev"
 
 # Privacy config
 [privacy]

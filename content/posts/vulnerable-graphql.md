@@ -1,14 +1,14 @@
 ---
-title: "GraphQL vulnerabilities"
+title: "GraphQL Vulnerabilities"
 date: 2022-12-15T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["websec", "graphql"]
 summary: "GraphQL is an open source, data query and manipulation language for APIs. It enables serving API data for both mobile and web applications. GraphQL is an alternative to REST and grPc."
 toc:
     enable: true
     auto: false
-
 code:
     maxShownLines: 100
 ---
@@ -59,7 +59,7 @@ query {
 
 Running the above query using Altair GraphQL Client, we are able to explore custom types defined in the API GraphQL schema. These include queries, mutations and subscriptions and their types. For example some defined types include **_CreatePaste_**, **_EditPaste_**, **_ImportPaste_**, **_CreateUser_**, **_Login_** and many more as shown in figure below.
 
-![Graphql introspection](/graphql/graphql_introspection.png)
+{{< image src="/graphql/graphql_introspection.png" caption="Graphql introspection" >}}
 
 ### GraphiQL Interface
 
@@ -83,7 +83,7 @@ query {
 
 Running the above query returns the fields the fields and their types as shown in the figure below.
 
-![Field Suggestions](/graphql/graphql_fields.png)
+{{< image src="/graphql/graphql_fields.png" caption="Field Suggestions" >}}
 
 From the results, the Login return fields are `accessToken` and `refreshToken`.
 
@@ -91,7 +91,8 @@ From the results, the Login return fields are `accessToken` and `refreshToken`.
 
 If the Introspection is enabled on the GraphQl API, as you type the field name, the client will be able to determine and autofill the field for you while typing as shown below.
 
-![Field Suggest](/graphql/graphql_fieldsug.png)
+{{< image src="/graphql/graphql_fieldsug.png" caption="Field Suggest" >}}
+
 The results shown in figure above, shows all possible fields of `pastes` object.
 
 ### Server Side Request Forgery
@@ -114,7 +115,7 @@ mutation {
 
 Run the Query above in the BurpSuite `repeater` toolkit. This enables us to replay requests sent to the server by the client.
 
-![ssrf](/graphql/graphql_ssrf.png)
+{{< image src="/graphql/graphql_ssrf.png" caption="SSRF" >}}
 
 From the figure above we able to make an outbound connection by getting google homepage. This may be an attacker controlled server to make **POST** requests to exfiltrate data from the internal organization.
 
@@ -122,7 +123,7 @@ From the figure above we able to make an outbound connection by getting google h
 
 Stack errors that occurs due to processing of malformed requests may lead to an attacker knowing more about the host environment and software running if debug mode is enabled. This may open other attack vectors, which may lead to full system compromise.
 
-![stack errors](/graphql/graphqlstack.png)
+{{< image src="/graphql/graphqlstack.png" caption="stack errors" >}}
 
 From response above, stack error message includes API server username is `dvga`, programming language, versions, root directory etc. Leaked information, may lead for us looking for vulnerabilities with the associated software.
 
@@ -147,7 +148,7 @@ systemDebug query allows user to execute the command passed an argument as shown
 
 Piping injection command in the arg allows us to execute more than one command at the same time. This allows us to read the content of **_/etc/passwd_** file as shown in figure below.
 
-![Injection one](/graphql/graphl_injection1.png)
+{{< image src="/graphql/graphl_injection1.png" caption="Injection one" >}}
 
 ### OS Command Injection - importPaste
 
@@ -168,7 +169,7 @@ mutation {
 
 **setup.py** is a python file used for setting the configurations for a Python backend API. This may contain secrets that should accessible by the users of the API.
 
-![importPaste](/graphql/graphql_injection2.png)
+{{< image src="/graphql/graphql_injection2.png" caption="importPaste" >}}
 
 This allows us to leak the username and passwords associated with the users.
 
@@ -182,11 +183,11 @@ Stored XSS is a class of XSS that allows an attacker to store malformed inputs p
 
 Figure below shows a DOM based title stored XSS, because there no validation of title data, this leads to XSS payload being executed when a user visits the page. Create a new paste as shown in the figure below and pass the XSS payload in the **title** argument.
 
-![DOM title stored xss](/graphql/graphql_xss_title.png)
+{{< image src="/graphql/graphql_xss_title.png" caption="DOM title stored xss" >}}
 
 Visiting **my_pastes** page, Our payload is executed and alert shown in the figure below.
 
-![xss executed](/graphql/graphql_xss.png)
+{{< image src="/graphql/graphql_xss.png" caption="xss executed" >}}
 
 To mitigate XSS, Never trust user data, always validate it.
 
@@ -205,20 +206,21 @@ query {
 }
 ```
 
-![Log Injection](/graphql/graphql_loginjection.png)
+{{< image src="/graphql/graphql_loginjection.png" caption="Log Injection" >}}
+
 Log injection may lead to performance issues if large amount of data is injected.
 
 ### HTML Injection
 
 HTML injection is a web vulnerability class that allows us to inject HTML tags to the input fields. Example below shows an HTML injection which refreshes the page every 10 seconds.
 
-![HTML injection](/graphql/graphql_htmlinjection.png)
+{{< image src="/graphql/graphql_htmlinjection.png" caption="HTML injection" >}}
 
 ### SQL Injection
 
 SQL injection is a vulnerability that allows an attacker to manipulate queries that an application makes to database. SQL injection may lead to sensitive data leakage, delete other user's data and even bypass Authentication mechanism put in place. To test SQL injection, add a single apostrophe at the end of data to be filtered. This results to an error message as shown in the figure below.
 
-![Sql test](/graphql/graphl_injection1.png)
+{{< image src="/graphql/graphl_injection1.png" caption="Sql test" >}}
 
 To get all the pastes we run the following GraphQL query where the **_OR_** condition is true and comment out the rest of the query using `--`.
 
@@ -237,7 +239,7 @@ query {
 
 The filter argument is vulnerable to graphQL SQL injection attacks.
 
-![Graphql sql injection](/graphql/graphql_sqlinjection.png)
+{{< image src="/graphql/graphql_sqlinjection.png" caption="Graphql sql injection" >}}
 
 ## Authorization Bypass
 
@@ -260,10 +262,10 @@ mutation {
 
 For decoding the accessToken as shown below we use JWT debugger.
 
-![Access Token](/graphql/graphql_jwt.png)
+{{< image src="/graphql/graphql_jwt.png" caption="Access Token" >}}
 
 By manipulating the identity field of the token, we are able to escalate the privileges from operator to admin.
-![User Token](/graphql/graphql_jwt2.png)
+{{< image src="/graphql/graphql_jwt2.png" caption="User Token" >}}
 
 JWT Token forge is possible because the server does not validate the token in each request we make.
 
@@ -271,6 +273,6 @@ JWT Token forge is possible because the server does not validate the token in ea
 
 The Interface for graphQL can be bypassed by modifying cookie value passed in the header of the request. The default cookie value is **_env=graphiql:disable_**.It can be bypassed by changing the value to **_env=graphiql:enable_**.
 
-![GraphQL enable](/graphql/graphql_interface_bypass.png)
+{{< image src="/graphql/graphql_interface_bypass.png" caption="GraphQL enable" >}}
 
 Changing cookie values, we are able to access graphQL interface for writing queries and mutations.

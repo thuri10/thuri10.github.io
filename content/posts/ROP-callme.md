@@ -2,6 +2,7 @@
 title: "RopEmporium - callme"
 date: 2021-12-20T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
 summary: "RopEmporium - callme goal is understanding how more than one argument is passed in x64 function."
@@ -17,12 +18,14 @@ code:
 
 The goal of the challenge is understanding how more than one argument is passed in x64 function. The challenge can be downloaded from the author`s website [ropemporium](https://ropemporium.com)
 
+> [!Info]
 > Reliably make consecutive calls to imported functions.
 > Use some new techniques and learn about the Procedure Linkage Table.
 
 The program needs make consecutive calls to a function with three arguments in order to get a correct flag. The challenge description is similar to the split challenge.
 
-> **You must call the callme_one(), callme_two() and callme_three() functions in that order, each with the arguments 0xdeadbeef, 0xcafebabe, 0xd00df00d e.g. callme_one(0xdeadbeef, 0xcafebabe, 0xd00df00d) to print the flag. For the x86_64 binary double up those values, e.g. callme_one(0xdeadbeefdeadbeef, 0xcafebabecafebabe, 0xd00df00dd00df00d)**
+> [!note]
+> You must call the callme_one(), callme_two() and callme_three() functions in that order, each with the arguments 0xdeadbeef, 0xcafebabe, 0xd00df00d e.g. callme_one(0xdeadbeef, 0xcafebabe, 0xd00df00d) to print the flag. For the x86_64 binary double up those values, e.g. callme_one(0xdeadbeefdeadbeef, 0xcafebabecafebabe, 0xd00df00dd00df00d)
 
 check the binary protections enabled on the `callme` binary, only **NX**( Not Executable) is enabled on the binary as shown below.
 
@@ -38,12 +41,13 @@ vx@archie:callme$ checksec --file callme
 
 Open **callme** binary in radare2 to look for exploitable vulnerability and examine the behavior. radare2 is a powerful disassembler/debugging tool used for examining the behavior of programs.
 
-![call me function](/ropemporium/callme_bug.png)
+{{< image src="/ropemporium/callme_bug.png" caption="Call Me Function" >}}
 
 From the above image we use **pdf** command to disassemble a given function. Function **pwnme** looks similar to the previous challenges ret2win and split.
 
 From the aDisassembled program, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. memset is used to overwrite any values that is present in the memory area specified. The memory area we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the address of base pointer in the stack.
-![stack layout](/ropemporium/stack.png)
+
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
 
 Next function is read function, which reads for user input and stores in the allocated buffer.
 
@@ -63,7 +67,8 @@ Gadgets are sequence of instructions the end with ret. because we want to load t
 
 The example of the **pop rdi,pop rsi,pop rdx, ret** gadget is shown in image below.
 
-![pop rdi gadget](/ropemporium/poprdi_callme.png)
+{{< image src="/ropemporium/poprdi_callme.png" caption="POP RDI" >}}
+
 Next is determine addresses of `callme_one`, `callme_two`, `callme_three` functions using gdb.
 
 ```asm
@@ -192,4 +197,4 @@ pwn.info(io.clean().decode())
 
 Successful execution of the above code, correct flag is printed.
 
-![](/ropemporium/callme-flag.png)
+{{< image src="/ropemporium/callme-flag.png" caption="Flag" >}}

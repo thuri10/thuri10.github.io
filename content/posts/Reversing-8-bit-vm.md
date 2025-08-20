@@ -2,6 +2,7 @@
 title: "Reversing 8-bit Virtual VM"
 date: 2021-12-07T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["malware", "reverse", "ctf"]
 summary: "vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag"
@@ -13,11 +14,12 @@ code:
     maxShownLines: 100
 ---
 
-`vm1.exe` implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM`s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag?<!-- more --> A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).
+> [!Note]
+> vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag. The VM`s RAM contains the encrypted flag and some bytecode to decrypt it. Can you figure out how the VM works and write your own to decrypt the flag?<!-- more --> A copy of the VM’s RAM has been provided in ram.bin (this data is identical to the ram content of the malware’s VM before execution and contains both the custom assembly code and encrypted flag).
 
-Main function analysis
+### Main function analysis
 
-![Main Function](/mal/vmq.png)
+{{< image src="/mal/vmq.png" caption="Main Function" >}}
 
 From the main function, **HeapAlloc** allocates a memory block of size **0x1FB** bytes. The pointer of the allocated memory block is called `allocated_memblock` as shown in the image.
 
@@ -29,16 +31,16 @@ void *memcpy(void *dest,const void *src, size_t count);
 
 `memcpy` function copies data from the source address to destination address of size 0x1fb. The destination address of this program is allocate_memblock. The content of the `rambin` file and content at the rambin offset are the same as examined below.
 
-![Rambin](mal/rambin.png)
-![IDA HEX](/mal/ida_hex.png)
+{{< image src="/mal/rambin.png" caption="Rambin" >}}
+{{< image src="/mal/ida_hex.png" caption="IDA Hex representation" >}}
 
 Next step is analyzing **sub_4022E0** function. The disassembled function graph looks like the one below.
 
-![sub_4022E0 control flow loop](/mal/vmflow.png)
+{{< image src="/mal/vmflow.png" caption="Control Flow loop" >}}
 
 From the disassembly above, the binary does some byte operations. The first graph block is doing a bitwise `AND` operation, which is responsible for setting both `SF` and `ZF` to zero.First it sets the value of eax register to 1, and then do a test operation. Because the conditional **"jump if zero"** is not true, we continue our execution to the next control block.
 
-For decompilation of our binary we use ghidra.
+For decompilation of our binary we use Ghidra.
 
 ```c
 int FUN_004022e0(void)
@@ -75,7 +77,7 @@ jz      short loc_402367
 
 Function **FUN_00402270** is called and three arguments are passed as parameters.The control graph below shows various operation executed by the binary depending on the argument passed to the function.
 
-![control flow loop](/mal/vmflow2.png)
+{{< image src="/mal/vmflow2.png" caption="Control Flow" >}}
 
 From the above graph, the function does a compare on the arguments passed with either 1, 2 or 3. If the condition is fulfilled, that operation branch is executed as shown in the image above.
 
@@ -160,7 +162,7 @@ vx@archie:vm$ python3 x.py
 
 After a successful decryption of the rambin contents, the `sub_4022E0` function return the pointer to the flag to main function as shown in the image below.
 
-![Return value of sub_4022E0](/mal/retflag.png)
+{{< image src="/mal/retflag.png" caption="Return value of sub_4022E0" >}}
 
 Therefore main function calculates MD5 hash of the flag and outputs to message dialogbox using **MessageBoxA** function.
 

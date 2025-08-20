@@ -1,7 +1,8 @@
 ---
-title: "RopEmporium - ret2csu"
+title: "RopEmporium - Ret2CSU"
 date: 2021-12-20T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
 summary: The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge"
@@ -13,6 +14,7 @@ code:
     maxShownLines: 100
 ---
 
+> [!note]
 > We're back in ret2win territory, but this time with no useful gadgets.How will we populate critical registers without them?
 > The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge. The binary can be downloaded from authors website [Ropemporium](https://ropemporium.com)
 
@@ -94,7 +96,7 @@ read(0, *(rbp-0x20), 0x200) #reading 0x200 from the stdin
 
 For exploitation purpose, goal is to control the return address of `pwnme` function and redirect execution to our desired address. In order to control the return address we need to fill the buffer with enough data and overflow the saved base pointer.
 
-![ret control](/ropemporium/stack.png)
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
 
 From the stack image layout above, we need 32 bytes to fill the buffer, 8 bytes to overwrite the saved base pointer and 8 bytes to control return address. Because the **NX** execution is enabled on the binary, we can`t use the shellcode techniques, therefore we use other methods such a ropping.
 
@@ -174,6 +176,7 @@ From the above code, we are now able to control the **rdx, rsi and edi** registe
 
 Because we have all the gadgets we need to build our rop chain. From the authors website, the challenge is very similar to **ret2win** challenge.
 
+> [!info]
 > This challenge is very similar to "callme", with the exception of the useful gadgets. Simply call the ret2win() function in the accompanying library with same arguments that you used to beat the "callme" challenge (ret2win(0xdeadbeef, 0xcafebabe, 0xd00df00d) for the ARM & MIPS binaries, ret2win(0xdeadbeefdeadbeef, 0xcafebabecafebabe, 0xd00df00dd00df00d) for the x86_64 binary.
 
 From the description, we want to pass three arguments to ret2win function. The arguments will be passed to rdi, rsi and rdx respectively. Because we don`t control the these registers directly, we need to set these arguments in the first rop chain that will enable us to control the rdi, rsi and rdx in the second gadget.

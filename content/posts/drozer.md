@@ -1,8 +1,9 @@
 ---
-title: "Drozer security testing framework"
+title: "Drozer Security Testing Framework"
 date: 2024-03-30T11:37:15+03:00
 draft: false
 authors: [Thuri]
+lightgallery: true
 tags: ["drozer", "android", "appsec"]
 toc:
     enable: true
@@ -28,7 +29,8 @@ To install the drozer client, follow the following steps:
 3. Run `pip install drozer-<version>.whl` to install drozer
 4. To check if installed successfully, run `drozer` on the command line.
 
-![drozer installation](/drozer/drozer1.png)
+{{< image src="/drozer/drozer1.png" caption="Drozer" >}}
+
 For a successful installation, the output should be as shown above.
 
 To install the drozer agent, run the following command.
@@ -42,7 +44,7 @@ The drozer should be successfully installed on the device. To start a new sessio
 1. Open the Android application on the launcher device
 2. Enable Embedded server
 
-![Server Enable](/drozer/drozer2.png)
+{{< image src="/drozer/drozer2.png" caption="Drozer Server" >}}
 
 3. Run the following command for port forwarding
 
@@ -58,7 +60,7 @@ drozer console connect
 
 A successful run will output a console for interacting with the device as shown below.
 
-![drozer console](/drozer/drozer3.png)
+{{< image src="/drozer/drozer3.png" caption="Drozer Console" >}}
 
 Now we can use the drozer framework to carry out the security assessment of various Android components. The main four Android components are `activity`, `service`, `provider`, and `receiver`.
 
@@ -77,13 +79,13 @@ Some of the commonly used modules for mapping out the attack surface and more in
 
 Running the `run app.package.attacksurface` in the console we can identify the entry points for our further investigations
 
-![attacksurface](/drozer/drozer4.png)
+{{< image src="/drozer/drozer4.png" caption="Drozer AttackSurface Module" >}}
 
 From the results above, we have 11 exported activities, 15 broadcast receivers, one (1) content provider, and seven (7) exported services. This means they can be triggered by an external application.
 
 To get help with any command, one can run the following `help target-module` to get more information. For example, getting help on `app.service.info`
 
-![help](/drozer/drozer5.png)
+{{< image src="/drozer/drozer5.png" caption="Drozer Help" >}}
 
 ## Activities
 

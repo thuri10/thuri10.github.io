@@ -1,21 +1,21 @@
 ---
-title: "RemcosRat Malware analysis"
+title: "RemcosRat Malware Analysis"
 date: 2022-01-25T14:27:14Z
 draft: false
+lightgallery: true
 authors: ["Thuri"]
 tags: ["remcosrat", "malware"]
 toc:
-  enable: true
-  auto: false
-summary: "
-RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions"
+    enable: true
+    auto: false
+summary: "RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions"
 code:
     maxShownLines: 100
 ---
 
 RemcosRAT is a Fileless multi-stage malware that is distributed through malicious macros in Excel files. The malware enables remote administration of infected systems to perform unintended actions.This is a writeup on understanding RemcosRat infection chain. The RemcosRAT infection chain can be described as shown by image [@Unit 42](https://twitter.com/Unit42_Intel/status/1478744612516900868).
 
-![Infection Chain](/mal/remcosrat/chain.jpeg)
+{{< image src="/mal/remcosrat/chain.jpeg" caption="Infection Chain" >}}
 
 The infection chain start through phishing of the targets through mail services and the final payload of the infection chain is the used for communicating through TCP port 10174 as shown in the image.
 
@@ -25,7 +25,7 @@ The samples and IOC can be downloaded from malware-traffic-analysis website [Rem
 
 [Brad](https://twitter.com/malware_traffic/status/1478755988023001089) has provided infection traffic pcap of the malware samples in his website.
 
-![Http filter](/mal/remcosrat/http_filter.png)
+{{< image src="/mal/remcosrat/http_filter.png" caption="Http Filter" >}}
 
 Image above shows a Filter of **http** traffic in wireshark used for downloading further executables into infected machine.The malware gets additional samples using **GET** method as highlighted.
 
@@ -59,11 +59,11 @@ Verify the sha256 hash of the `misc.vbs` matches the one provided in IOCs of Rem
 
 Right click the `GET /atcn.jpg` url in wireshark and follow the **http** stream. The HTTP streams of the urls accessed by the malware as shown below.
 
-![url wireshark](/remcosrat/stage1_stream.png)
+{{< image src="/remcosrat/stage1_stream.png" caption="url wireshark" >}}
 
 Malware is executing a powershell script which is obsfuscated. For further analysis we can export all the http objects. To export http objects, click `File -> Export Objects -> HTTP` in wireshark. select saveall to download all the http objects in malware connection traffic.
 
-![Export Http objects ](/mal/remcosrat/exported_http.png)
+{{< image src="/mal/remcosrat/exported_http.png" caption="Export Http objects" >}}
 
 The downloaded files as are not images as the extensions suuggests to. They are ASCCII text files.
 
@@ -143,7 +143,7 @@ $g55=$y.GetMethod("get_CurrentDomain")
 
 The string above seems to be an executable. This is because of the header file magic of PE executable. The magic number `4D5A` or ASCII characters MZ represents the beginning of the file signature of Microsoft PE file.
 
-![Http filter](/mal/remcosrat/pehead.png)
+{{< image src="/mal/remcosrat/pehead.png" caption="PE Binary" >}}
 
 The python script belows decoded the bytes and returs an PE executable.
 
