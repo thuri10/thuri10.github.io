@@ -3,7 +3,7 @@ baseURL = 'https://thuri.10.github.io'
 defaultContentLanguage= "en"
 # Language code
 languageCode = "en-us"
-title = "Thuri"
+title = "LaByte"
 
 
 # Change theme
@@ -25,9 +25,9 @@ enableEmoji = true
     version ="0.4.x"
 
     #website title
-    title = "Thuri"
+    title = "LaByte"
     #site description
-    description = "Vulnerability Research and Application security blog"
+    description = "Vulnerability Research, Web Security, Mobile Security, IOT and Application Security Tidybits"
 
     summaryLength = 50
 
@@ -39,11 +39,11 @@ enableEmoji = true
         # type of search engine
         type="fuse"
 
-        # max index of the chunkend content
+        # max index of the chunked content
         contentLength = 4000
 
-        # placehoder
-        placehoder=""
+        # placeholder
+        placeholder=""
         maxResultLength= 10
         snippetLength = 30
         highlightTag ="em"
@@ -61,7 +61,7 @@ enableEmoji = true
             ignoreFieldNorm = false
 
     [params.image]
-        #cache remote images for better optimisations
+        #cache remote images for better optimizations
         cacheRemote = true
 
         # image resizing and optimization
@@ -76,7 +76,7 @@ enableEmoji = true
             # URL of the LOGO
             logo = ""
             # title name
-            name = "Thuri "
+            name = "LaByte "
             # you can add extra information before the name (HTML format is supported), such as icons
             pre = ""
             # you can add extra information after the name (HTML format is supported), such as icons
@@ -119,15 +119,15 @@ enableEmoji = true
         [params.home.profile]
         enable = false
         # Gravatar Email for preferred avatar in home page
-        gravatarEmail = ""
+        gravatarEmail = "thuri@thuri.dev"
         # The filepath is relative to the static or assets directory
         avatarURL = ""
         # URL the avatar links to
         avatarLinkURL = ""
         # title shown in home page (HTML format is supported)
-        title = "Thuri"
+        title = "LaByte"
         # subtitle shown in home page
-        subtitle = "Messing Bits and Signals"
+        subtitle = "Bytes Smuggling"
         # whether to use typeit animation for subtitle
         typeit = true
         # whether to show social links
@@ -257,7 +257,7 @@ enableEmoji = true
     [params.author]
         name = "Thuri"
         email = "thuri@thuri.dev"
-        link = "https://thuri.dev/authors/thuri"
+        link = "https://thuri10.github.io/authors/thuri"
         avatar = ""
         gravatarEmail = "thuri@thuri.dev"
 
