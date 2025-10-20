@@ -1,7 +1,7 @@
 ---
 title: "Cache Poisoning"
 date: 2025-09-04T12:59:32+03:00
-draft: false
+draft: true
 authors: [Thuri]
 lightgallery: true
 tags: ["appsec", "websec", "portswigger", "java"]
