@@ -5,7 +5,6 @@ draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["websec", "traversal", "portswigger"]
-summary: "Directory traversal is a web vulnerability that allows an attacker to access unauthorized resources outside the root server directory due to the way server handles files."
 toc:
   enable: true
   auto: false

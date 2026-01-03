@@ -12,7 +12,6 @@ toc:
 
 code:
     maxShownLines: 100
-summary: "Information disclosure is a web vulnerability that allows leakage of sensitive information to it's users. Information leaked may include other user's sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application."
 ---
 
 Information disclosure is a web vulnerability that allows leakage of sensitive information to it's users. Information leaked may include other user's sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application.
