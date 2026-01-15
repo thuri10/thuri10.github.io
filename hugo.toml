@@ -297,17 +297,20 @@ enableEmoji = true
         noClasses = false
     # Goldmark is from Hugo 0.60 the default library used for Markdown
     [markup.goldmark]
+        [markup.goldmark.parser]
+            autoHeadingID = true
+            autoHeadingIDType = "github"
         [markup.goldmark.extensions]
-        definitionList = true
-        footnote = true
-        linkify = true
-        strikethrough = true
-        table = true
-        taskList = true
-        typographer = true
+            definitionList = true
+            footnote = true
+            linkify = true
+            strikethrough = true
+            table = true
+            taskList = true
+            typographer = true
         [markup.goldmark.renderer]
         # whether to use HTML tags directly in the document
-        unsafe = true
+            unsafe = true
     # Table Of Contents settings
     [markup.tableOfContents]
         startLevel = 2
@@ -319,3 +322,21 @@ enableEmoji = true
     enableDNT = true
   [privacy.youtube]
     privacyEnhanced = true
+
+[server]
+[[server.headers]]
+pattern = ".*\\.(js|css|txt|html|xml)$"
+[server.headers.values]
+Content-Encoding = "gzip"
+
+# Enable brotli for even better compression
+[[server.headers]]
+pattern = ".*\\.(js|css|html|xml|json|svg|txt)$"
+[server.headers.values]
+Content-Encoding = "br"
+
+[minify]
+  disableHTML = false
+  disableCSS = false
+  disableJS = false
+

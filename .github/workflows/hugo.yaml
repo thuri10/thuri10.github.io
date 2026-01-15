@@ -81,6 +81,8 @@ jobs:
                   hugo \
                     --gc \
                     --minify \
+                    --enableGitInfo \
+                    --forceSyncStatic \
                     --baseURL "${{ steps.pages.outputs.base_url }}/" \
                     --cacheDir "${{ runner.temp }}/hugo_cache"
             - name: Cache save
