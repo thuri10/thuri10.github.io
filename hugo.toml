@@ -2,7 +2,7 @@ baseURL = 'https://thuri.10.github.io'
 
 defaultContentLanguage= "en"
 # Language code
-languageCode = "en-us"
+locale = "en-us"
 title = "LaByte"
 
 
@@ -318,7 +318,7 @@ enableEmoji = true
 
 # Privacy config
 [privacy]
-  [privacy.twitter]
+  [privacy.x]
     enableDNT = true
   [privacy.youtube]
     privacyEnhanced = true
