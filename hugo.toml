@@ -17,6 +17,12 @@ keywords = ["appsec", "reverse engineering", "android", "web security", "program
 # Enable Emoji support
 enableEmoji = true
 
+[taxonomies]
+  author = "authors"
+  tag = "tags"
+  category = "categories"
+  series = "series"
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
@@ -254,7 +260,7 @@ enableEmoji = true
     [params.author]
         name = "Thuri"
         email = "thuri@thuri.dev"
-        link = "https://thuri10.github.io/authors/thuri"
+        link = "https://thuri.10.github.io/authors/thuri"
         avatar = ""
         gravatarEmail = "thuri@thuri.dev"
 
