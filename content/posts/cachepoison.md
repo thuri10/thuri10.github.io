@@ -196,20 +196,20 @@ Learn more about UTM parameters
 
 ### Parameter cloaking
 
-> [info]
+> [!info]
 > This lab is vulnerable to web cache poisoning because it excludes a certain parameter from the cache key. There is also inconsistent parameter parsing between the cache and the back-end. A user regularly visits this site's home page using Chrome.
 > To solve the lab, use the parameter cloaking technique to poison the cache with a response that executes alert(1) in the victim's browser.
 
 ### Web cache poisoning via a fat GET request
 
-> [info]
+> [!info]
 > This lab is vulnerable to web cache poisoning. It accepts GET requests that have a body, but does not include the body in the cache key. A user regularly visits this site's home page using Chrome.
 
 {{< image src="/cachepoison/lab-fatGet.png" caption="Cache Unkeyed Header" >}}
 
 ### URL normalization
 
-> [info]
+> [!info]
 > This lab contains an XSS vulnerability that is not directly exploitable due to browser URL-encoding.
 > To solve the lab, take advantage of the cache's normalization process to exploit this vulnerability. Find the XSS vulnerability and inject a payload that will execute alert(1) in the victim's browser. Then, deliver the malicious URL to the victim.
 
@@ -222,23 +222,23 @@ after alert, deliver the link to the victim immediately
 
 ### Web cache poisoning to exploit a DOM vulnerability via a cache with strict cacheability criteria
 
-> [info]
+> [!info]
 > This lab contains a DOM-based vulnerability that can be exploited as part of a web cache poisoning attack. A user visits the home page roughly once a minute. Note that the cache used by this lab has stricter criteria for deciding which responses are cacheable, so you will need to study the cache behavior closely.
 
 ### Combining web cache poisoning vulnerabilities
 
-> [info]
+> [!info]
 > This lab is susceptible to web cache poisoning, but only if you construct a complex exploit chain.
 > A user visits the home page roughly once a minute and their language is set to English. To solve this lab, poison the cache with a response that executes alert(document.cookie) in the visitor's browser.
 
 ### Cache key injection
 
-> [info]
+> [!info]
 > This lab contains multiple independent vulnerabilities, including cache key injection. A user regularly visits this site's home page using Chrome.
 > To solve the lab, combine the vulnerabilities to execute alert(1) in the victim's browser. Note that you will need to make use of the Pragma: x-get-cache-key header in order to solve this lab.
 
 ### Internal cache poisoning
 
-> [info]
+> [!info]
 > This lab is vulnerable to web cache poisoning. It uses multiple layers of caching. A user regularly visits this site's home page using Chrome.
 > To solve the lab, poison the internal cache so that the home page executes alert(document.cookie) in the victim's browser.

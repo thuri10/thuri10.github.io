@@ -156,7 +156,7 @@ From the response, the server implements `X-Custom-IP-Authorization` header in o
 > This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the administrator user then log in and delete Carlos's account.
 
 By appending `.git` to the URL we get a git folder structure.
-![Git folder]/assets(/images/websec/disclosure/lab5-gitdir.png)
+{{< image src="/websec/disclosure/lab5-gitdir.png" caption="Git folder" >}}
 
 To download all files, one can use **wget -r URLPATH** into a local folder.First, Use `git diff` to check files contents have been modified or changed as shown in image below.
 

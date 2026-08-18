@@ -5,7 +5,7 @@ draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
-summary: The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge"
+summary: "The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge."
 toc:
     enable: true
     auto: false

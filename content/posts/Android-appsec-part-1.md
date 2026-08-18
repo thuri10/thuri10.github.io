@@ -308,7 +308,7 @@ public final class FlagFiveReceiver extends BroadcastReceiver {
                 return;
             }
         }
-        Toast.makeText(context, str, 1).show();r
+        Toast.makeText(context, str, 1).show();
         i = f4410a + 1;
         f4410a = i;
     }

@@ -1,8 +1,8 @@
-+++
-title = 'About'
-date = 2023-09-16T12:20:45+03:00
-draft = false
-+++
+---
+title: "About"
+date: 2023-09-16T12:20:45+03:00
+draft: false
+---
 
 My name is `Thuri`, an Application Security Engineer currently based in Nairobi, :kenya:.
 
@@ -15,4 +15,4 @@ Currently focusing on Mobile (Android) and Web Security.
 -   [Ghidra](https://github.com/NationalSecurityAgency/ghidra) :star::star::star::star::star2:
 -   [Frida](https://frida.re/docs/android/) :star::star::star::star::star2:
 -   [Semgrep](https://semgrep.dev/) :star::star::star::star:
--   Scripting ([Python3](https://docs.python.org/3//bash)/ [bash](https://www.gnu.org/software/bash/manual/html_node/index.html)):star::star::star::star::star:
+-   Scripting ([Python3](https://docs.python.org/3/)/[bash](https://www.gnu.org/software/bash/manual/html_node/index.html)) :star::star::star::star::star:

@@ -3,3 +3,4 @@ public/
 .cache/
 .vscode/
 db.json
+resources/_gen/

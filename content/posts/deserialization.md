@@ -5,12 +5,12 @@ draft: false
 authors: [Thuri]
 lightgallery: true
 tags: ["appsec", "websec", "portswigger", "java"]
-Summary: "Insecure deserialization occurs when attacker-controlled data is deserialized by the website, allowing an attacker to manipulate serialized objects in order to pass harmful data."
+summary: "Insecure deserialization occurs when attacker-controlled data is deserialized by the website, allowing an attacker to manipulate serialized objects in order to pass harmful data."
 toc:
     enable: true
     auto: false
 
-Description: "Insecure deserialization occurs when attacker-controlled data is deserialized by the website, allowing an attacker to manipulate serialized objects to pass harmful data."
+description: "Insecure deserialization occurs when attacker-controlled data is deserialized by the website, allowing an attacker to manipulate serialized objects to pass harmful data."
 ---
 
 ## Introduction
@@ -181,7 +181,7 @@ With the chain complete, an attacker can execute Remote Code Execute (RCE) on th
 
 This section demonstrates different scenarios of insecure deserialization implementations and techniques for exploiting vulnerabilities. For successful exploitation of deserialization vulnerabilities, the following two conditions are key:
 
-1. An attacker-controlled entry point to send a serialized object to be deserialized by the application. accept all s s
+1. An attacker-controlled entry point to send a serialized object to be deserialized by the application.
 2. Use of Serialization Libraries without data validation.
 
 ### Modifying serialized objects

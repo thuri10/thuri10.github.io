@@ -3,8 +3,9 @@ title: "API Testing"
 date: 2023-12-09T00:27:14Z
 draft: true
 lightgallery: true
-authors: ["thuri"]
+authors: ["Thuri"]
 tags: ["API", "websec", "portswigger"]
+summary: "Common techniques and tricks for testing web application APIs."
 toc:
     enable: true
     auto: true

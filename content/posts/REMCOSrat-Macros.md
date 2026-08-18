@@ -59,7 +59,7 @@ Verify the sha256 hash of the `misc.vbs` matches the one provided in IOCs of Rem
 
 Right click the `GET /atcn.jpg` url in wireshark and follow the **http** stream. The HTTP streams of the urls accessed by the malware as shown below.
 
-{{< image src="/remcosrat/stage1_stream.png" caption="url wireshark" >}}
+{{< image src="/mal/remcosrat/stage1_stream.png" caption="url wireshark" >}}
 
 Malware is executing a powershell script which is obsfuscated. For further analysis we can export all the http objects. To export http objects, click `File -> Export Objects -> HTTP` in wireshark. select saveall to download all the http objects in malware connection traffic.
 

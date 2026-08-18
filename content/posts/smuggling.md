@@ -90,6 +90,6 @@ Some of the previous researches done on the HTTP Request smuggling are:
 
 ## References
 
-1. HTTP desync attacks: Request smuggling reborn]()
-2. HTTP/2: The sequel is always worse]
-3. Browser-powered desnyc attacks: A new frontier in HTTP request smuggling}
+1. [HTTP desync attacks: Request smuggling reborn](https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn)
+2. [HTTP/2: The sequel is always worse](https://portswigger.net/research/http2-the-sequel-is-always-worse)
+3. [Browser-powered desync attacks: A new frontier in HTTP request smuggling](https://portswigger.net/research/browser-powered-desync-attacks)

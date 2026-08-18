@@ -1,49 +1,91 @@
-# Thuri10.github.io
+# LaByte - Security Research Blog
 
-This is a personal blog to document and share code, projects, learnings, lessons in programming and application security.
+A personal blog documenting vulnerability research, web security, mobile security, and application security writeups.
 
-## Blog Theme
+**Live site:** [https://thuri.10.github.io](https://thuri.10.github.io)
 
-The blog uses [DoIt](https://github.com/HEIGE-PCloud/DoIt.git) hugo theme for easier content management and documentation. The theme is content-rich template theme.
+## Requirements
 
-Some of the main features of the theme are:
+The CI build pins specific versions. Use these for local development:
 
--   Custom **Header**
--   Custom **CSS Style**
--   A new **home page**, compatible with the latest version of Hugo
--   A lot of **style detail adjustments,** including color, font size, margins, code preview style
--   More readable **dark mode**
--   Some beautiful **CSS animations**
--   Easy-to-use and self-expanding **table of contents**
--   More **social links**, **share sites** and **comment system**
--   **Search** supported by [algolia](https://www.algolia.com/), [Fuse.js](https://fusejs.io/) or [Pagefind](https://pagefind.app)
--   **Copy code** to clipboard with one click
--   Extended Markdown syntax for **[Font Awesome](https://fontawesome.com/) icons**
--   Extended Markdown syntax for **ruby annotation**
--   Extended Markdown syntax for **fraction**
--   **Mathematical formula** supported by [KaTeX](https://katex.org/)
--   **Diagram syntax** shortcode supported by [mermaid](https://github.com/knsv/mermaid)
--   **Interactive data visualization** shortcode supported by [ECharts](https://echarts.apache.org/)
--   **Mapbox** shortcode supported by [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js)
--   Embedded **music player** supported by [APlayer](https://github.com/MoePlayer/APlayer) and [MetingJS](https://github.com/metowolf/MetingJS)
--   **Bilibili** player supported
--   Kinds of **admonitions** shortcode supported
--   Custom style shortcodes supported
--   **CDN** for all third-party libraries supported
--   **Multiple Authors** supported
+- **Hugo extended** `0.161.1` (must be the extended variant for Dart Sass support)
+- **Dart Sass** `1.90.0`
+- **Go** `1.26.1`
+- **Node.js** `22.18.0`
 
-### Theme Installation
-
-The theme can be installed on the base of hugo theme through use of git as follows:
-
-1. Add this repo as a submodule of your site directory.
+## Local Development
 
 ```bash
-git submodule add https://github.com/HEIGE-PCloud/DoIt.git themes/DoIt
+# Install Node.js dependencies (husky, prettier, lint-staged)
+npm install
+
+# Start the development server
+hugo server
 ```
 
-2. Later you can update the submodule in your site directory to the latest commit using this command:
+## Production Build
 
 ```bash
+hugo --gc --minify --enableGitInfo --forceSyncStatic
+```
+
+## Theme
+
+Uses the [DoIt](https://github.com/HEIGE-PCloud/DoIt) Hugo theme as a git submodule.
+
+```bash
+# Add theme (one-time setup)
+git submodule add https://github.com/HEIGE-PCloud/DoIt.git themes/DoIt
+
+# Update to latest theme version
 git submodule update --remote --merge
 ```
+
+## Content
+
+- **Posts:** `content/posts/` - Markdown files with YAML frontmatter
+- **About page:** `content/about/index.md`
+- **Author data:** `data/authors/`
+- **Images:** `assets/` directory (referenced via `{{< image >}}` shortcode)
+
+### Creating a New Post
+
+```bash
+hugo new posts/my-new-post.md
+```
+
+The archetype generates YAML frontmatter with sensible defaults. Posts are created as drafts - set `draft: false` when ready to publish.
+
+### Frontmatter Reference
+
+```yaml
+---
+title: "Post Title"
+date: 2025-07-14T17:22:36+03:00
+draft: true
+authors: [Thuri]
+lightgallery: true
+tags: ["appsec", "websec"]
+series: ["PortSwigger Labs"]
+summary: "Short summary for SEO."
+description: "Longer description for SEO."
+toc:
+    enable: true
+    auto: false
+---
+```
+
+## Formatting
+
+- **Prettier** runs on `*.{js,css,md}` via lint-staged + husky pre-commit hook
+- Config in `.prettierrc.json`: 4-space indent, double quotes, ES5 trailing commas
+
+## Deployment
+
+Pushing to the `development` branch triggers the GitHub Actions workflow which builds Hugo and deploys to GitHub Pages.
+
+Pull requests to `development` trigger a build validation without deployment.
+
+## License
+
+Content is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).

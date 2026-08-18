@@ -21,9 +21,6 @@ enableEmoji = true
   home = ["HTML", "RSS", "JSON"]
 
 [params]
-    #DOit theme version
-    version ="0.4.x"
-
     #website title
     title = "LaByte"
     #site description
@@ -117,23 +114,23 @@ enableEmoji = true
         rss = 10
         # Home page profile
         [params.home.profile]
-        enable = false
-        # Gravatar Email for preferred avatar in home page
-        gravatarEmail = "thuri@thuri.dev"
-        # The filepath is relative to the static or assets directory
-        avatarURL = ""
-        # URL the avatar links to
-        avatarLinkURL = ""
-        # title shown in home page (HTML format is supported)
-        title = "LaByte"
-        # subtitle shown in home page
-        subtitle = "Bytes Smuggling"
-        # whether to use typeit animation for subtitle
-        typeit = true
-        # whether to show social links
-        social = true
-        # disclaimer (HTML format is supported)
-        disclaimer = ""
+            enable = false
+            # Gravatar Email for preferred avatar in home page
+            gravatarEmail = "thuri@thuri.dev"
+            # The filepath is relative to the static or assets directory
+            avatarURL = ""
+            # URL the avatar links to
+            avatarLinkURL = ""
+            # title shown in home page (HTML format is supported)
+            title = "LaByte"
+            # subtitle shown in home page
+            subtitle = "Bytes Smuggling"
+            # whether to use typeit animation for subtitle
+            typeit = true
+            # whether to show social links
+            social = true
+            # disclaimer (HTML format is supported)
+            disclaimer = ""
         # Home page posts
         [params.home.posts]
             enable = true
@@ -322,18 +319,6 @@ enableEmoji = true
     enableDNT = true
   [privacy.youtube]
     privacyEnhanced = true
-
-[server]
-[[server.headers]]
-pattern = ".*\\.(js|css|txt|html|xml)$"
-[server.headers.values]
-Content-Encoding = "gzip"
-
-# Enable brotli for even better compression
-[[server.headers]]
-pattern = ".*\\.(js|css|html|xml|json|svg|txt)$"
-[server.headers.values]
-Content-Encoding = "br"
 
 [minify]
   disableHTML = false
