@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to."
 ---
 
 > Locate a method that you want to call within the binary. Call it by overwriting a saved return address on the stack.This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to.
@@ -124,7 +125,7 @@ End of assembler dump.
 
 From an analysis of the above assembly code, we fill a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values present memory area specified. The memory we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32 bytes from the address of the base pointer as shown in the stack diagram below.
 
-{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" alt="Stack Layout" >}}
 
 Next function is **read** function, which reads from the standard input file descriptor and stores it in the specified buffer. From the disassembled code we are reading 0x38 bytes from the user input and storing it in our buffer.
 

@@ -3,8 +3,8 @@ title: "API Testing"
 date: 2023-12-09T00:27:14Z
 draft: true
 lightgallery: true
-authors: ["Thuri"]
-tags: ["API", "websec", "portswigger"]
+authors: [Thuri]
+tags: ["api", "websec", "portswigger"]
 summary: "Common techniques and tricks for testing web application APIs."
 toc:
     enable: true
@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "Common techniques and tricks for testing web application APIs, including exploiting endpoints via exposed API documentation, mass assignment and method tampering."
 ---
 
 ## Exploiting an API endpoint using documentation

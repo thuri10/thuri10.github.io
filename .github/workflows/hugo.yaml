@@ -23,7 +23,7 @@ jobs:
         env:
             DART_SASS_VERSION: 1.90.0
             GO_VERSION: 1.26.1
-            HUGO_VERSION: 0.161.1
+            HUGO_VERSION: 0.165.0
             NODE_VERSION: 24.19.0
             TZ: Europe/Oslo
         steps:
@@ -96,6 +96,13 @@ jobs:
                     --forceSyncStatic \
                     --baseURL "${{ steps.baseurl.outputs.url }}" \
                     --cacheDir "${{ runner.temp }}/hugo_cache"
+            - name: Validate internal links
+              run: |
+                  curl -sL -o /tmp/htmltest.tar.gz "https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz"
+                  mkdir -p "${HOME}/.local/htmltest"
+                  tar -C "${HOME}/.local/htmltest" -xzf /tmp/htmltest.tar.gz
+                  rm /tmp/htmltest.tar.gz
+                  "${HOME}/.local/htmltest/htmltest" -c htmltest.yml
             - name: Cache save
               if: github.event_name != 'pull_request'
               id: cache-save

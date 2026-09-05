@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge."
 ---
 
 > [!note]
@@ -96,7 +97,7 @@ read(0, *(rbp-0x20), 0x200) #reading 0x200 from the stdin
 
 For exploitation purpose, goal is to control the return address of `pwnme` function and redirect execution to our desired address. In order to control the return address we need to fill the buffer with enough data and overflow the saved base pointer.
 
-{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" alt="Stack Layout" >}}
 
 From the stack image layout above, we need 32 bytes to fill the buffer, 8 bytes to overwrite the saved base pointer and 8 bytes to control return address. Because the **NX** execution is enabled on the binary, we can`t use the shellcode techniques, therefore we use other methods such a ropping.
 

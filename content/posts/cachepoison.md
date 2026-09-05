@@ -5,12 +5,12 @@ draft: true
 authors: [Thuri]
 lightgallery: true
 tags: ["appsec", "websec", "portswigger", "java"]
-summary: "Cache Poisoning."
+summary: "Web cache poisoning fundamentals and practical exploitation, from caching basics to cache key manipulation."
 toc:
     enable: true
     auto: false
 
-description: "Cache Poisoning"
+description: "Web cache poisoning fundamentals and practical exploitation, covering caching basics, cache keys and how esoteric response features can be abused to poison caches."
 ---
 
 ## Introduction
@@ -67,9 +67,9 @@ When selecting and oracle, the endpoint must be cacheable, and there must be som
 
 The final step is to transform the cache-key transformation into an exploit by finding quality gadgets to chain our transformation. Some of the ways gadgets can be combined to increase the severity are:
 
--   Increasing the severity of Reflected XSS into stored XSS
--   Enabling exploitation of dynamic content in resource files, Like JS and CSS
--   Enabling exploitation of "unexploitable" vulnerabilities thar rely on malformed requests that browsers won't send.
+- Increasing the severity of Reflected XSS into stored XSS
+- Enabling exploitation of dynamic content in resource files, Like JS and CSS
+- Enabling exploitation of "unexploitable" vulnerabilities thar rely on malformed requests that browsers won't send.
 
 ## Cache Poisoning Labs
 
@@ -82,7 +82,7 @@ These are the challenges or labs provided by portswigger academy to pratice and 
 
 The handles unkeyed input in unsafe way. The first goal is to identify the unkeyed header and use it to deliver payload to the home page. By replaying the request to the website, we can see the server is caching the request as shown by the `hit` header.
 
-{{< image src="/cachepoison/lab1-cache.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab1-cache.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 Next step is to identify the unkeyed headers, to automate this we can use `param miner` burpsuite extension. The results are:
 
@@ -96,20 +96,17 @@ Identified parameter on 0a54007604b10f80815cb227000d00ae.web-security-academy.ne
 
 From the results, the tools has identified `X-Forwarded-Host` as unkeyed Host. By using the header with localhost,we can see the where the unkeyed header is transformed as shown in the image below.
 
-{{< image src="/cachepoison/lab1-xhost.png" caption="X-Forwarded-Host" >}}
+{{< image src="/cachepoison/lab1-xhost.png" caption="X-Forwarded-Host" alt="X-Forwarded-Host" >}}
 
 Since we control the source of the Javascript file, we can exploit this by pointing the location of resource to our own file. The location of the file is:
 
 ```javascript
-<script
-    type="text/javascript"
-    src="//localhost/resources/js/tracking.js"
-></script>
+<script type="text/javascript" src="//localhost/resources/js/tracking.js"></script>
 ```
 
 We can now set our payload `alert(document.cookie)` in the Javascript file as shown below. This will be delivered to the victims when one access the homepage of the poisoned website.
 
-{{< image src="/cachepoison/lab1-server.png" caption="X-Forwarded-Host" >}}
+{{< image src="/cachepoison/lab1-server.png" caption="X-Forwarded-Host" alt="X-Forwarded-Host" >}}
 
 By controlling the server location and sending the request several times, we are able to poison the cache and deliver our payload.
 
@@ -120,7 +117,7 @@ By controlling the server location and sending the request several times, we are
 
 Looking at the response, we are able to get unkeyed cookie
 
-{{< image src="/cachepoison/lab2-cookie.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab2-cookie.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 ```html
 <script>
@@ -157,11 +154,11 @@ To identify the unkeyed headers we use `paramminer` to guess the headers.
 
 The identified headers by tool are `X-Forwarded-Scheme` wich specifies the client uses to make the request and `X-Forwarded-Host` which specifies the original host specified.
 
-{{< image src="/cachepoison/lab3-scheme.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab3-scheme.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 From the results above, the location of the redirected is poisoned. To exploit this, we can poison the Javascript resource ` /resources/js/tracking.js`, which will contain our payload.
 
-{{< image src="/cachepoison/lab3-sol.png" caption="cache poison" >}}
+{{< image src="/cachepoison/lab3-sol.png" caption="cache poison" alt="cache poison" >}}
 
 By visiting the homepage, the payload is executed.
 
@@ -182,7 +179,7 @@ Pragma: x-get-cache-key
 
 The payload used is
 
-{{< image src="/cachepoison/lab-pragma.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab-pragma.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 ### Web cache poisoning via an unkeyed query parameter
 
@@ -192,7 +189,7 @@ The payload used is
 
 Learn more about UTM parameters
 
-{{< image src="/cachepoison/lab-utm.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab-utm.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 ### Parameter cloaking
 
@@ -205,7 +202,7 @@ Learn more about UTM parameters
 > [!info]
 > This lab is vulnerable to web cache poisoning. It accepts GET requests that have a body, but does not include the body in the cache key. A user regularly visits this site's home page using Chrome.
 
-{{< image src="/cachepoison/lab-fatGet.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab-fatGet.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 ### URL normalization
 
@@ -215,7 +212,7 @@ Learn more about UTM parameters
 
 Look at random path is reflected on the home page
 escape it and deliver it.
-{{< image src="/cachepoison/lab-url.png" caption="Cache Unkeyed Header" >}}
+{{< image src="/cachepoison/lab-url.png" caption="Cache Unkeyed Header" alt="Cache Unkeyed Header" >}}
 
 reload the request in the browser
 after alert, deliver the link to the victim immediately

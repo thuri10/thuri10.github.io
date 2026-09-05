@@ -7,11 +7,12 @@ authors: ["Thuri"]
 tags: ["websec", "disclosure", "portswigger"]
 summary: "Information disclosure is a web vulnerability that allows leakage of sensitive information to it's users. Information leaked may include other user's sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application."
 toc:
-  enable: true
-  auto: false
+    enable: true
+    auto: false
 
 code:
     maxShownLines: 100
+description: "Information disclosure is a web vulnerability that allows leakage of sensitive information to its users, including other users' data, passwords and usernames, intellectual property and source code."
 ---
 
 Information disclosure is a web vulnerability that allows leakage of sensitive information to it's users. Information leaked may include other user's sensitive information, passwords and username, Intellectual property, source code, etc depending on the context of the application.
@@ -25,7 +26,7 @@ To understand impact of the information disclosure vulnerabilities, we solve **p
 
 To solve the challenge, we need to trigger an error message according to lab description. To trigger an error for example we can change the data type of productID from `int` to `string` and observer the response from the server. Image below response when we trigger an error with **aa** as our product ID.
 
-{{< image src="/websec/disclosure/lab1.png" caption="Error Message" >}}
+{{< image src="/websec/disclosure/lab1.png" caption="Error Message" alt="Error Message" >}}
 
 From the http response we are able to leak information about the server by triggering an exception on the server.The version of the software is **Apache Struts 2 2.3.31** as shown in the response.
 
@@ -36,11 +37,11 @@ From the http response we are able to leak information about the server by trigg
 
 To solve the challenge, first we start with reconnaissance in order to understand how the application is structured. First thing is to check for robots.txt file and view source code of the index page.
 
-{{< image src="/websec/disclosure/lab2-sourcecode.png" caption="Debug information" >}}
+{{< image src="/websec/disclosure/lab2-sourcecode.png" caption="Debug information" alt="Debug information" >}}
 
 By viewing source code , we have debug page URL path commented out. **/cgi-bin/phpinfo.php**. By navigating to the referenced URI we get a PHP debug page as shown below.
 
-{{< image src="/websec/disclosure/lab2_secret.png" caption="Debug Page" >}}
+{{< image src="/websec/disclosure/lab2_secret.png" caption="Debug Page" alt="Debug Page" >}}
 
 Looking at the environment variables, we are able to get **SECRET_KEY** parameter value.The secret key is `qxptwgij0q108ugpi5btaxyjb9pq7...`
 
@@ -51,11 +52,11 @@ Looking at the environment variables, we are able to get **SECRET_KEY** paramete
 
 First step is to do a reconnaissance on the web application on whether the robots.txt file is available or not. By navigating to the robots.txt file path, we now get the backup URL.
 
-{{< image src="/websec/disclosure/lab3-backup.png" caption="Backup File Information" >}}
+{{< image src="/websec/disclosure/lab3-backup.png" caption="Backup File Information" alt="Backup File Information" >}}
 
 By visiting **/backup** path we get Java source code which has been backed up.
 
-{{< image src="/websec/disclosure/lab3-backupfile.png" caption="Source Code Path" >}}
+{{< image src="/websec/disclosure/lab3-backupfile.png" caption="Source Code Path" alt="Source Code Path" >}}
 
 The source code Backup is below.
 
@@ -140,15 +141,15 @@ By auditing the above source code we now have the database password which is **j
 
 To solve the lab, we visit the admin interface as shown in image below.
 
-{{< image src="/websec/disclosure/lab4-localuser.png" caption="Custom Header" >}}
+{{< image src="/websec/disclosure/lab4-localuser.png" caption="Custom Header" alt="Custom Header" >}}
 
 From the description above, the admin interface is only available for local users. To bypass this restriction, we need to modify our HTTP request to appear as if sent from the local user. To determine the custom X-Forward Method, we use **TRACE** to send our request instead of **GET**.
 
-{{< image src="/websec/disclosure/lab4-trace.png" caption="Trace Method" >}}
+{{< image src="/websec/disclosure/lab4-trace.png" caption="Trace Method" alt="Trace Method" >}}
 
 From the response, the server implements `X-Custom-IP-Authorization` header in order to access the admin page.Using `X-Custom-IP-Authorization: 127.0.0.1` in our HTTP header, we can proxy our request in burpSuite and delete `carlos` from the server.
 
-{{< image src="/websec/disclosure/lab4-deleteuser.png" caption="Delete Request" >}}
+{{< image src="/websec/disclosure/lab4-deleteuser.png" caption="Delete Request" alt="Delete Request" >}}
 
 ## Lab5 - Authentication disclosure in version control history
 
@@ -156,14 +157,14 @@ From the response, the server implements `X-Custom-IP-Authorization` header in o
 > This lab discloses sensitive information via its version control history. To solve the lab, obtain the password for the administrator user then log in and delete Carlos's account.
 
 By appending `.git` to the URL we get a git folder structure.
-{{< image src="/websec/disclosure/lab5-gitdir.png" caption="Git folder" >}}
+{{< image src="/websec/disclosure/lab5-gitdir.png" caption="Git folder" alt="Git folder" >}}
 
 To download all files, one can use **wget -r URLPATH** into a local folder.First, Use `git diff` to check files contents have been modified or changed as shown in image below.
 
-{{< image src="/websec/disclosure/lab5-gitdiff.png" caption="Git Diff" >}}
+{{< image src="/websec/disclosure/lab5-gitdiff.png" caption="Git Diff" alt="Git Diff" >}}
 
 To get original values before being modified, we check out the previous commit. Now we are able to get the configured admin password from the configuration file as shown in image below.
 
-{{< image src="/websec/disclosure/lab5-gitcheckpass.png" caption="Folder environment variables" >}}
+{{< image src="/websec/disclosure/lab5-gitcheckpass.png" caption="Folder environment variables" alt="Folder environment variables" >}}
 
 The admin password is **d72v1x6td9v0kqy39xr5**

@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: " Goal of the challenge is to understand how to abuse readable and writable memory regions in binary files"
 ---
 
 Goal of the challenge is to understand how to abuse readable and writable memory regions in binary files. The target binary can be downloaded from the author's website [ropemporium](https://ropemporium.com).
@@ -93,7 +94,7 @@ End of assembler dump.
 
 From the assembly code above, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. `memset` libc function is used to overwrite any values that have the memory area specified. The memory we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32 bytes from the address of base pointer in the stack.
 
-{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" alt="Stack Layout" >}}
 
 Therefore the next interesting libc function is **read** function, which reads user input and stores results in the specified buffer.From the above disassembled code, we are reading 0x200 bytes from the user and storing it in our buffer. This means we are reading more than what the buffer can hold, therefore leading to a stack buffer overflow.
 
@@ -116,7 +117,7 @@ From the author's challenge hint, we need to disassemble `usefulFunction` to und
 
 `usefulFunction` function is responsible for calling **print_file** function as hinted by the author.
 
-{{< image src="/ropemporium/write4_useful.png" caption="Print File" >}}
+{{< image src="/ropemporium/write4_useful.png" caption="Print File" alt="Print File" >}}
 
 From the analysis of the above function, we can determine we are passing a string file name called **"nonexistent"** to the print_file function. The content of the arguments passed to the print_file function will be printed out to the user. Our goal is to pass our string of interest **flag.txt** to the `print_file` function.
 

@@ -2,16 +2,16 @@
 
 A personal blog documenting vulnerability research, web security, mobile security, and application security writeups.
 
-**Live site:** [https://thuri.10.github.io](https://thuri.10.github.io)
+**Live site:** [https://thuri10.github.io](https://thuri10.github.io)
 
 ## Requirements
 
 The CI build pins specific versions. Use these for local development:
 
-- **Hugo extended** `0.161.1` (must be the extended variant for Dart Sass support)
+- **Hugo extended** `0.165.0` (must be the extended variant for Dart Sass support)
 - **Dart Sass** `1.90.0`
 - **Go** `1.26.1`
-- **Node.js** `22.18.0`
+- **Node.js** `24.19.0`
 
 ## Local Development
 

@@ -6,7 +6,7 @@ Hugo personal blog using the [DoIt](https://github.com/HEIGE-PCloud/DoIt) theme.
 
 The CI build (`.github/workflows/hugo.yaml`) defines pinned versions:
 
-- **Hugo extended** `0.161.1` — must be the *extended* variant (needs Dart Sass)
+- **Hugo extended** `0.165.0` — must be the _extended_ variant (needs Dart Sass)
 - **Dart Sass** `1.90.0`
 - **Go** `1.26.1`
 - **Node.js** `24.19.0`
@@ -49,7 +49,7 @@ Posts use **YAML frontmatter** (`---`), not TOML (`+++`). Common fields:
 ---
 title: "Post Title"
 date: 2025-07-14T17:22:36+03:00
-draft: true            # set to false when ready to publish
+draft: true # set to false when ready to publish
 authors: [Thuri]
 lightgallery: true
 tags: ["tag1", "tag2"]
@@ -79,7 +79,8 @@ New posts are created as `draft: true`. Set `draft: false` to publish.
 
 ## Gotchas
 
-- The `baseURL` in `hugo.toml` is `https://thuri.10.github.io` (note: not `.github.io` but `.10.github.io`).
+- The `baseURL` in `hugo.toml` is `https://thuri10.github.io` (the site is the user page for the `thuri10` account — do not "correct" it to `thuri.10.github.io`).
 - Hugo extended is required because the DoIt theme uses SCSS/Dart Sass. Standard Hugo will fail.
 - Goldmark renderer has `unsafe = true` — raw HTML in Markdown is allowed.
 - Search uses Fuse.js (client-side). No external search service to configure.
+- `assets/js/theme.ts` is a **site-level override** that shadows `themes/DoIt/assets/js/theme.ts` (Hugo union mount). It patches an XSS in the search "no results" template (the raw query was rendered via `innerHTML`). Upstream DoIt is still vulnerable. When updating the submodule, diff the override against the new `themes/DoIt/assets/js/theme.ts` and re-apply the patch (`escapeHTML` on the search query) if upstream hasn't fixed it.

@@ -4,14 +4,14 @@ date: 2025-08-29T11:41:42+03:00
 draft: true
 lightgallery: true
 authors: [Thuri]
-tags: ["appsec", "websec", "portswigger", "Smuggling", "HTTP"]
+tags: ["appsec", "websec", "portswigger", "smuggling", "http"]
 summary: "HTTP Request Smuggling Basics"
 toc:
     enable: true
     auto: false
 code:
     maxShownLines: 150
-description: "HTTP Request Smuggling"
+description: "HTTP request smuggling fundamentals: how conflicting interpretations of Content-Length and Transfer-Encoding headers between proxies and backends allow request prefix injection."
 ---
 
 ## Introduction

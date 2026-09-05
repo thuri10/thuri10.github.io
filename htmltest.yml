@@ -1,0 +1,5 @@
+DirectoryPath: public
+CheckExternal: false
+CheckAnchors: true
+IgnoreEmptyHref: true
+StripQueryString: true

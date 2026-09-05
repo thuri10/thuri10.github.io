@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "The goal of this challenge is to understand how function arguments are passed in 64-bit machine when doing return oriented programming."
 ---
 
 > [!NOte]
@@ -64,7 +65,7 @@ End of assembler dump.
 
 From the above code, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. **memset** is used to overwrite any values that is present in the memory area specified. The memory region we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the boundary of base pointer address in the stack.
 
-{{< image src="/ropemporium/stack.png" caption="Stack" >}}
+{{< image src="/ropemporium/stack.png" caption="Stack" alt="Stack" >}}
 
 Next function is **read** function, which reads for user input from the standard input file descriptor and stores in specified buffer. From disassembled code, we are reading **0x60** bytes from the user input and storing it in our buffer. This means we are reading more than what the buffer can hold, therefore leading to stack buffer overflow.
 
@@ -124,11 +125,11 @@ Gadgets are sequence of instructions that end with `ret` instruction. Because we
 
 For searching gadget in radare2/rizin, use **/R** command as shown in the image below.
 
-{{< image src="/ropemporium/split_poprdi.png" caption="POP RDI" >}}
+{{< image src="/ropemporium/split_poprdi.png" caption="POP RDI" alt="POP RDI" >}}
 
 Now we need to chain ropchain exploit as shown in the image below.
 
-{{< image src="/ropemporium/popgadget.png" caption="Rop Chain" >}}
+{{< image src="/ropemporium/popgadget.png" caption="Rop Chain" alt="Rop Chain" >}}
 
 The goal is to overwrite the return address with the address of **"pop rdi, ret "** and call system function. we need to fill the buffer memory with 32bytes, 8 bytes to overwrite the `rbp` address and 8 bytes to overwrite return address with pop rdi address.
 
@@ -160,7 +161,7 @@ pwn.info(io.clean().decode())
 
 Running python3 code we get a flag.
 
-{{< image src="/ropemporium/split_flag.png" caption="Split Flag" >}}
+{{< image src="/ropemporium/split_flag.png" caption="Split Flag" alt="Split Flag" >}}
 
 > [!important]
 > To avoid the segmentation fault of the above, we can overwrite the rbp address with exit function address in order to exit without segfault.

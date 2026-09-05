@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "RopEmporium - callme goal is understanding how more than one argument is passed in x64 function."
 ---
 
 ## Introduction
@@ -41,13 +42,13 @@ vx@archie:callme$ checksec --file callme
 
 Open **callme** binary in radare2 to look for exploitable vulnerability and examine the behavior. radare2 is a powerful disassembler/debugging tool used for examining the behavior of programs.
 
-{{< image src="/ropemporium/callme_bug.png" caption="Call Me Function" >}}
+{{< image src="/ropemporium/callme_bug.png" caption="Call Me Function" alt="Call Me Function" >}}
 
 From the above image we use **pdf** command to disassemble a given function. Function **pwnme** looks similar to the previous challenges ret2win and split.
 
 From the aDisassembled program, we are filling a buffer of size 0x20(32bytes) with a constant byte of zero. memset is used to overwrite any values that is present in the memory area specified. The memory area we are overwriting is [rbp-0x20]. This means we are allocating a memory buffer of size 32bytes from the address of base pointer in the stack.
 
-{{< image src="/ropemporium/stack.png" caption="Stack Layout" >}}
+{{< image src="/ropemporium/stack.png" caption="Stack Layout" alt="Stack Layout" >}}
 
 Next function is read function, which reads for user input and stores in the allocated buffer.
 
@@ -67,7 +68,7 @@ Gadgets are sequence of instructions the end with ret. because we want to load t
 
 The example of the **pop rdi,pop rsi,pop rdx, ret** gadget is shown in image below.
 
-{{< image src="/ropemporium/poprdi_callme.png" caption="POP RDI" >}}
+{{< image src="/ropemporium/poprdi_callme.png" caption="POP RDI" alt="POP RDI" >}}
 
 Next is determine addresses of `callme_one`, `callme_two`, `callme_three` functions using gdb.
 
@@ -197,4 +198,4 @@ pwn.info(io.clean().decode())
 
 Successful execution of the above code, correct flag is printed.
 
-{{< image src="/ropemporium/callme-flag.png" caption="Flag" >}}
+{{< image src="/ropemporium/callme-flag.png" caption="Flag" alt="Flag" >}}

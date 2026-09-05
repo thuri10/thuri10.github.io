@@ -13,6 +13,7 @@ code:
     maxShownLines: 100
 
 summary: "Redline malware is an Information Stealer written in c#, targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens, OS information,Languages, VPN profiles, Installed Programs and Network configurations."
+description: "RedLine malware is an information stealer written in C# targeting Windows victims, used for gathering browser cookies, saved credentials, Discord tokens, VPN profiles and network configurations."
 ---
 
 Redline malware is an Information Stealer written in c#, targeting windows victims. It is used for gathering victims information ranging from the Browser cookies, saved credentials, Discord tokens, OS information,Languages, VPN profiles, Installed Programs and Network configurations.
@@ -25,7 +26,7 @@ The first stage of sample malware is used for assembling and executing an additi
 
 The sha256 hash of the sample is `72b7f772e019def30abcf817ae7a3004a84215daef67588eaa1fde3839df2fa2`. First step is loading sample in `Detect it Easy` tool to check whether is packed or not.
 
-{{< image src="/redline/redliner.png" caption="Detect Easy Redliner Stage 1" >}}
+{{< image src="/redline/redliner.png" caption="Detect Easy Redliner Stage 1" alt="Detect Easy Redliner Stage 1" >}}
 
 From the initial Analysis, the sample is not packed and is a `.NET` Family malware. Vast amount of `.NET` family programming languages functionality has given malware authors power to write simple yet powerful tools therefore leading to an increase in malware distributed.
 
@@ -39,7 +40,7 @@ For extraction of our payload, we will do both manual and dynamic extraction of 
 
 This method is we extract payload from the encrypted string arrays `s` as shown in the image below. Malware uses anti-analysis techniques to prevent it from being analyzed.
 
-{{< image src="/redline/stringarray.png" caption="Manual Extraction" >}}
+{{< image src="/redline/stringarray.png" caption="Manual Extraction" alt="Manual Extraction" >}}
 
 From image above, we de-obfuscate malware by replacing the strings with the target strings as shown in the program. After replacing all the strings,we write a small python program to convert the base64 encoded string to PE binary.
 
@@ -60,11 +61,11 @@ Our dumped files are valid binaries, but do not contain all features because the
 
 The second method `Dynamic` is more powerful compared to the manual method.This enables us to inspect the program behavior at runtime. For extraction of the second stage payload we put a breakpoint on the line `22` as shown in image below.
 
-{{< image src="/redline/breakpoint.png" caption="Breakpoint" >}}
+{{< image src="/redline/breakpoint.png" caption="Breakpoint" alt="Breakpoint" >}}
 
 On `dnspy` debugger put a breakpoint on line 22, Run the program until the execution hits the breakpoint.
 
-{{< image src="/redline/righclick_array.png" caption="Execution" >}}
+{{< image src="/redline/righclick_array.png" caption="Execution" alt="Execution" >}}
 
 By examining the values in image above,we can examine the array we passing to the object method. Looking at the bytes data of the above array, the first two bytes are magic number of PE file `4D5A` or ascii `MZ`. From the first two bytes we can make an assumption the buffer is our second stage binary. Right click the buffer memory to save the sample.
 
@@ -72,7 +73,7 @@ By examining the values in image above,we can examine the array we passing to th
 
 This is the second stage analysis of our extracted malware file, The extracted binary is `.NET` binary. Opening the binary in debugger, entrypoint of the binary looks as shown in the image below. The main function executes the `WriteLine` function.
 
-{{< image src="/redline/dumpedfile.png" caption="File dump" >}}
+{{< image src="/redline/dumpedfile.png" caption="File dump" alt="File dump" >}}
 
 FMalware does environment check before communication to configured C2 servers.
 
@@ -80,7 +81,7 @@ FMalware does environment check before communication to configured C2 servers.
 
 The malware checks the language, Timezone, CultureInfo and region country of the Victims Machine. The cultureInfo class provides information about a specific culture, known as `locale`. The information includes the formatting of the dates, writing system, numbers and calendar used.
 
-{{< image src="/redline/languagecheck.png" caption="Language Check" >}}
+{{< image src="/redline/languagecheck.png" caption="Language Check" alt="Language Check" >}}
 
 The malware check if victims region country is within the array of the strings shown above and if the does not contain `EnglishName`.
 
@@ -88,11 +89,11 @@ The malware check if victims region country is within the array of the strings s
 
 The second part of our analysis is determining IP address in which the malware is communicating to.The Ip address of the malware seems to be encrypted as shown in the image below. `StringDecrypt` function takes two arguments, the IP address and Key and decrypts the `address`
 
-{{< image src="/redline/connection.png" caption="Connection" >}}
+{{< image src="/redline/connection.png" caption="Connection" alt="Connection" >}}
 
 The arguments variables of the malware are shown in the image below. The arguments includes the IP address and Key used for encryption of the data.
 
-{{< image src="/redline/args_key.png" caption="Arguments" >}}
+{{< image src="/redline/args_key.png" caption="Arguments" alt="Arguments" >}}
 
 With the encrypted `IP` and `key` we can decrypt the address used for providing the connection.
 
@@ -130,7 +131,7 @@ b'101.99.93.70:54437'
 
 The malware employs strings concilation methods to slow down analysis. It adds some junk strings to the target strings which is replaced during the runtime of the malware with an empty string.
 
-{{< image src="/redline/stringreplace.png" caption="String Concillation" >}}
+{{< image src="/redline/stringreplace.png" caption="String Concillation" alt="String Concillation" >}}
 
 Example of string concilation tactic is above function. The junk string added to the string array is `MANGO` which is replaced with an empty string.
 The string from the char array is `coMANGOokies.sqMANGOlite` , replacing the `MANGO` string with an empty string, we get `cookies.sqlite` which is a file used for storing cookies by Firefox browser.
@@ -145,17 +146,17 @@ Below is explanation of the capabilities of the malware.
 
 The malware is capable of stealing the user`s credentials and cookies of from browser session.
 
-{{< image src="/redline/browsers.png" caption="Browser session" >}}
+{{< image src="/redline/browsers.png" caption="Browser session" alt="Browser session" >}}
 
 The malware is also capable of enumerating chrome and Opera Mini if installed on the Victim`s machine. It also gets the version of the installed browser as shown in the image below.
 
-{{< image src="/redline/chrome_scan.png" caption="Chrome" >}}
+{{< image src="/redline/chrome_scan.png" caption="Chrome" alt="Chrome" >}}
 
 ### FileZilla
 
 Filezilla is a professional software that makes transfer of files from one computer to another easier via FTP, SFTP, FTPs protocols and other cloud services such as Amazon S3.
 
-{{< image src="/redline/filezillacredentials.png" caption="FileZilla" >}}
+{{< image src="/redline/filezillacredentials.png" caption="FileZilla" alt="FileZilla" >}}
 
 The malware scans for the saved credentials used by Victim in transferring files to other machines. The malware collects `host, Port, User, Pass` of the machines
 
@@ -163,23 +164,23 @@ The malware scans for the saved credentials used by Victim in transferring files
 
 Malware is also capable of collecting all installed applications on the machine using `ListofPrograms` function as shown in the below. After enumerating all the installed applications, the malware sends data back to the C2 server.
 
-{{< image src="/redline/program_exfil.png" caption="Exfil" >}}
+{{< image src="/redline/program_exfil.png" caption="Exfil" alt="Exfil" >}}
 
 The malware enumerates installed application through use of registry. Querying of registry is an effective way of finding out all installed applications in Windows. The malware gets the program name and version as shown by `text` and `text2` strings.
 
-{{< image src="/redline/programenumeration_registry.png" caption="Registry" >}}
+{{< image src="/redline/programenumeration_registry.png" caption="Registry" alt="Registry" >}}
 
 ### VPN Information Gathering
 
 The malware scans for Victim`s configuration files and profiles of various VPNs installed on the device. The malware scans File configs NordVPN, OpenVpn configs and ProtonVPN profiles.
 
-{{< image src="/redline/vpns.png" caption="VPN Information" >}}
+{{< image src="/redline/vpns.png" caption="VPN Information" alt="VPN Information" >}}
 
 ### Exfilitration
 
 For the exfiltration of the data, the malware creates a folder in `APPdata` folder called `Yandex\YAddon`. The data collected is uploaded in chunks to c2 server.
 
-{{< image src="/redline/exfil_folder.png" caption="Exfil" >}}
+{{< image src="/redline/exfil_folder.png" caption="Exfil" alt="Exfil" >}}
 
 ## References
 

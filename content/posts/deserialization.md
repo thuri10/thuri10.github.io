@@ -191,7 +191,7 @@ This section demonstrates different scenarios of insecure deserialization implem
 
 The first challenge is to access the `/admin` panel through a privilege escalation and delete the user Carlos from the website. To solve the challenge, one needs to log in to the application as the user `wiener` using the following credentials `wiener: peter`. After a successful login, the application generates a serializable cookie, which is our entry point for the attack. Since the application does not check the validity of the `session cookie`, it is possible to edit and become an admin. The session cookie is URL encoded and base64 encoded as shown in the Burp Decoder tab below.
 
-{{< image src="deserialization/image.png" caption="Burp Decoding of Cookie" >}}
+{{< image src="/deserialization/image.png" caption="Burp Decoding of Cookie" alt="Burp Decoding of Cookie" >}}
 
 Burp Decoder is a tool within BurpSuite that allows one to encode, decode, and manipulate data. To solve the lab, we can modify the data by setting the admin value to `true` as shown in the JSON format.
 
@@ -201,7 +201,7 @@ O:4:"User":2:{s:8:"username";s:6:"wiener";s:5:"admin";b:1;}
 
 By setting the admin value to 1, we make the user have the admin privileges. The admin privileges allow the deletion of users from the application, which is the goal of the challenge. After modifying, Base64 encoding, and URL encoding the session cookie, replace it in the Cookie Header. Replay the request using the repeater tool to bypass the access control mechanism and access the admin panel.
 
-{{< image src="deserialization/image-1.png" caption="User Delete" >}}
+{{< image src="/deserialization/image-1.png" caption="User Delete" alt="User Delete" >}}
 
 With access to the admin panel, delete the user Carlos by changing the request path to `/admin/delete?username=carlos` and replaying the request in the repeater tab.
 
@@ -232,7 +232,7 @@ Tzo0OiJVc2VyIjoyOntzOjg6InVzZXJuYW1lIjtzOjEzOiJhZG1pbmlzdHJhdG9yIjtzOjEyOiJhY2Nl
 
 By replacing the cookie with the new session and replaying in the repeater, we are able to access the admin panel.
 
-{{< image src="deserialization/lab2-sol.png" caption="Object Modification" >}}
+{{< image src="/deserialization/lab2-sol.png" caption="Object Modification" alt="Object Modification" >}}
 
 By replacing the request path with `/admin/delete?username=carlos` and replaying the request, we are able to solve the challenge.
 
@@ -336,9 +336,8 @@ By replacing the session cookie with new encoded serialized data, we can delete 
     <header class="navigation-header"></header>
     <h4>Internal Server Error</h4>
     <p class="is-warning">
-        PHP Fatal error: Uncaught Exception: Invalid user in
-        /var/www/index.php:7 Stack trace: #0 {main} thrown in /var/www/index.php
-        on line 7
+        PHP Fatal error: Uncaught Exception: Invalid user in /var/www/index.php:7 Stack trace: #0
+        {main} thrown in /var/www/index.php on line 7
     </p>
 </div>
 ```
@@ -423,7 +422,7 @@ docker run --rm ysoserial [Command]
 
 The generated payload is as shown in the image below.
 
-{{< image src="/deserialization/ysoserial_xxd.png" caption="XXD Payload" >}}
+{{< image src="/deserialization/ysoserial_xxd.png" caption="XXD Payload" alt="XXD Payload" >}}
 
 From the generated output, we need to encode our generated output and replace the session cookie with it, as shown below.
 
@@ -446,8 +445,7 @@ The challenge uses a common PHP framework to implement a serialization-based ses
     <h4>Internal Server Error: Symfony Version: 4.3.6</h4>
     <p class="is-warning">
         PHP Fatal error: Uncaught Exception: Signature does not match session in
-        /var/www/index.php:7 Stack trace: #0 {main} thrown in /var/www/index.php
-        on line 7
+        /var/www/index.php:7 Stack trace: #0 {main} thrown in /var/www/index.php on line 7
     </p>
 </div>
 ```
@@ -456,7 +454,7 @@ From the error above, we are able to identify the framework used as `Symfony Ver
 
 Sending the modified session will throw an error because the token is not signed. To solve this, we need to further audit the application and generate valid signed cookies. By looking at the homepage source, we can identify the `/cgi-bin/phpinfo.php` path commented out by the developer. The `phpinfo` path is able to reveal a lot of information about the environment variables, including the `SECRET_KEY` as shown in the image below.
 
-{{< image src="/deserialization/deserialize_env.png" caption="Environment Variables" >}}
+{{< image src="/deserialization/deserialize_env.png" caption="Environment Variables" alt="Environment Variables" >}}
 
 With access to `SECRET_KEY`(`ypecrm510xmjclhft3tm7ghwvid918cg`), we can now use it to sign our modified session object.
 
@@ -477,8 +475,7 @@ Since the Signature is valid, it will throw an error as shown below.
     <h4>Internal Server Error: Symfony Version: 4.3.6</h4>
     <p class="is-warning">
         PHP Fatal error: Uncaught Exception: Signature does not match session in
-        /var/www/index.php:7 Stack trace: #0 {main} thrown in /var/www/index.php
-        on line 7
+        /var/www/index.php:7 Stack trace: #0 {main} thrown in /var/www/index.php on line 7
     </p>
 </div>
 ```
@@ -523,9 +520,8 @@ By altering the above session, we are able to trigger an error in the applicatio
     <header class="navigation-header"></header>
     <h4>Internal Server Error</h4>
     <p class="is-warning">
-        index.rb:13:in `load&apos;: incompatible marshal file format (can&apos;t
-        be read) (TypeError) format version 4.8 required; 37.48 given from
-        -e:13:in `&lt;main&gt;&apos;
+        index.rb:13:in `load&apos;: incompatible marshal file format (can&apos;t be read)
+        (TypeError) format version 4.8 required; 37.48 given from -e:13:in `&lt;main&gt;&apos;
     </p>
 </div>
 ```
@@ -640,7 +636,7 @@ BAhbCGMVR2VtOjpTcGVjRmV0Y2hlcmMTR2VtOjpJbnN0YWxsZXJVOhVHZW06OlJlcXVpcmVtZW50WwZv
 
 By replacing the session token with the above, we can solve the challenge.
 
-{{< image src="/deserialization/ruby.png" caption="Ruby Deserialization" >}}
+{{< image src="/deserialization/ruby.png" caption="Ruby Deserialization" alt="Ruby Deserialization" >}}
 
 ### Developing a custom gadget chain for PHP deserialization
 
@@ -783,7 +779,7 @@ O:14:"CustomTemplate":2:{s:17:"default_desc_type";s:26:"rm /home/carlos/morale.t
 
 By replacing our cookie with a base64 encoded payload and replaying the request using the `repeater` tab, we are able to solve the challenge.
 
-{{< image src="/deserialization/deserialize_custom.png" caption="PHP Custom Gadget Chain" >}}
+{{< image src="/deserialization/deserialize_custom.png" caption="PHP Custom Gadget Chain" alt="PHP Custom Gadget Chain" >}}
 
 The challenge threw an error, but we were successfully able to solve it.
 
@@ -936,11 +932,11 @@ $phar->stopBuffering();
 
 By executing the above code, we generate a phar file as shown below.
 
-{{< image src="/deserialization/phar.png" caption="Phar Payload" >}}
+{{< image src="/deserialization/phar.png" caption="Phar Payload" alt="Phar Payload" >}}
 
 Since the phar is not a valid JPG, we need to adapt the payload to make it a valid JPG file and bypass the website restrictions. Running the generated payload, we get an error.
 
-{{< image src="/deserialization/phar-error.png" caption="Phar Error" >}}
+{{< image src="/deserialization/phar-error.png" caption="Phar Error" alt="Phar Error" >}}
 
 The response error means our payload was not correctly formatted. To solve the lab, we adapt the `phar-jpg-polygot` script with our code and solve the lab. The script can be downloaded from [phar-jpg-polygot](https://github.com/kunte0/phar-jpg-polyglot/blob/master/phar_jpg_polyglot.php).
 

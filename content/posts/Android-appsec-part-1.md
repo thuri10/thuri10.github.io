@@ -1,11 +1,12 @@
 ---
-title: "Android Application Security "
+title: "Android Application Security"
 date: 2021-11-20T14:27:14Z
 draft: false
 lightgallery: true
 authors: [Thuri]
 tags: ["mobilesec", "android", "appsec"]
-summary: "Android application security is an important aspect in developer workflow in ensuring confidentility, integrity and Accessibility of an application."
+summary: "Android application security is an important aspect in developer workflow in ensuring confidentiality, integrity and availability of an application."
+description: "Android application security concepts and weaknesses including hardcoded secrets, weak cryptography, misconfigurations and webview vulnerabilities, demonstrated on InjuredAndroid."
 toc:
     enable: true
     auto: false
@@ -14,9 +15,9 @@ code:
     maxShownLines: 100
 ---
 
-Android application security is an important aspect in developer workflow in ensuring confidentility, integrity and Accessibility of an application. This article showcases various security concepts and application weaknesses that can be exploited by an attacker.
+Android application security is an important aspect in developer workflow in ensuring confidentiality, integrity and availability of an application. This article showcases various security concepts and application weaknesses that can be exploited by an attacker.
 
-For demo purposes, android application used to demostrate different security concepts and weaknesses such as hardcoded secrets, weak cryptographic implementations, misconfigurations, webview vulnerabilities, etc is `InjuredAndroid` by [@B3nac](https://twitter.com/B3nac). The application can be downloaded from either [playstore](https://play.google.com/store/apps/details?id=b3nac.injuredandroid) or author's [github](https://github.com/B3nac/InjuredAndroid) repository.
+For demo purposes, android application used to demonstrate different security concepts and weaknesses such as hardcoded secrets, weak cryptographic implementations, misconfigurations, webview vulnerabilities, etc is `InjuredAndroid` by [@B3nac](https://twitter.com/B3nac). The application can be downloaded from either [playstore](https://play.google.com/store/apps/details?id=b3nac.injuredandroid) or author's [github](https://github.com/B3nac/InjuredAndroid) repository.
 
 Downloaded application can be either installed in an physical android device or Emulator.Run the `adb` command below to install application to either emulator or android phone.
 
@@ -26,7 +27,7 @@ adb install InjuredAndroid-1.0.12-release.apk
 
 Opening installed application will have a user interface as shown in image below.
 
-{{< image src="/android_injured.png" caption="MainActivity Interface" >}}
+{{< image src="/android_injured.png" caption="MainActivity Interface" alt="MainActivity Interface" >}}
 
 For analysis of the security posture of an application, one can choose either static analysis or dynamic analysis. Some of the static analysis tools used are:
 
@@ -69,7 +70,7 @@ public static boolean m10785a(Object obj, Object obj2) {
 
 If the true condition is satisfied, a **FlagOneSuccess** Intent is started . Entering hardcoded flag as our input, we get a success message and the color of **Flag1\*\*** in flagsOverview Activity changes to green. Green color means the challenge has been successfully solved.
 
-{{< image src="/android/solved.png" caption="Flag one solved" >}}
+{{< image src="/android/solved.png" caption="Flag one solved" alt="Flag one solved" >}}
 
 Level1 flag is `F1ag_0n3`. For other levels, if solved successfully, the color of the flag corresponding level will change to green.
 
@@ -162,7 +163,7 @@ Starting: Intent { cmp=b3nac.injuredandroid/.b25lActivity }
 
 When activity two is started successfully through an external application, we are rewarded with a flag.
 
-{{< image src="/android/flag2.png" caption="Flag 2" >}}
+{{< image src="/android/flag2.png" caption="Flag 2" alt="Flag 2" >}}
 
 ## FLAG 3 - RESOURCES
 
@@ -317,7 +318,7 @@ public final class FlagFiveReceiver extends BroadcastReceiver {
 
 `onReceive()` method is responsible for receiving intents sent. Invoking our Activity two times we get a flag.
 
-{{< image src="/android/flag5.png" caption="Flag 5" >}}
+{{< image src="/android/flag5.png" caption="Flag 5" alt="Flag 5" >}}
 
 The flag is **F1v3!**
 

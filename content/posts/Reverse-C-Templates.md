@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "How C++ templates are compiled and represented in machine code, and how to recognize template instantiations when reverse engineering binaries."
 ---
 
 > [!important]
@@ -41,31 +42,31 @@ For analysis I will be using IDA Pro freeware.
 
 ### `0x1229` Function Analysis
 
-{{< image src="/ost2/sub_func1.png" caption="Subtraction" >}}
+{{< image src="/ost2/sub_func1.png" caption="Subtraction" alt="Subtraction" >}}
 
 Looking at the function as shown in image above, it accepts two parameters of type `int` and does Subtraction (assembly instruction`sub`) of local variables `x` and `y` ant then returns the result. The return value is of type `int`, therefore we can set type of our function as shown in the image above.
 
 ### `0x1620` Function Analysis
 
-{{< image src="/ost2/max_func.png" caption="Max Value" >}}
+{{< image src="/ost2/max_func.png" caption="Max Value" alt="Max Value" >}}
 
 From the analysis of this function, it accepts two parameters of type `long` and finds the maximum value between the two. The two parameters are compared through use of `jge` assembly instruction as shown above.
 
 ### `0x1342` Function Analysis
 
-{{< image src="/ost2/func3.png" caption="Max Value" >}}
+{{< image src="/ost2/func3.png" caption="Max Value" alt="Max Value" >}}
 
 The function accepts two parameters of type `long` and checks if one parameter is equal to `zero`. If the value is not equal to `zero`, it does math and bit operations.
 
 ### `0x15fa` Function Analysis
 
-{{< image src="/ost2/max_value2.png" caption="Max Value" >}}
+{{< image src="/ost2/max_value2.png" caption="Max Value" alt="Max Value" >}}
 
 From the analysis of this function, function accepts two parameters of type `int` and finds the maximum value between the two. The two parameters are compared through use of `jge` assembly instruction. Therefore the maximum value is returned by the function.
 
 ### `0x1245` Function Analysis
 
-{{< image src="/ost2/func4.png" caption="0x1245 Analysis" >}}
+{{< image src="/ost2/func4.png" caption="0x1245 Analysis" alt="0x1245 Analysis" >}}
 
 This function takes four parameters of type `int` and does further bits operations as shown in the disassembly code.
 
@@ -78,7 +79,7 @@ From the above functions analysis, only two functions qualify as templates. `0x1
 
 ### `0x12C5` Function Analysis
 
-{{< image src="/ost2/func5.png" caption="0x12c5 Analysis" >}}
+{{< image src="/ost2/func5.png" caption="0x12c5 Analysis" alt="0x12c5 Analysis" >}}
 
 This function does the same functionality as the function `0x1245`, but the difference is the unequal number of parameters passed to each function.
 Therefore, it does `not` qualify as a template function.
@@ -92,7 +93,7 @@ Therefore, it does `not` qualify as a template function.
 
 This function is used for calculating minimum value of the two parameters passed to function.
 
-{{< image src="/ost2/min_value.png" caption="0x15cc Analysis" >}}
+{{< image src="/ost2/min_value.png" caption="0x15cc Analysis" alt="0x15cc Analysis" >}}
 
 The two functions are `not` of the same template function. This is because one is used for calculating the maximum value and other one for minimum value. The difference between the two is `jge` and `jle` conditional assembly instructions as shown in IDA disassembly above.
 

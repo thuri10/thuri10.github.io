@@ -12,6 +12,7 @@ code:
     maxShownLines: 100
 
 summary: "Drozer is an Android security test framework developed by WithSecure Labs to test security vulnerabilities in Android applications and devices by assuming the role of the target application and interaction with Android Runtime, other applications IPC."
+description: "Drozer is an Android security test framework developed by WithSecure Labs to test security vulnerabilities in Android applications and devices by assuming the role of the target application and interaction with Android Runtime, other applications IPC."
 ---
 
 Drozer is an Android security framework developed by [WithSecure Labs](https://labs.withsecure.com/home) to test security vulnerabilities in applications and devices by assuming the role of an app and interaction with Android Runtime, other app's IPC endpoints, and the underlying Operating System.
@@ -29,7 +30,7 @@ To install the drozer client, follow the following steps:
 3. Run `pip install drozer-<version>.whl` to install drozer
 4. To check if installed successfully, run `drozer` on the command line.
 
-{{< image src="/drozer/drozer1.png" caption="Drozer" >}}
+{{< image src="/drozer/drozer1.png" caption="Drozer" alt="Drozer" >}}
 
 For a successful installation, the output should be as shown above.
 
@@ -44,7 +45,7 @@ The drozer should be successfully installed on the device. To start a new sessio
 1. Open the Android application on the launcher device
 2. Enable Embedded server
 
-{{< image src="/drozer/drozer2.png" caption="Drozer Server" >}}
+{{< image src="/drozer/drozer2.png" caption="Drozer Server" alt="Drozer Server" >}}
 
 3. Run the following command for port forwarding
 
@@ -60,7 +61,7 @@ drozer console connect
 
 A successful run will output a console for interacting with the device as shown below.
 
-{{< image src="/drozer/drozer3.png" caption="Drozer Console" >}}
+{{< image src="/drozer/drozer3.png" caption="Drozer Console" alt="Drozer Console" >}}
 
 Now we can use the drozer framework to carry out the security assessment of various Android components. The main four Android components are `activity`, `service`, `provider`, and `receiver`.
 
@@ -79,13 +80,13 @@ Some of the commonly used modules for mapping out the attack surface and more in
 
 Running the `run app.package.attacksurface` in the console we can identify the entry points for our further investigations
 
-{{< image src="/drozer/drozer4.png" caption="Drozer AttackSurface Module" >}}
+{{< image src="/drozer/drozer4.png" caption="Drozer AttackSurface Module" alt="Drozer AttackSurface Module" >}}
 
 From the results above, we have 11 exported activities, 15 broadcast receivers, one (1) content provider, and seven (7) exported services. This means they can be triggered by an external application.
 
 To get help with any command, one can run the following `help target-module` to get more information. For example, getting help on `app.service.info`
 
-{{< image src="/drozer/drozer5.png" caption="Drozer Help" >}}
+{{< image src="/drozer/drozer5.png" caption="Drozer Help" alt="Drozer Help" >}}
 
 ## Activities
 
@@ -103,8 +104,8 @@ A `Service` is an application component that can perform long-running operations
 
 Types of services implemented by Android are:
 
--   Started Services
--   Bound Services
+- Started Services
+- Bound Services
 
 | Module            | Description                                        |
 | ----------------- | -------------------------------------------------- |

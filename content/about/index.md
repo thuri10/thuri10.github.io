@@ -10,9 +10,9 @@ Currently focusing on Mobile (Android) and Web Security.
 
 ### Tools
 
--   [BurpSuite Pro](https://portswigger.net/burp/releases#professional) :star::star::star::star::star2:
--   [Jadx](https://github.com/skylot/jadx) :star::star::star::star:
--   [Ghidra](https://github.com/NationalSecurityAgency/ghidra) :star::star::star::star::star2:
--   [Frida](https://frida.re/docs/android/) :star::star::star::star::star2:
--   [Semgrep](https://semgrep.dev/) :star::star::star::star:
--   Scripting ([Python3](https://docs.python.org/3/)/[bash](https://www.gnu.org/software/bash/manual/html_node/index.html)) :star::star::star::star::star:
+- [BurpSuite Pro](https://portswigger.net/burp/releases#professional) :star::star::star::star::star2:
+- [Jadx](https://github.com/skylot/jadx) :star::star::star::star:
+- [Ghidra](https://github.com/NationalSecurityAgency/ghidra) :star::star::star::star::star2:
+- [Frida](https://frida.re/docs/android/) :star::star::star::star::star2:
+- [Semgrep](https://semgrep.dev/) :star::star::star::star:
+- Scripting ([Python3](https://docs.python.org/3/)/[bash](https://www.gnu.org/software/bash/manual/html_node/index.html)) :star::star::star::star::star:

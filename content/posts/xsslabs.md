@@ -4,7 +4,7 @@ date: 2025-08-21T12:59:32+03:00
 draft: false
 lightgallery: true
 authors: [Thuri]
-tags: ["appsec", "websec", "portswigger", "XSS"]
+tags: ["appsec", "websec", "portswigger", "xss"]
 summary: "Cross-site scripting (XSS) is a web security vulnerability that allows an attacker to compromise interactions that users have with the vulnerable application."
 toc:
     enable: true
@@ -68,9 +68,7 @@ By poking at the application's source code, we can identify the DOM sink `docume
 
 ```javascript
 function trackSearch(query) {
-    document.write(
-        '<img src="/resources/images/tracker.gif?searchTerms=' + query + '">'
-    );
+    document.write('<img src="/resources/images/tracker.gif?searchTerms=' + query + '">');
 }
 var query = new URLSearchParams(window.location.search).get("search");
 if (query) {
@@ -85,14 +83,14 @@ The payload is `"><svg onload=alert(1)>`.
 > [!important]
 > Some of the main sinks that lead to DOM-based XSS vulnerabilities are:
 >
-> -   document.write()
-> -   document.write()
-> -   document.writeln()
-> -   document.domain
-> -   element.innerHTML
-> -   element.outerHTML
-> -   element.insertAdjacentHTML
-> -   element.onevent
+> - document.write()
+> - document.write()
+> - document.writeln()
+> - document.domain
+> - element.innerHTML
+> - element.outerHTML
+> - element.insertAdjacentHTML
+> - element.onevent
 
 In finding DOM XSS sources and sinks in large applications, one can use `DOM Invader`. DOM Invader is a browser-based tool that helps you test for DOM XSS vulnerabilities using a variety of sources and sinks, including both web message and prototype pollution vectors.
 
@@ -126,10 +124,7 @@ The goal is to execute the XSS payload when the victim clicks the "back" button.
 ```html
 <script>
     $(function () {
-        $("#backLink").attr(
-            "href",
-            new URLSearchParams(window.location.search).get("returnPath")
-        );
+        $("#backLink").attr("href", new URLSearchParams(window.location.search).get("returnPath"));
     });
 </script>
 ```
@@ -253,9 +248,7 @@ let avatarImgElement = document.createElement("img");
 avatarImgElement.setAttribute("class", "avatar");
 avatarImgElement.setAttribute(
     "src",
-    comment.avatar
-        ? escapeHTML(comment.avatar)
-        : "/resources/images/avatarDefault.svg"
+    comment.avatar ? escapeHTML(comment.avatar) : "/resources/images/avatarDefault.svg"
 );
 ```
 
@@ -277,11 +270,11 @@ To solve the challenge, we use our string `xssbuster` to see where the XSS vulne
 
 Since the payload is not sanitised, we try to use `<script>alert(1)</script>` and we get an error `"Tag is not allowed"`. This means the application is protecting against common XSS vectors. To solve the challenge, we use Burp Intruder to test various payloads. Burp Intruder is a tool for automating customised attacks against web applications and APIs by inserting different payloads into predefined positions each time.
 
-{{< image src="/xsslabs/lab intruder.png" caption="Intruder Position" >}}
+{{< image src="/xsslabs/lab intruder.png" caption="Intruder Position" alt="Intruder Position" >}}
 
 By predefining our payload position as shown above, we can send several payloads and look for which Tags are allowed by looking at the status code `200`.
 
-{{< image src="/xsslabs/lab body.png" caption="Body Tag" >}}
+{{< image src="/xsslabs/lab body.png" caption="Body Tag" alt="Body Tag" >}}
 
 From the results above, `body` element is an allowed tag; therefore, we need to craft the payload using the `body` tag. To exploit the challenge, we need to use the exploit server provided in the challenge to deliver the payload to the victim by clicking `store` and then `Deliver exploit to victim`. The final payload is,
 
@@ -357,10 +350,10 @@ The website uses `storeId` to check for the stock and `document.write` as the si
 
 Since the application is an AngularJS application, we can look at the home index source to confirm if it is an Angular application and version, as shown below.
 
-{{< image src="/xsslabs/lab ngk.png" caption="Angular Application" >}}
+{{< image src="/xsslabs/lab ngk.png" caption="Angular Application" alt="Angular Application" >}}
 From the image above, we can see the `ng-app` directive present in the root element. This allows one to do template injection. By testing `{{1+1}}` on the search functionality, we get the result is equal to `2`.
 
-{{< image src="/xsslabs/lab sum.png" caption="Angular Application" >}}
+{{< image src="/xsslabs/lab sum.png" caption="Angular Application" alt="Angular Application" >}}
 
 This, means the application can execute JavaScript expressions with double curly braces. Therefore, using the `{{constructor.constructor('alert(1)')()}}` payload, we can execute our payload and solve the challenge.
 
@@ -427,7 +420,7 @@ To show the impact of XSS attacks, an attacker can steal the victim's cookie and
 
 By using the above code in our comment functionality, we can leak the Victim's cookie in our Burp Collaborator.
 
-{{< image src="/xsslabs/lab cookie.png" caption="Cookie Leak" >}}
+{{< image src="/xsslabs/lab cookie.png" caption="Cookie Leak" alt="Cookie Leak" >}}
 
 Setting the leaked session in our browser, we can solve the challenge.
 
@@ -440,12 +433,7 @@ XSS Vulnerability can also be used to steal the Victim's passwords. To solve thi
 
 ```html
 <form class="login-form" method="POST" action="/login">
-    <input
-        required
-        type="hidden"
-        name="csrf"
-        value="JshENWvNkjS4bEwYF2O89S3g5pwlBfUr"
-    />
+    <input required type="hidden" name="csrf" value="JshENWvNkjS4bEwYF2O89S3g5pwlBfUr" />
     <label>Username</label>
     <input required type="username" name="username" autofocus />
     <label>Password</label>
@@ -485,7 +473,7 @@ From the Form above, the application requires the username and password. From th
 
 By posting the above payload in our comment section, we are able to get the password for `administrator` as shown in the image below.
 
-{{< image src="/xsslabs/lab password.png" caption="Password Leak" >}}
+{{< image src="/xsslabs/lab password.png" caption="Password Leak" alt="Password Leak" >}}
 
 To solve the challenge, log in using the leaked credentials.
 
@@ -508,11 +496,7 @@ The route vulnerable to the CSRF vulnerability is the `/my-account/change-email`
             method="POST"
         >
             <input type="hidden" name="email" value="mail&#64;gmail&#46;com" />
-            <input
-                type="hidden"
-                name="csrf"
-                value="ZCxhCGo0J07WxGk0GrjIX6fo9TRi8zMt"
-            />
+            <input type="hidden" name="csrf" value="ZCxhCGo0J07WxGk0GrjIX6fo9TRi8zMt" />
             <input type="submit" value="Submit request" />
         </form>
         <script>

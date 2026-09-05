@@ -12,6 +12,7 @@ toc:
 
 code:
     maxShownLines: 100
+description: "vm1.exe implements a simple 8-bit virtual machine (VM) to try and stop reverse engineers from retrieving the flag"
 ---
 
 > [!Note]
@@ -19,7 +20,7 @@ code:
 
 ### Main function analysis
 
-{{< image src="/mal/vmq.png" caption="Main Function" >}}
+{{< image src="/mal/vmq.png" caption="Main Function" alt="Main Function" >}}
 
 From the main function, **HeapAlloc** allocates a memory block of size **0x1FB** bytes. The pointer of the allocated memory block is called `allocated_memblock` as shown in the image.
 
@@ -31,12 +32,12 @@ void *memcpy(void *dest,const void *src, size_t count);
 
 `memcpy` function copies data from the source address to destination address of size 0x1fb. The destination address of this program is allocate_memblock. The content of the `rambin` file and content at the rambin offset are the same as examined below.
 
-{{< image src="/mal/rambin.png" caption="Rambin" >}}
-{{< image src="/mal/ida_hex.png" caption="IDA Hex representation" >}}
+{{< image src="/mal/rambin.png" caption="Rambin" alt="Rambin" >}}
+{{< image src="/mal/ida_hex.png" caption="IDA Hex representation" alt="IDA Hex representation" >}}
 
 Next step is analyzing **sub_4022E0** function. The disassembled function graph looks like the one below.
 
-{{< image src="/mal/vmflow.png" caption="Control Flow loop" >}}
+{{< image src="/mal/vmflow.png" caption="Control Flow loop" alt="Control Flow loop" >}}
 
 From the disassembly above, the binary does some byte operations. The first graph block is doing a bitwise `AND` operation, which is responsible for setting both `SF` and `ZF` to zero.First it sets the value of eax register to 1, and then do a test operation. Because the conditional **"jump if zero"** is not true, we continue our execution to the next control block.
 
@@ -77,7 +78,7 @@ jz      short loc_402367
 
 Function **FUN_00402270** is called and three arguments are passed as parameters.The control graph below shows various operation executed by the binary depending on the argument passed to the function.
 
-{{< image src="/mal/vmflow2.png" caption="Control Flow" >}}
+{{< image src="/mal/vmflow2.png" caption="Control Flow" alt="Control Flow" >}}
 
 From the above graph, the function does a compare on the arguments passed with either 1, 2 or 3. If the condition is fulfilled, that operation branch is executed as shown in the image above.
 
@@ -162,7 +163,7 @@ vx@archie:vm$ python3 x.py
 
 After a successful decryption of the rambin contents, the `sub_4022E0` function return the pointer to the flag to main function as shown in the image below.
 
-{{< image src="/mal/retflag.png" caption="Return value of sub_4022E0" >}}
+{{< image src="/mal/retflag.png" caption="Return value of sub_4022E0" alt="Return value of sub_4022E0" >}}
 
 Therefore main function calculates MD5 hash of the flag and outputs to message dialogbox using **MessageBoxA** function.
 
