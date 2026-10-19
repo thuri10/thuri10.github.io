@@ -1,4 +1,15 @@
-Contact: https://thuri.10.github.io/about/
-Expires: 2027-12-31T23:59:59.000Z
+# Canonical URI
+Canonical: https://thuri10.github.io/.well-known/security.txt
+
+# Contact information
+Contact: https://thuri10.github.io/about/
+
+# Security policy
+Policy: https://thuri10.github.io/about/
+
+# Languages
 Preferred-Languages: en
-Policy: https://thuri.10.github.io/about/
+
+# Expiry (RFC 9116 recommends less than one year into the future).
+# Recalculate this date when the file is updated.
+Expires: 2027-04-19T23:59:59.000Z

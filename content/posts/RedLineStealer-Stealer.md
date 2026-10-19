@@ -1,5 +1,6 @@
 ---
 title: "Redliner - Information Stealer Analysis"
+images: ["/redline/redliner.png"]
 date: 2022-02-07T14:27:14Z
 draft: false
 lightgallery: true

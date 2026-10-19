@@ -1,5 +1,6 @@
 ---
 title: "Insecure Deserialization Basics"
+images: ["/deserialization/image.png"]
 date: 2025-09-03T00:59:32+03:00
 draft: false
 authors: [Thuri]

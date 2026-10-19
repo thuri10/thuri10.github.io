@@ -1,0 +1,18 @@
+# htmltest config for the scheduled external-link check (.github/workflows/external-links.yaml).
+# Internal links + anchors are already verified on every build (htmltest.yml);
+# this config turns on outgoing-link checking instead.
+DirectoryPath: public
+CheckExternal: true
+CheckInternal: false
+CheckAnchors: false
+IgnoreEmptyHref: true
+StripQueryString: true
+ExternalTimeout: 30
+OutputLogFile: external-links.log
+
+# Sites that rate-limit or bot-block simple GETs (login walls, share targets).
+# Regex patterns matched against the full URL.
+IgnoreURLs:
+  - ^https?://(www\.)?(twitter|x)\.com/
+  - ^https?://(www\.)?linkedin\.com/
+  - ^https?://(www\.)?reddit\.com/

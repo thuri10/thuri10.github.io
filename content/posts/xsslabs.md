@@ -1,5 +1,6 @@
 ---
 title: "Cross-Site Scripting Basics: Portswigger XSS Labs"
+images: ["/xsslabs/lab intruder.png"]
 date: 2025-08-21T12:59:32+03:00
 draft: false
 lightgallery: true

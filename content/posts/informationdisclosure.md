@@ -1,5 +1,6 @@
 ---
 title: "Information Disclosure"
+images: ["/websec/disclosure/lab1.png"]
 date: 2022-10-31T14:27:14Z
 draft: false
 lightgallery: true

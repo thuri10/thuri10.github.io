@@ -1,10 +1,12 @@
 ---
 title: "RopEmporium - callme"
+images: ["/ropemporium/callme_bug.png"]
 date: 2021-12-20T14:27:14Z
 draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
+series: ["ROP Emporium"]
 summary: "RopEmporium - callme goal is understanding how more than one argument is passed in x64 function."
 toc:
     enable: true

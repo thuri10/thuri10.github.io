@@ -1,5 +1,6 @@
 ---
 title: "Path Traversal Vulnerabilities"
+images: ["/websec/dirtraversal/lab1_imagepath.png"]
 date: 2022-10-24T14:27:14Z
 draft: false
 lightgallery: true

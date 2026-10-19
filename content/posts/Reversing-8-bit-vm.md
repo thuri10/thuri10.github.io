@@ -1,5 +1,6 @@
 ---
 title: "Reversing 8-bit Virtual VM"
+images: ["/mal/vmq.png"]
 date: 2021-12-07T14:27:14Z
 draft: false
 lightgallery: true

@@ -1,10 +1,12 @@
 ---
 title: "RopEmporium - ret2win"
+images: ["/ropemporium/stack.png"]
 date: 2021-12-20T14:27:14Z
 draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
+series: ["ROP Emporium"]
 summary: "This challenge is classical pwn challenge of overwriting the return address with desired address you want to return to."
 toc:
     enable: true

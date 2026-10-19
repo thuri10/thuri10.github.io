@@ -1,10 +1,12 @@
 ---
 title: "RopEmporium - Ret2CSU"
+images: ["/ropemporium/stack.png"]
 date: 2021-12-20T14:27:14Z
 draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
+series: ["ROP Emporium"]
 summary: "The goal of this level is understanding of universal rop techniques due to limited gadgets available in the binary as compared to the ret2win challenge."
 toc:
     enable: true

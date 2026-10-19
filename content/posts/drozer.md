@@ -1,5 +1,6 @@
 ---
 title: "Drozer Security Testing Framework"
+images: ["/drozer/drozer1.png"]
 date: 2024-03-30T11:37:15+03:00
 draft: false
 authors: [Thuri]

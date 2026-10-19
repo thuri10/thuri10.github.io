@@ -1,5 +1,6 @@
 ---
 title: "GraphQL Vulnerabilities"
+images: ["/graphql/graphql_introspection.png"]
 date: 2022-12-15T14:27:14Z
 draft: false
 lightgallery: true

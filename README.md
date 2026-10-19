@@ -8,7 +8,7 @@ A personal blog documenting vulnerability research, web security, mobile securit
 
 The CI build pins specific versions. Use these for local development:
 
-- **Hugo extended** `0.165.0` (must be the extended variant for Dart Sass support)
+- **Hugo extended** `0.168.0` (must be the extended variant for Dart Sass support)
 - **Dart Sass** `1.90.0`
 - **Go** `1.26.1`
 - **Node.js** `24.19.0`
@@ -20,13 +20,17 @@ The CI build pins specific versions. Use these for local development:
 npm install
 
 # Start the development server
-hugo server
+npm run dev
+
+# Include drafts
+npm run dev:drafts
 ```
 
 ## Production Build
 
 ```bash
-hugo --gc --minify --enableGitInfo --forceSyncStatic
+npm run build
+# equivalent to: hugo --gc --minify --enableGitInfo --forceSyncStatic
 ```
 
 ## Theme

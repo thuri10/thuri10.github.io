@@ -1,10 +1,12 @@
 ---
 title: "RopEmporium - Write"
+images: ["/ropemporium/stack.png"]
 date: 2021-12-17T14:27:14Z
 draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
+series: ["ROP Emporium"]
 summary: " Goal of the challenge is to understand how to abuse readable and writable memory regions in binary files"
 toc:
     enable: true

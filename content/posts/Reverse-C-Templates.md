@@ -1,5 +1,6 @@
 ---
 title: "Reversing Basic c++ Templates"
+images: ["/ost2/sub_func1.png"]
 date: 2022-07-16T14:27:14Z
 draft: false
 lightgallery: true

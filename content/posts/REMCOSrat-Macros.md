@@ -1,5 +1,6 @@
 ---
 title: "RemcosRat Malware Analysis"
+images: ["/mal/remcosrat/chain.jpeg"]
 date: 2022-01-25T14:27:14Z
 draft: false
 lightgallery: true

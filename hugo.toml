@@ -181,7 +181,7 @@ enableEmoji = true
         enableWordCount = false
         enableReadingTime = true
         [params.page.outdatedArticleReminder]
-            enable = false
+            enable = true
             # Display the reminder if the last modified time is more than 90 days ago.
             reminder = 90
             # Display warning if the last modified time is more than 180 days ago.

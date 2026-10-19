@@ -1,10 +1,12 @@
 ---
 title: "RopEmporium - Split"
+images: ["/ropemporium/stack.png"]
 date: 2021-12-17T14:27:14Z
 draft: false
 lightgallery: true
 authors: ["Thuri"]
 tags: ["rop", "RopEmporium"]
+series: ["ROP Emporium"]
 summary: "The goal of this challenge is to understand how function arguments are passed in 64-bit machine when doing return oriented programming."
 toc:
     enable: true

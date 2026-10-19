@@ -2,6 +2,8 @@
 title: "About"
 date: 2023-09-16T12:20:45+03:00
 draft: false
+authors: [Thuri]
+description: "About Thuri — Application Security Engineer focused on Mobile (Android) and Web Security, based in Nairobi, Kenya."
 ---
 
 My name is `Thuri`, an Application Security Engineer currently based in Nairobi, :kenya:.
