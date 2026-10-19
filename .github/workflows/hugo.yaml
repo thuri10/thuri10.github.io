@@ -23,7 +23,7 @@ jobs:
         env:
             DART_SASS_VERSION: 1.90.0
             GO_VERSION: 1.26.1
-            HUGO_VERSION: 0.165.0
+            HUGO_VERSION: 0.168.0
             NODE_VERSION: 24.19.0
             TZ: Europe/Oslo
         steps:
@@ -67,8 +67,7 @@ jobs:
                   echo "Hugo: $(hugo version)"
                   echo "Node.js: $(node --version)"
             - name: Install Node.js dependencies
-              run: |
-                  [[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true
+              run: npm ci
             - name: Configure Git
               run: |
                   git config core.quotepath false
@@ -79,23 +78,10 @@ jobs:
                   path: ${{ runner.temp }}/hugo_cache
                   key: hugo-${{ hashFiles('content/**', 'hugo.toml', 'themes/DoIt/go.mod') }}
                   restore-keys: hugo-
-            - name: Determine base URL
-              id: baseurl
-              run: |
-                  if [ "${{ github.event_name }}" = "pull_request" ]; then
-                    echo "url=${{ github.event.pull_request.head.repo.html_url }}/${{ github.event.pull_request.head.ref }}/" >> "$GITHUB_OUTPUT"
-                  else
-                    echo "url=${{ steps.pages.outputs.base_url }}/" >> "$GITHUB_OUTPUT"
-                  fi
             - name: Build the site
-              run: |
-                  hugo \
-                    --gc \
-                    --minify \
-                    --enableGitInfo \
-                    --forceSyncStatic \
-                    --baseURL "${{ steps.baseurl.outputs.url }}" \
-                    --cacheDir "${{ runner.temp }}/hugo_cache"
+              env:
+                  HUGO_BASEURL: ${{ steps.pages.outputs.base_url || 'https://thuri10.github.io/' }}
+              run: npm run build -- --cacheDir "${{ runner.temp }}/hugo_cache"
             - name: Validate internal links
               run: |
                   curl -sL -o /tmp/htmltest.tar.gz "https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz"
@@ -110,6 +96,13 @@ jobs:
               with:
                   path: ${{ runner.temp }}/hugo_cache
                   key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+            - name: Upload validation artifact
+              if: github.event_name == 'pull_request'
+              uses: actions/upload-artifact@v4
+              with:
+                  name: site-validation
+                  path: ./public
+                  retention-days: 1
             - name: Upload artifact
               if: github.event_name != 'pull_request'
               uses: actions/upload-pages-artifact@v3
@@ -123,7 +116,7 @@ jobs:
             - name: Download artifact
               uses: actions/download-artifact@v4
               with:
-                  name: github-pages
+                  name: site-validation
                   path: ./public
             - name: Validate HTML
               uses: chizzco/html-validate-action@v1

@@ -1,13 +1,16 @@
 {
-  "devDependencies": {
-    "husky": "^9.0.0",
-    "lint-staged": "^15.0.2",
-    "prettier": "^3.5.0"
-  },
-  "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
-  },
-  "scripts": {
-    "prepare": "husky"
-  }
+    "devDependencies": {
+        "husky": "^9.0.0",
+        "lint-staged": "^15.0.2",
+        "prettier": "^3.5.0"
+    },
+    "lint-staged": {
+        "*.{js,css,md}": "prettier --write"
+    },
+    "scripts": {
+        "build": "hugo --gc --minify --enableGitInfo --forceSyncStatic",
+        "dev": "hugo server",
+        "dev:drafts": "hugo server -D",
+        "prepare": "husky"
+    }
 }
