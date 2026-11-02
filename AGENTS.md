@@ -6,10 +6,10 @@ Hugo personal blog using the [DoIt](https://github.com/HEIGE-PCloud/DoIt) theme.
 
 The CI build (`.github/workflows/hugo.yaml`) defines pinned versions:
 
-- **Hugo extended** `0.168.0` — must be the _extended_ variant (needs Dart Sass)
-- **Dart Sass** `1.90.0`
-- **Go** `1.26.1`
-- **Node.js** `24.19.0`
+- **Hugo extended** `0.169.0` — must be the _extended_ variant (needs Dart Sass)
+- **Dart Sass** `1.107.1`
+- **Go** `1.27.3`
+- **Node.js** `26.13.0`
 - **Timezone**: `Europe/Oslo`
 
 Local build command (after installing the above):

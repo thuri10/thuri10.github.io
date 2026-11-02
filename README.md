@@ -8,10 +8,10 @@ A personal blog documenting vulnerability research, web security, mobile securit
 
 The CI build pins specific versions. Use these for local development:
 
-- **Hugo extended** `0.168.0` (must be the extended variant for Dart Sass support)
-- **Dart Sass** `1.90.0`
-- **Go** `1.26.1`
-- **Node.js** `24.19.0`
+- **Hugo extended** `0.169.0` (must be the extended variant for Dart Sass support)
+- **Dart Sass** `1.107.1`
+- **Go** `1.27.3`
+- **Node.js** `26.13.0`
 
 ## Local Development
 

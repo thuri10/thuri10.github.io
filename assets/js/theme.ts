@@ -1,4 +1,4 @@
-// Site-level override of themes/DoIt/assets/js/theme.ts (pinned at submodule commit 4a3ebea1).
+// Site-level override of themes/DoIt/assets/js/theme.ts (verified against submodule commit c9f11cb1).
 // Patch: HTML-escape the user query before it is rendered in the search
 // "no results" template. Typeahead renders templates via innerHTML, so an
 // unescaped query is an XSS sink. Upstream (HEIGE-PCloud/DoIt) is still
